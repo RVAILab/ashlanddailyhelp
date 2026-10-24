@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f4f0e6">
+  <meta name="description" content="A community resource hub for Ashland and Jackson County. Explore local support, save resources and share a guide.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Ashland Daily Help">
+  <meta property="og:description" content="Find food, showers, shelter and someone who knows the way in Ashland and Jackson County.">
+  <meta property="og:image" content="./art/share-card.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./direction.css">
+  <link rel="stylesheet" href="./experience.css">
+  <link rel="stylesheet" href="./pulse.css">
+  <link rel="stylesheet" href="./pages.css">
+  <link rel="preload" href="./fonts/fraunces-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="./fonts/instrument-sans-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <title>Ashland Daily Help · Community resources</title>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <div class="preview-bar" role="note"><span class="status-dot" aria-hidden="true"></span><strong>Build preview</strong><span>Resource details await provider confirmation. Dashboard numbers are fictional.</span></div>
+  <div id="offline-banner" class="offline-banner" hidden>You’re offline. This saved guide may be out of date. Source review: October 23, 2026. Calls and external links need a connection.</div>
+  <header class="site-header">
+    <div class="site-header-inner wrap">
+      <a class="dh-brand" href="?view=resources" data-view="resources" aria-label="Ashland Daily Help home"><svg class="dh-mark" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="23" class="m-ring"/><circle cx="31.5" cy="15.5" r="5" class="m-sun"/><path d="M4.5 30c6-6.5 11-9.5 16-9.5 6 0 9 5 15.5 5 3.2 0 5.7-1 7.6-2.2" class="m-hill"/><path d="M4.2 34.5c7.2-3.4 13.6-5 19.4-5 6.4 0 10.2 2.4 20.6 2.6" class="m-hill2"/><path d="M20.4 46.4c1.7-4.4 5.9-7.6 13-9.6" class="m-path"/></svg><span class="dh-word"><span class="dh-name">Daily Help</span><span class="dh-sub">Ashland &amp; Jackson County</span></span></a>
+      <nav class="site-nav" aria-label="Main navigation">
+        <a href="?view=resources" data-view="resources" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.6" cy="10.6" r="6.6"/><path d="m15.6 15.6 5 5"/></svg><span class="nl-full">Find help</span><span class="nl-short" aria-hidden="true">Find help</span></a>
+        <a href="?view=impact" data-view="impact"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4h6M10 4v2.2M14 4v2.2"/><path d="M7.5 9.5c0-2 2-3.3 4.5-3.3s4.5 1.3 4.5 3.3V17c0 1.6-1.4 3-3 3h-3c-1.6 0-3-1.4-3-3Z"/><path d="M12 11.2c1.3 1.3 1.6 2.6.9 3.7-.4.7-1.4.7-1.8 0-.7-1.1-.4-2.4.9-3.7Z"/></svg><span class="nl-full">Community Pulse</span><span class="nl-short" aria-hidden="true">Pulse</span></a>
+        <a href="?view=providers" data-view="providers"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4H6v17h12V4h-3"/><rect x="9" y="2.5" width="6" height="3.5" rx="1"/><path d="m9 13 2 2 4-4.5"/></svg><span class="nl-full">For providers</span><span class="nl-short" aria-hidden="true">Providers</span></a>
+        <a href="?view=about" data-view="about"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6.5c-2.4-2.4-5.3-1-8 1.5C9.3 5.5 6.4 4.1 4 6.5c-3.2 3.2.4 8.4 8 13.5 7.6-5.1 11.2-10.3 8-13.5Z"/></svg><span class="nl-full">About the hub</span><span class="nl-short" aria-hidden="true">About</span></a>
+      </nav>
+    </div>
+  </header>
+  <main id="main" tabindex="-1">
+    <section id="view-resources" class="view">
+      <div class="home-hero">
+        <div class="hh-copy-wrap wrap">
+          <div class="hh-copy">
+            <p class="hh-eyebrow"><span class="hh-spark" aria-hidden="true">✳</span> Ashland, Oregon · Here for each other</p>
+            <h1 class="hh-title"><span class="hh-line">A little help.</span> <span class="hh-line">A whole</span> <em class="hh-line">community.</em></h1>
+            <p class="hh-lede">A meal. A fresh start. Someone who knows the way. Find your next step, right here in the Rogue Valley.</p>
+            <form id="hero-search" class="hh-search" role="search" action="./" method="get" aria-label="Find help">
+              <label class="sr-only" for="hero-q">What do you need today?</label>
+              <svg class="hh-search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.6" cy="10.6" r="6.6"/><path d="m15.6 15.6 5 5"/></svg>
+              <input id="hero-q" name="q" type="search" placeholder="What do you need?" autocomplete="off" enterkeyhint="search">
+              <button class="button primary hh-go" type="submit">Find help <span aria-hidden="true">→</span></button>
+            </form>
+            <div class="hh-quick" role="group" aria-labelledby="hh-quick-label">
+              <span id="hh-quick-label" class="hh-quick-label">Or go straight to</span>
+              <a href="?category=food#directory" data-jump-category="food"><picture><source type="image/avif" srcset="./art/cat-food-160.avif"><source type="image/webp" srcset="./art/cat-food-160.webp"><img src="./art/cat-food-160.png" alt="" width="32" height="32" decoding="async"></picture>Food</a>
+              <a href="?category=housing#directory" data-jump-category="housing"><picture><source type="image/avif" srcset="./art/cat-housing-160.avif"><source type="image/webp" srcset="./art/cat-housing-160.webp"><img src="./art/cat-housing-160.png" alt="" width="32" height="32" decoding="async"></picture>Shelter</a>
+              <a href="?category=hygiene#directory" data-jump-category="hygiene"><picture><source type="image/avif" srcset="./art/cat-hygiene-160.avif"><source type="image/webp" srcset="./art/cat-hygiene-160.webp"><img src="./art/cat-hygiene-160.png" alt="" width="32" height="32" decoding="async"></picture>Showers</a>
+              <a href="?category=health#directory" data-jump-category="health"><picture><source type="image/avif" srcset="./art/cat-health-160.avif"><source type="image/webp" srcset="./art/cat-health-160.webp"><img src="./art/cat-health-160.png" alt="" width="32" height="32" decoding="async"></picture>Health</a>
+              <a href="?category=essentials#directory" data-jump-category="essentials"><picture><source type="image/avif" srcset="./art/cat-essentials-160.avif"><source type="image/webp" srcset="./art/cat-essentials-160.webp"><img src="./art/cat-essentials-160.png" alt="" width="32" height="32" decoding="async"></picture>Essentials</a>
+            </div>
+            <p class="hh-foot"><span>Open to everyone. No account needed.</span> <button id="install-top" class="text-button" type="button">Take the guide with you <span aria-hidden="true">↗</span></button></p>
+          </div>
+        </div>
+        <div class="hh-stage">
+          <figure id="hero-art" class="hh-art"><div class="hh-frame"><picture><source media="(max-width: 760px)" type="image/avif" srcset="./art/valley-m-640.avif 640w, ./art/valley-m-960.avif 960w, ./art/valley-m-1280.avif 1280w" sizes="100vw"><source media="(max-width: 760px)" type="image/webp" srcset="./art/valley-m-640.webp 640w, ./art/valley-m-960.webp 960w, ./art/valley-m-1280.webp 1280w" sizes="100vw"><source media="(max-width: 760px)" srcset="./art/valley-m-640.jpg 640w, ./art/valley-m-960.jpg 960w" sizes="100vw"><source type="image/avif" srcset="./art/valley-960.avif 960w, ./art/valley-1440.avif 1440w, ./art/valley-2048.avif 2048w, ./art/valley-2560.avif 2560w" sizes="(max-width: 1023px) 128vw, min(88vw, 1500px)"><source type="image/webp" srcset="./art/valley-960.webp 960w, ./art/valley-1440.webp 1440w, ./art/valley-2048.webp 2048w, ./art/valley-2560.webp 2560w" sizes="(max-width: 1023px) 128vw, min(88vw, 1500px)"><img src="./art/valley-1440.jpg" srcset="./art/valley-960.jpg 960w, ./art/valley-1440.jpg 1440w" sizes="(max-width: 1023px) 128vw, min(88vw, 1500px)" width="1440" height="806" alt="Illustration of a handmade miniature valley: pine-covered foothills, small gathering places joined by a winding path, and an amber stream under an apricot sun." fetchpriority="high" decoding="async"></picture></div><figcaption class="hh-art-bar"><button id="hero-motion" class="hh-motion" type="button" hidden><svg class="hm-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6v12M15 6v12"/></svg><svg class="hm-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5Z"/></svg><span class="hm-text">Pause</span><span class="sr-only"> the valley animation</span></button><span class="hh-credit">Original artwork · the Rogue Valley, imagined</span></figcaption></figure>
+        </div>
+        <div class="hh-nav-wrap wrap">
+          <aside class="hh-navigator" aria-labelledby="hh-navigator-title">
+            <span class="hh-navigator-art" aria-hidden="true"><picture><source type="image/avif" srcset="./art/lantern-160.avif 1x, ./art/lantern-320.avif 2x"><source type="image/webp" srcset="./art/lantern-160.webp 1x, ./art/lantern-320.webp 2x"><img src="./art/lantern-160.png" alt="" width="160" height="160" decoding="async"></picture></span>
+            <div><h2 id="hh-navigator-title">Not sure where to start?</h2><p>A resource navigator can help you find the next step.</p><button class="hh-navigator-go" type="button" data-resource="ohra-navigation">Start a conversation <span aria-hidden="true">→</span></button></div>
+          </aside>
+        </div>
+      </div>
+      <div class="belonging wrap"><p><span>Food on the table.</span><span class="b-dot" aria-hidden="true">✳</span><span>A place to turn.</span><span class="b-dot" aria-hidden="true">✳</span><span>A community beside you.</span></p></div>
+      <section id="directory" class="dir wrap" aria-labelledby="directory-title">
+        <div class="dir-head" data-reveal>
+          <div><p class="eyebrow">01 · Find your next step</p><h2 id="directory-title" tabindex="-1">What would make today <em>easier?</em></h2><p class="dir-intro">Search, or choose a kind of help. Every listing links to the source it came from.</p></div>
+          <button id="print" class="text-button dir-print" type="button"><span data-icon="print"></span> Print this list</button>
+        </div>
+        <form id="search-form" class="dir-search" role="search" aria-label="Search resources" data-reveal><label class="dir-field"><span data-icon="search"></span><span class="sr-only">Search resources</span><input id="search" type="search" placeholder="Try food, showers, housing, or a provider…" autocomplete="off" enterkeyhint="search"></label><label class="dir-area"><span data-icon="pin"></span><span class="sr-only">Area</span><select id="area"><option value="all">All local areas</option><option>Ashland</option><option>Medford</option><option>Jackson County</option></select></label><button class="button primary" type="submit">Search</button></form>
+        <div id="categories" class="cat-grid" role="group" aria-label="Resource categories" data-reveal></div>
+        <div class="dir-toolbar"><p id="result-count" role="status" aria-live="polite"></p><div class="toolbar-actions"><button id="saved-toggle" class="chip-button" type="button" aria-pressed="false"><span data-icon="bookmark"></span> My saved list <span id="saved-count">0</span></button><button id="share-list" class="chip-button" type="button"><span data-icon="share"></span> Share</button></div></div>
+        <p class="dir-note"><span data-icon="info"></span> <span>A starting point, with sources you can check. Hours and availability may change—confirm directly before traveling.</span></p>
+        <div id="resource-grid" class="rgrid" data-reveal></div>
+        <div id="empty-state" class="dir-empty" hidden><span class="dir-empty-art" aria-hidden="true"><picture><source type="image/avif" srcset="./art/lantern-160.avif 1x, ./art/lantern-320.avif 2x"><source type="image/webp" srcset="./art/lantern-160.webp 1x, ./art/lantern-320.webp 2x"><img src="./art/lantern-160.png" alt="" width="160" height="160" loading="lazy" decoding="async"></picture></span><h3>No matching resources in this first collection.</h3><p>Try a broader search or explore the wider 211info directory.</p><div class="dir-empty-actions"><button id="reset-filters" class="button primary" type="button">Clear filters</button><a class="button" href="https://www.211info.org/resource-database/" target="_blank" rel="noopener noreferrer">Search 211info <span aria-hidden="true">↗</span></a></div></div>
+        <noscript><p class="dir-noscript">This interactive directory needs JavaScript. You can still visit <a href="https://ohrahelps.org/get-help/program-services/">OHRA</a>, <a href="https://accesshelps.org/food-pantries/">ACCESS food pantries</a>, or <a href="https://www.211info.org/resource-database/">211info</a> directly.</p></noscript>
+        <div class="dir-foot"><span>Sources reviewed October 23, 2026 · Provider confirmation pending</span><button id="clear-saved" class="inline-link" type="button">Clear my saved list</button></div>
+      </section>
+      <section class="provider-band wrap" aria-labelledby="provider-band-title" data-reveal>
+        <div class="lb-art" aria-hidden="true"><picture><source type="image/avif" sizes="(max-width: 760px) 92vw, 520px" srcset="./art/provider-kitchen-800.avif 800w, ./art/provider-kitchen-1400.avif 1400w"><source type="image/webp" sizes="(max-width: 760px) 92vw, 520px" srcset="./art/provider-kitchen-800.webp 800w, ./art/provider-kitchen-1400.webp 1400w"><img src="./art/provider-kitchen-800.jpg" alt="" width="800" height="597" loading="lazy" decoding="async"></picture></div>
+        <div class="lb-copy"><p class="eyebrow">Small connections. Stronger community.</p><h2 id="provider-band-title">Good information is a <em>shared effort.</em></h2><p>See how a short provider report can help a community understand its needs.</p>
+        <div class="lb-actions"><a class="button light" href="?view=providers" data-view="providers">Try the provider preview <span aria-hidden="true">→</span></a><a class="lb-link" href="?view=impact" data-view="impact">See the sample Community Pulse <span aria-hidden="true">→</span></a></div></div>
+      </section>
+    </section>
+    <section id="view-impact" class="view wrap inner-page" hidden aria-labelledby="pulse-title">
+      <header class="pl-hero">
+        <div class="pl-hero-stage">
+          <div class="pl-hero-copy">
+            <p class="pl-badge">Fictional sample data</p>
+            <p class="pl-kicker">02 / Community Pulse</p>
+            <h1 id="pulse-title">Care, made <em>visible.</em></h1>
+            <p class="pl-lede">Every report lights a lantern. When providers share what happened at a meal, a shower or a conversation, the week becomes easier to see, and so do the places still waiting for a report.</p>
+          </div>
+          <picture class="pl-hero-art">
+            <source media="(max-width: 760px)" type="image/avif" srcset="./art/pulse-dusk-m-720.avif 720w, ./art/pulse-dusk-m-1080.avif 1080w" sizes="100vw">
+            <source media="(max-width: 760px)" type="image/webp" srcset="./art/pulse-dusk-m-720.webp 720w, ./art/pulse-dusk-m-1080.webp 1080w" sizes="100vw">
+            <source media="(max-width: 760px)" srcset="./art/pulse-dusk-m-720.jpg">
+            <source type="image/avif" srcset="./art/pulse-dusk-960.avif 960w, ./art/pulse-dusk-1600.avif 1600w, ./art/pulse-dusk-2400.avif 2400w" sizes="(min-width: 1380px) 1280px, calc(100vw - 60px)">
+            <source type="image/webp" srcset="./art/pulse-dusk-960.webp 960w, ./art/pulse-dusk-1600.webp 1600w, ./art/pulse-dusk-2400.webp 2400w" sizes="(min-width: 1380px) 1280px, calc(100vw - 60px)">
+            <img src="./art/pulse-dusk-1600.jpg" width="1600" height="686" alt="" loading="lazy" decoding="async">
+          </picture>
+        </div>
+        <div class="pl-hero-band">
+          <p class="pl-fiction" role="note"><strong>Fictional demonstration.</strong> These are sample service amounts for one invented week. They are not Ashland statistics and do not count unique people. Approve a practice report to see the charts update in this tab.</p>
+          <div class="pl-tally"><span id="pulse-hero-lanterns" class="pl-lanterns" aria-hidden="true"></span><p id="pulse-hero-coverage">3 of 4 sample providers have reported this week.</p></div>
+        </div>
+      </header>
+      <div class="pl-meta">
+        <p class="pl-week"><span>Sample week</span>October 19–25, 2026</p>
+        <p id="pulse-updated" class="pl-updated" role="status">Sample reports loaded</p>
+        <a href="?view=providers" data-view="providers" class="button primary pl-try">Try a practice report <span aria-hidden="true">↗</span></a>
+      </div>
+      <section class="pl-section" aria-labelledby="pl-measures-title">
+        <div class="pl-head"><span class="pl-num" aria-hidden="true">i.</span><h2 id="pl-measures-title">Choose a measure.</h2><p>Meals, shower sessions and navigation encounters use different units. They are shown one at a time and never added together.</p></div>
+        <div class="pl-night" data-pl-reveal>
+        <div id="metric-cards" class="pl-metric-grid" role="group" aria-label="Choose a service measure"></div>
+        <section class="pl-chart" aria-labelledby="trend-title">
+          <div class="pl-chart-head">
+            <div><p class="pl-eyebrow">The week, day by day</p><h3 id="trend-title">Meals provided.</h3></div>
+            <p class="pl-chart-sub">One column per day, October 19–25. Solid is counted, hatched is estimated. Days without an amount say why.</p>
+          </div>
+          <div id="daily-chart" class="pl-daily"></div>
+          <div class="pl-readout"><p class="pl-readout-label">Selected day</p><p id="chart-selection" class="pl-selection" aria-live="polite">Select a day for its amount or reporting status.</p></div>
+          <ul class="pl-legend" aria-label="Chart key">
+            <li><span class="pl-key is-counted" aria-hidden="true"></span>Counted amount</li>
+            <li><span class="pl-key is-estimated" aria-hidden="true"></span>Estimated amount</li>
+            <li><span class="pl-key is-partial" aria-hidden="true"></span>Partial: known amounts only</li>
+            <li><span class="pl-key is-zero" aria-hidden="true"></span>Measured zero</li>
+          </ul>
+          <details class="pl-table"><summary>Read the exact values</summary><div class="pl-table-scroll" role="region" aria-labelledby="chart-table-caption" tabindex="0"><table><caption id="chart-table-caption">Sample daily service amounts</caption><thead><tr><th scope="col">Date</th><th scope="col">Counted</th><th scope="col">Estimated</th><th scope="col">Total</th><th scope="col">Sample events reported</th><th scope="col">Status</th></tr></thead><tbody id="chart-table-body"></tbody></table></div></details>
+        </section>
+        </div>
+      </section>
+      <section class="pl-section" aria-labelledby="pl-behind-title">
+        <div class="pl-head"><span class="pl-num" aria-hidden="true">ii.</span><h2 id="pl-behind-title">Behind the numbers.</h2><p>How much of the picture has arrived, how each amount was measured, and where reports noted that more support could help.</p></div>
+        <div class="pl-insights">
+          <section class="pl-card pl-coverage" aria-labelledby="pl-coverage-title" data-pl-reveal>
+            <p class="pl-eyebrow">How much of the picture?</p>
+            <h3 id="pl-coverage-title">Lanterns lit.</h3>
+            <div class="pl-ring"><div id="coverage-ring"></div><p class="pl-ring-label"><span id="coverage-count">3 of 4</span><span>sample providers reported</span></p></div>
+            <progress id="coverage-progress" class="sr-only" value="3" max="4" aria-label="Sample provider reporting coverage">3 of 4</progress>
+            <ul id="coverage-list" class="pl-providers" aria-label="Fictional participating providers"></ul>
+            <p id="coverage-caption" class="pl-note"></p>
+            <p class="pl-footnote">An unreported amount is unknown, never zero.</p>
+          </section>
+          <section class="pl-card pl-evidence" aria-labelledby="evidence-title" data-pl-reveal>
+            <p class="pl-eyebrow">What is behind the total?</p>
+            <h3 id="evidence-title">Counted &amp; estimated.</h3>
+            <div id="evidence-chart"></div>
+            <p class="pl-note">Estimates stay visible as estimates. Service amounts count servings and visits, not unique people.</p>
+          </section>
+          <section class="pl-card pl-barriers" aria-labelledby="pl-barriers-title" data-pl-reveal>
+            <p class="pl-eyebrow">Where more support could help</p>
+            <h3 id="pl-barriers-title">Reported barriers.</h3>
+            <div id="barriers"></div>
+            <p class="pl-note">One report can mention several barriers. These are counts of sample reports, not people.</p>
+          </section>
+        </div>
+      </section>
+      <section class="pl-section pl-method" aria-labelledby="pl-method-title">
+        <div class="pl-head"><span class="pl-num" aria-hidden="true">iii.</span><h2 id="pl-method-title">How to read this picture.</h2><p>A day without a bar is never treated as zero. Each one is marked with the reason, using the same marks as the chart.</p></div>
+        <div class="pl-method-grid">
+          <dl class="pl-glossary" data-pl-reveal>
+            <div><dt><span class="pl-tile" data-state="counted" aria-hidden="true"><span class="pl-glyph"></span></span>Counted amount</dt><dd>A solid bar. The provider counted it.</dd></div>
+            <div><dt><span class="pl-tile" data-state="estimated" aria-hidden="true"><span class="pl-glyph"></span></span>Estimated amount</dt><dd>A hatched bar. The provider’s estimate, kept visibly separate from counts.</dd></div>
+            <div><dt><span class="pl-tile" data-state="zero" aria-hidden="true"><span class="pl-glyph"></span></span>Measured zero</dt><dd>A flat line marked 0. A count was taken and it was zero.</dd></div>
+            <div><dt><span class="pl-tile" data-state="partial" aria-hidden="true"><span class="pl-glyph"></span></span>Partial reporting</dt><dd>A bar with an open dashed cap. Only some of the day’s events reported, so the bar shows known amounts only.</dd></div>
+            <div><dt><span class="pl-tile" data-state="unrecorded" aria-hidden="true"><span class="pl-glyph"></span></span>Not recorded</dt><dd>A hollow circle. The event was reported without an amount. Unknown, not zero.</dd></div>
+            <div><dt><span class="pl-tile" data-state="awaiting" aria-hidden="true"><span class="pl-glyph"></span></span>Awaiting report</dt><dd>A dashed circle. An event was scheduled and its report has not arrived.</dd></div>
+            <div><dt><span class="pl-tile" data-state="canceled" aria-hidden="true"><span class="pl-glyph"></span></span>Canceled</dt><dd>A cross. The provider reported that the service did not happen. No amount is assumed.</dd></div>
+            <div><dt><span class="pl-tile" data-state="none" aria-hidden="true"><span class="pl-glyph"></span></span>No event</dt><dd>A small dot on the baseline. Nothing was scheduled for this measure that day.</dd></div>
+          </dl>
+          <div class="pl-method-notes">
+            <p>Meals, shower sessions and navigation encounters have separate definitions. Counts of zero are shown as zero; blanks are explained, never filled in.</p>
+            <p>Corrections replace earlier amounts only after review. Approving a revised practice report swaps the old amount out instead of adding to it.</p>
+            <p>Reporting coverage includes only the four fictional participating providers in this demonstration. Real publication will require provider permission and disclosure review.</p>
+            <div class="pl-download">
+              <p class="pl-eyebrow">Take the sample data</p>
+              <p>A CSV with one row per unit. Unknown amounts are left blank, and every row is labelled <code>FICTIONAL_DEMONSTRATION</code>.</p>
+              <div class="pl-download-actions"><button id="download-data" type="button" class="button primary"><span data-icon="download"></span> Download sample CSV</button><a href="?view=providers" data-view="providers" class="inline-link">Try a practice report →</a></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </section>
+    <section id="view-providers" class="view wrap inner-page pg" hidden aria-labelledby="providers-title">
+      <div class="pg-intro">
+        <div class="pg-intro-text pg-reveal">
+          <p class="eyebrow">FOR THE PEOPLE SHOWING UP</p>
+          <h1 id="providers-title">Less reporting.<br><em>More helping.</em></h1>
+          <p class="page-intro">Three quick questions after a service. A coordinator looks each report over before any number is shared.</p>
+          <div class="pg-practice notice" role="note"><span class="pg-practice-icon" data-icon="info" aria-hidden="true"></span><p><strong>Practice space — use made-up numbers.</strong> Nothing is sent to a provider or server. Reports stay in this tab and disappear on reload. Accounts and secure collection come in the next phase.</p></div>
+          <button type="button" id="pg-start" class="button primary pg-start">Try a practice report <span aria-hidden="true">↓</span></button>
+        </div>
+        <div class="pg-art pg-reveal" aria-hidden="true"><picture><source type="image/avif" srcset="./art/provider-kitchen-800.avif 800w, ./art/provider-kitchen-1400.avif 1400w" sizes="(max-width: 860px) 100vw, 48vw"><source type="image/webp" srcset="./art/provider-kitchen-800.webp 800w, ./art/provider-kitchen-1400.webp 1400w" sizes="(max-width: 860px) 100vw, 48vw"><img src="./art/provider-kitchen-800.jpg" width="800" height="597" alt="" loading="lazy" decoding="async"></picture></div>
+      </div>
+      <ol id="pg-stages" class="pg-stages pg-reveal" data-stage="report" aria-label="How a sample report travels">
+        <li data-step="report" data-state="current" aria-current="step"><span class="pg-stage-dot" aria-hidden="true">1</span><span class="pg-stage-text"><strong>You report</strong><small>Three questions, sent to review</small></span></li>
+        <li data-step="review" data-state="next"><span class="pg-stage-dot" aria-hidden="true">2</span><span class="pg-stage-text"><strong>A coordinator reviews</strong><small>Waiting reports are not public</small></span></li>
+        <li data-step="publish" data-state="next"><span class="pg-stage-dot" aria-hidden="true">3</span><span class="pg-stage-text"><strong>Totals update</strong><small>Only approved reports reach the sample dashboard</small></span></li>
+      </ol>
+      <div class="pg-tool">
+        <form id="report-form" class="pg-form pg-reveal" novalidate aria-labelledby="report-title">
+          <div class="pg-form-head">
+            <div><p class="pg-kicker">Step 1 · Provider</p><h2 id="report-title">Quick service report</h2></div>
+            <p class="pg-tag"><span aria-hidden="true">●</span> Practice · nothing is sent</p>
+          </div>
+          <div id="pg-progress" class="pg-progress" aria-hidden="true"><span data-q="1" data-state="done"><i></i>Happened</span><span data-q="2" data-state="todo"><i></i>Amount</span><span data-q="3" data-state="done"><i></i>Unmet need</span></div>
+          <p id="pg-progress-text" class="pg-progress-text" aria-live="polite">2 of 3 answered · add an amount or choose Not recorded</p>
+          <fieldset class="pg-event-field"><legend class="pg-sub-legend">Reporting for <span>(sample service)</span></legend><div id="event" class="pg-choices pg-events"></div><p id="event-meta" class="pg-hint"></p></fieldset>
+          <fieldset class="pg-q"><legend><span class="pg-q-num" aria-hidden="true">1</span><span class="pg-q-title">Did the service happen?</span></legend>
+            <div class="pg-choices pg-two">
+              <label class="pg-choice"><input type="radio" name="outcome" value="completed" checked><span class="pg-dot" aria-hidden="true"></span><span class="pg-choice-body"><strong>As planned</strong><small>Ran as scheduled</small></span></label>
+              <label class="pg-choice"><input type="radio" name="outcome" value="partial"><span class="pg-dot" aria-hidden="true"></span><span class="pg-choice-body"><strong>Partly</strong><small>Shortened or reduced</small></span></label>
+              <label class="pg-choice"><input type="radio" name="outcome" value="canceled"><span class="pg-dot" aria-hidden="true"></span><span class="pg-choice-body"><strong>Canceled</strong><small>It didn’t happen</small></span></label>
+              <label class="pg-choice"><input type="radio" name="outcome" value="unknown"><span class="pg-dot" aria-hidden="true"></span><span class="pg-choice-body"><strong>Not sure</strong><small>Can’t say yet</small></span></label>
+            </div>
+          </fieldset>
+          <fieldset class="pg-q" id="pg-amount"><legend><span class="pg-q-num" aria-hidden="true">2</span><span class="pg-q-title">How much, and how was it measured?</span></legend>
+            <div class="pg-amount-row">
+              <label for="report-value" class="pg-amount-label"><span id="unit-label">Meals provided</span></label>
+              <div class="pg-amount-input"><input id="report-value" name="value" type="text" inputmode="numeric" autocomplete="off" enterkeyhint="done" placeholder="e.g. 120" aria-describedby="value-error value-hint"><span id="value-unit" class="pg-unit" aria-hidden="true">meals</span></div>
+              <p id="value-error" class="pg-field-error" hidden></p>
+              <p id="value-hint" class="pg-hint">Count service units — meals, not unique people.</p>
+            </div>
+            <p id="pg-amount-locked" class="pg-locked" hidden>Canceled or uncertain events take no amount. Nothing is assumed, and it won’t be counted as zero.</p>
+            <div id="method" class="pg-choices pg-three" role="radiogroup" aria-label="How was it measured?">
+              <label class="pg-choice"><input type="radio" name="method" value="counted" checked><span class="pg-dot" aria-hidden="true"></span><span class="pg-choice-body"><strong>Counted</strong><small>Tallied as you went</small></span></label>
+              <label class="pg-choice"><input type="radio" name="method" value="estimated"><span class="pg-dot" aria-hidden="true"></span><span class="pg-choice-body"><strong>Estimated</strong><small>A careful best guess</small></span></label>
+              <label class="pg-choice"><input type="radio" name="method" value="not_recorded"><span class="pg-dot" aria-hidden="true"></span><span class="pg-choice-body"><strong>Not recorded</strong><small>No amount was kept</small></span></label>
+            </div>
+          </fieldset>
+          <fieldset class="pg-q"><legend><span class="pg-q-num" aria-hidden="true">3</span><span class="pg-q-title">Was there need you couldn’t meet?</span></legend>
+            <div id="unmet" class="pg-choices pg-three">
+              <label class="pg-choice"><input type="radio" name="unmet" value="observed"><span class="pg-dot" aria-hidden="true"></span><span class="pg-choice-body"><strong>Yes, some</strong><small>People we couldn’t serve</small></span></label>
+              <label class="pg-choice"><input type="radio" name="unmet" value="none_observed"><span class="pg-dot" aria-hidden="true"></span><span class="pg-choice-body"><strong>None observed</strong><small>Everyone was served</small></span></label>
+              <label class="pg-choice"><input type="radio" name="unmet" value="not_assessed" checked><span class="pg-dot" aria-hidden="true"></span><span class="pg-choice-body"><strong>Not assessed</strong><small>We didn’t check</small></span></label>
+            </div>
+            <div id="reason-fields" class="pg-reasons" hidden><p class="pg-hint" id="reason-hint">What got in the way? Optional — choose any that apply.</p><div class="pg-chips" role="group" aria-labelledby="reason-hint">
+              <label class="pg-chip"><input type="checkbox" name="reason" value="capacity"><span>Capacity</span></label>
+              <label class="pg-chip"><input type="checkbox" name="reason" value="supplies"><span>Supplies</span></label>
+              <label class="pg-chip"><input type="checkbox" name="reason" value="transportation"><span>Transportation</span></label>
+              <label class="pg-chip"><input type="checkbox" name="reason" value="timing"><span>Timing</span></label>
+              <label class="pg-chip"><input type="checkbox" name="reason" value="requirement"><span>Requirements</span></label>
+              <label class="pg-chip"><input type="checkbox" name="reason" value="other"><span>Other</span></label>
+            </div></div>
+          </fieldset>
+          <div class="pg-receipt" aria-labelledby="pg-receipt-title"><p id="pg-receipt-title" class="pg-kicker">Your report</p><dl id="pg-receipt"></dl></div>
+          <p id="form-error" class="form-error pg-form-error" role="alert" tabindex="-1" hidden></p>
+          <button type="submit" class="button primary pg-submit">Send to review <span aria-hidden="true">→</span></button>
+          <p class="pg-fineprint">Sending doesn’t publish anything. Please include no names, contact details or information about individuals.</p>
+        </form>
+        <aside class="pg-aside" aria-labelledby="review-title">
+          <div class="pg-desk review-panel pg-reveal">
+            <p class="pg-kicker">Step 2 · Coordinator <span class="pg-sim">Simulated</span></p>
+            <h2 id="review-title" tabindex="-1">A moment to review.</h2>
+            <p class="pg-desk-intro">Reports wait here until approved. Only an approved report changes the sample dashboard, and only in this tab.</p>
+            <div id="review-queue"></div>
+            <a class="inline-link pg-desk-link" href="?view=impact" data-view="impact">View community pulse <span aria-hidden="true">→</span></a>
+          </div>
+          <div class="pg-team pg-reveal"><span class="pg-team-icon" data-icon="users" aria-hidden="true"></span><div><h3>Designed for a team</h3><p>The future service will have separate provider, coordinator and technical roles, with documented access and a backup for each responsibility.</p><p>Ongoing roles will belong to the adopting team.</p></div></div>
+          <button id="reset-demo" type="button" class="text-button pg-reset">Reset sample reports</button>
+        </aside>
+      </div>
+    </section>
+    <section id="view-about" class="view wrap inner-page pg" hidden aria-labelledby="about-title">
+      <div class="ab-intro">
+        <div class="ab-intro-text pg-reveal">
+          <p class="eyebrow">LOCAL KNOWLEDGE. SHARED CARE.</p>
+          <h1 id="about-title">A helpful place.<br><em>A community effort.</em></h1>
+          <p class="page-intro">Built to make the next step easier for people seeking support and the people working alongside them.</p>
+        </div>
+        <figure class="ab-art pg-reveal"><picture><source type="image/avif" srcset="./art/about-bridge-800.avif 800w, ./art/about-bridge-1400.avif 1400w" sizes="(max-width: 860px) 100vw, 52vw"><source type="image/webp" srcset="./art/about-bridge-800.webp 800w, ./art/about-bridge-1400.webp 1400w" sizes="(max-width: 860px) 100vw, 52vw"><img src="./art/about-bridge-800.jpg" width="800" height="597" alt="A small clay bridge over an amber stream, where two garden paths meet." loading="lazy" decoding="async"></picture><figcaption>Two paths meet: an initial build, and the community team that will carry it forward.</figcaption></figure>
+      </div>
+      <div class="ab-principles">
+        <article class="ab-card pg-reveal"><span class="ab-icon" data-icon="heart" aria-hidden="true"></span><h2>Everyone belongs here</h2><p>Explore without creating an account. Share a link, print a guide, or save a few resources on this device.</p><p>This first collection focuses on Ashland and Jackson County. The name and design are a working starting point.</p></article>
+        <article class="ab-card pg-reveal"><span class="ab-icon" data-icon="shield" aria-hidden="true"></span><h2>Thoughtful about privacy</h2><p>No accounts, trackers or survey submissions to a server in this preview. Saved resource IDs stay in this browser; clear them when using a shared device.</p><p>Public reporting will use approved aggregates. Individual service histories are outside the pilot.</p></article>
+      </div>
+      <section class="ab-check pg-reveal" aria-labelledby="ab-check-title">
+        <div class="ab-check-head"><p class="pg-kicker">How information is checked</p><h2 id="ab-check-title">Clarity builds trust.</h2><p>Each resource links to its source. Website review and provider confirmation are different steps, and unknown requirements or availability stay marked as unknown.</p></div>
+        <ol class="ab-steps">
+          <li><span class="ab-step-num" aria-hidden="true">1</span><div><h3>Source reviewed</h3><p>Each listing is checked against a named public source — usually the provider’s website — with the review date shown.</p></div></li>
+          <li><span class="ab-step-num" aria-hidden="true">2</span><div><h3>Provider confirmation</h3><p>A separate step. In this preview it is still pending for every listing.</p></div></li>
+          <li><span class="ab-step-num" aria-hidden="true">3</span><div><h3>Confirm before you go</h3><p>Hours and space change. This preview is not a real-time availability service.</p></div></li>
+        </ol>
+      </section>
+      <section class="ab-handoff pg-reveal" aria-labelledby="ab-handoff-title">
+        <div class="ab-handoff-text"><p class="pg-kicker">Designed for an adopting team</p><h2 id="ab-handoff-title">A team to carry it forward.</h2><p>An adopting organization or team will set priorities, coordinate partners and maintain the service. Those ongoing roles have not yet been assigned.</p><p>The initial build is designed for a documented handoff, with a backup for each responsibility.</p></div>
+        <ul class="ab-roles" aria-label="Ongoing responsibilities">
+          <li><span>Priorities, funding and partner agreements</span><em>Unassigned</em></li>
+          <li><span>Listing verification and corrections</span><em>Unassigned</em></li>
+          <li><span>Report definitions and publication review</span><em>Unassigned</em></li>
+          <li><span>Releases, security and recovery</span><em>Unassigned</em></li>
+        </ul>
+      </section>
+      <section class="ab-guide pg-reveal" aria-labelledby="ab-guide-title">
+        <picture class="ab-lantern" aria-hidden="true"><source type="image/avif" srcset="./art/lantern-160.avif 160w, ./art/lantern-320.avif 320w" sizes="120px"><source type="image/webp" srcset="./art/lantern-160.webp 160w, ./art/lantern-320.webp 320w" sizes="120px"><img src="./art/lantern-160.png" width="160" height="160" alt="" loading="lazy" decoding="async"></picture>
+        <div class="ab-guide-body"><h2 id="ab-guide-title">Keep the guide close</h2><p>On a supported phone, add this site to your home screen. After your first online visit, the directory can be available offline. Always check the source date and confirm details before traveling.</p>
+          <div class="ab-guide-actions"><button id="install-about" type="button" class="button primary">Phone &amp; offline guide</button><button id="clear-device" type="button" class="button">Clear this site’s saved device data</button></div>
+          <p class="pg-hint">Alerts are planned for a later phase. This preview does not subscribe you or send notifications.</p></div>
+      </section>
+    </section>
+  </main>
+  <footer class="site-footer">
+    <div class="wrap sf-grid">
+      <div class="sf-brand"><a class="dh-brand" href="?view=resources" data-view="resources" aria-label="Ashland Daily Help, back to finding help"><svg class="dh-mark" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="23" class="m-ring"/><circle cx="31.5" cy="15.5" r="5" class="m-sun"/><path d="M4.5 30c6-6.5 11-9.5 16-9.5 6 0 9 5 15.5 5 3.2 0 5.7-1 7.6-2.2" class="m-hill"/><path d="M4.2 34.5c7.2-3.4 13.6-5 19.4-5 6.4 0 10.2 2.4 20.6 2.6" class="m-hill2"/><path d="M20.4 46.4c1.7-4.4 5.9-7.6 13-9.6" class="m-path"/></svg><span class="dh-word"><span class="dh-name">Daily Help</span><span class="dh-sub">Ashland &amp; Jackson County</span></span></a><p class="sf-line">A little connection can change <em>what comes next.</em></p></div>
+      <nav class="sf-nav" aria-label="Footer"><h2 class="sf-h">Explore</h2><ul><li><a href="?view=resources" data-view="resources">Find help</a></li><li><a href="?view=impact" data-view="impact">Community Pulse</a></li><li><a href="?view=providers" data-view="providers">For providers</a></li><li><a href="?view=about" data-view="about">About, privacy &amp; offline access</a></li></ul></nav>
+      <div class="sf-meta"><h2 class="sf-h">This preview</h2><p>Ashland &amp; Jackson County, Oregon</p><p>Initial build · Made for a community handoff</p><p>Sources reviewed October 23, 2026</p></div>
+    </div>
+  </footer>
+  <dialog id="resource-dialog" aria-labelledby="resource-dialog-title"><button class="dialog-close" type="button" data-close aria-label="Close resource details"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button><div id="resource-detail"></div></dialog>
+  <dialog id="info-dialog" aria-labelledby="info-dialog-title"><button class="dialog-close" type="button" data-close aria-label="Close dialog"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button><div id="info-content"></div></dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  <script src="./app.js" type="module"></script>
+</body>
+</html>

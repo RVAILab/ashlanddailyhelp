@@ -252,7 +252,7 @@
     // Story data extracted from the file system.
     // Each entry: { title, path, story? }. `story` is an optional curated
     // one-liner preserved across regenerations (see /stories board).
-    const stories = { backlog: [], active: [], done: [] };
+    const stories = { backlog: [ { title: "Store Community Resources in DB", path: "backlog/store-community-resources-in-db.md" } ], active: [], done: [] };
 
     function render() {
       const board = document.getElementById('board');

@@ -6,6 +6,10 @@ A community resource hub for Ashland and Jackson County, Oregon: food, showers, 
 
 Built at [Rogue Raise: The Unhoused](https://whiterabbitashland.com/rogue-raise) (October 23–25, 2026), White Rabbit's weekend community build in Ashland. Event notes, team links, hotlines and a dated snapshot of the local resource directory live in the sibling repo [RVAILab/RogueRaise](https://github.com/RVAILab/RogueRaise), under [`2026-10-unhoused/`](https://github.com/RVAILab/RogueRaise/tree/main/2026-10-unhoused). Locally it is usually checked out next to this repo at `../RogueRaise`.
 
+## Backend
+
+Collection and ingest of resources and events is handled by a separate app, [RVAILab/daily-help-steward](https://github.com/RVAILab/daily-help-steward), which harvests what providers already publish and routes changes through human review. Once deployed, it will provide an API that this app calls for its data. Until then, the app uses the bundled data in `data.js`.
+
 ## Running locally
 
 Serve the repo root over HTTP (the service worker needs `http(s):`, not `file:`):

@@ -15,6 +15,12 @@ This app was built at Rogue Raise: The Unhoused (October 23–25, 2026). Its eve
 
 Keep the two in step: when a provider's details change in `data.js`, check whether the `RESOURCES.md` snapshot needs the same change, and the reverse. RogueRaise's `RESOURCES.md` describes this repo too, so update it if the app's scope changes.
 
+## Backend repo: daily-help-steward
+
+Collection and ingest of resources and events is moving to a separate app, [RVAILab/daily-help-steward](https://github.com/RVAILab/daily-help-steward), usually checked out next to this one at `../daily-help-steward` (check it exists before relying on it). The steward harvests what providers already publish, reconciles it through a human review queue, and keeps provenance for every field. It will be deployed separately and serve the data this app displays through an API; this app stays a static front end.
+
+That integration is planned, not built: today all content still comes from `data.js`. Read the steward's `CLAUDE.md`, `docs/specs/weekend-build.md` ("Site integration") and `schema/contract.ts` before changing how this app loads data. The current plan there is that the app fetches listings and Pulse data from the steward at startup, falls back to the bundled `data.js` when the API is unavailable, and never serves live Pulse data stale from the service worker. Keep field names and enum values in `data.js` and `core.js` aligned with the steward's contract; when you change them here, flag that the steward needs the same change.
+
 ## Running locally
 
 Serve the repo root over HTTP; the service worker and URL state need `http(s):`, not `file:`:

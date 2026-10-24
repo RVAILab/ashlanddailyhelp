@@ -6,6 +6,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Ashland Daily Help: a static, dependency-free web app (plain HTML, CSS and ES modules) listing community resources for Ashland and Jackson County, Oregon. It is an installable, offline-capable PWA. There is no package.json, bundler, linter or test suite in the repo; files are served exactly as committed.
 
+## Sibling repo: RogueRaise
+
+This app was built at Rogue Raise: The Unhoused (October 23–25, 2026). Its event notes live in [RVAILab/RogueRaise](https://github.com/RVAILab/RogueRaise), a Markdown-only repo with its own `CLAUDE.md`, usually checked out next to this one at `../RogueRaise` (check it exists before relying on it). The relevant folder is `2026-10-unhoused/`:
+
+- `README.md`: the event summary, tracks and format.
+- `RESOURCES.md`: team links, hotlines and a dated snapshot of the team's master spreadsheet ("Ashland Resources for Unhoused People"). That directory is broader than `data.js` and was compiled separately; it is not generated from this repo or vice versa.
+
+Keep the two in step: when a provider's details change in `data.js`, check whether the `RESOURCES.md` snapshot needs the same change, and the reverse. RogueRaise's `RESOURCES.md` describes this repo too, so update it if the app's scope changes.
+
 ## Running locally
 
 Serve the repo root over HTTP; the service worker and URL state need `http(s):`, not `file:`:

@@ -3,8 +3,8 @@ metadata:
   created_at:   2026-10-25T11:06:46-07:00
   activated_at: 2026-10-25T14:26:16-07:00
   planned_at:   2026-10-25T14:26:37-07:00
-  finished_at:
-  updated_at:   2026-10-25T14:26:37-07:00
+  finished_at:  2026-10-25T14:38:01-07:00
+  updated_at:   2026-10-25T14:38:01-07:00
 -->
 
 # Story: Today: Alerts and Cancellations
@@ -41,3 +41,23 @@ Ingest the proposed `alerts.json` (steward #41) like the events file (optional u
 ### Tests
 
 Contract and ingest (stored, 404 quiet), expiry and order, withdrawn alerts hidden, the component, the homepage and `/today` loaders, and a card naming its alert.
+
+## Review
+
+Reviewed 2026-10-25 by an independent agent; findings fixed in the next commit unless noted.
+
+| Criterion | Verdict | Evidence |
+| --- | --- | --- |
+| Alerts first on /today and the homepage, with kind, message, window, links | ✅ | `app/components/alert-list.tsx`, after the page heading; listing links only when stored |
+| Gone after the end time, before the next refresh | ✅ | `currentAlerts`; /today regroups at the soonest end |
+| Affected listings and events show the alert | ⚠️ | Listings ✅, with cancellations; events not yet |
+| Severity by word and shape, read once | ✅ | Plain region, not live |
+| Offline | ⚠️ | With `15-offline-pwa` |
+
+Fixed: a canceled shelter's cards still said it was open; closure alerts didn't stop "Open now"; demonstration alerts weren't labelled; alerts showed up to 48 hours early (now a day); headings came before the page's `h1`; /today didn't regroup when an alert ended. Left: alerts on events, `kind`, provenance label, and the extra listings query when alerts exist.
+
+## Learnings
+
+- Went well: one helper (`pageAlerts`) gives every page the same alerts, so each fix landed everywhere at once.
+- Surprising: the alert's title is a claim ("open Sunday night") that becomes false when the alert's status changes.
+- Next time: show status wherever a title is reused.

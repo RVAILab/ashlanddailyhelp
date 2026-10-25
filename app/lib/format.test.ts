@@ -8,6 +8,8 @@ describe('formatAsOf', () => {
   })
 
   it('formats for Spanish', () => {
-    expect(formatAsOf('2026-10-25T18:05:00.000Z', 'es')).toBe('dom, 25 de oct de 2026, 11:05 a.m. PDT')
+    expect(formatAsOf('2026-10-25T18:05:00.000Z', 'es')).toBe(
+      'domingo, 25 de octubre de 2026, 11:05 a.m. hora de verano del Pacífico',
+    )
   })
 })

@@ -10,7 +10,7 @@ describe('listingLabels', () => {
       { kind: 'source', text: 'Source reviewed · Oct 23' },
     ])
     expect(listingLabels({ ...base, provenanceLabel: 'Posted by Peace House' }, 'en')).toEqual([
-      { kind: 'source', text: 'Posted by Peace House' },
+      { kind: 'source', text: 'Posted by Peace House', fromFeed: true },
     ])
   })
 
@@ -25,7 +25,7 @@ describe('listingLabels', () => {
     )
     expect(labels.slice(0, 2)).toEqual([
       { kind: 'warning', text: 'Schedule needs checking' },
-      { kind: 'warning', text: 'May be canceled tonight. Call before traveling.' },
+      { kind: 'warning', text: 'May be canceled tonight. Call before traveling.', fromFeed: true },
     ])
   })
 
@@ -55,10 +55,10 @@ describe('listingLabels', () => {
       'es',
     )
     expect(labels).toEqual([
-      { kind: 'warning', text: 'Hay que confirmar el horario' },
-      { kind: 'caution', text: 'Todavía no confirmado por el proveedor' },
-      { kind: 'time', text: 'Termina lun, 26 de oct, 7:30 a.m.' },
-      { kind: 'source', text: 'Fuente revisada · 23 oct' },
+      { kind: 'warning', text: 'Verifique el horario antes de ir' },
+      { kind: 'caution', text: 'La organización todavía no lo ha confirmado' },
+      { kind: 'time', text: 'Termina el lunes, 26 de octubre, 7:30 a.m.' },
+      { kind: 'source', text: 'Información revisada el 23 de octubre' },
     ])
   })
 

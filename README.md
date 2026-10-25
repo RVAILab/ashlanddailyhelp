@@ -35,7 +35,7 @@ Then open <http://localhost:5173>. `/health` reports whether the app can reach i
 
 ### The steward's feed
 
-The app keeps a copy of the steward's feed in Postgres. A scheduled Worker refreshes it every 5 minutes from `FEED_BASE_URL`, a Worker variable naming the folder that holds `listings.json` (with or without a trailing slash), with `If-None-Match`. It keeps the last good copy when a fetch fails or a file doesn't match the contract. Each page's footer says "Listings as of" the copy's `generatedAt`, warns when the latest update failed, and says so when no copy has loaded or the database is unavailable.
+The app keeps a copy of the steward's feed in Postgres. A scheduled Worker refreshes it every 5 minutes from `FEED_BASE_URL`, a Worker variable naming the folder that holds `listings.json` (with or without a trailing slash), with `If-None-Match`. It keeps the last good copy when a fetch fails or a file doesn't match the contract. Each page's footer (except a server-error page) says "Listings as of" the copy's `generatedAt`, warns when the latest update failed, and says so when no copy has loaded or the database is unavailable.
 
 To load a feed by hand:
 
@@ -53,7 +53,7 @@ The steward's contract (`contract/steward/`) and sample feed (`test/fixtures/fee
 
 ### Languages
 
-Every page is in English and Spanish: English at the plain URLs (`/resources`), Spanish under `/es` (`/es/resources`). A browser that ranks Spanish above English is sent to the Spanish page on its first visit; the language link on every page switches, and the choice is remembered in a `lang` cookie. Listing text from the feed stays in English until story `11-translate-listings`.
+Every page is in English and Spanish: English at the plain URLs (`/resources`), Spanish under `/es` (`/es/resources`). Arriving from outside the site at an English page, a visitor whose saved choice or browser prefers Spanish is sent to the Spanish page; moving around within the site never redirects, so English stays reachable even without cookies. The language link in each page's header switches, and the choice is remembered in a `lang` cookie. (Error pages for a server failure have no header or footer.) Listing text from the feed stays in English until story `11-translate-listings`.
 
 Interface text lives in `app/i18n/en.ts` and `app/i18n/es.ts`. To add a string, add it to both (the type checker fails if Spanish lacks a key) and read it with `useI18n()` in components, or `messagesFor(lang)` in loaders and `meta`. The Spanish catalog was written carefully but has not yet been reviewed by a Spanish speaker; please do before launch.
 

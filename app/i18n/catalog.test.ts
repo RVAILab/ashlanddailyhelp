@@ -20,7 +20,7 @@ describe('the message catalogs', () => {
     ['Spanish', es],
   ])('give non-empty text for every message in %s', (_, catalog) => {
     for (const [key, message] of leaves(catalog)) {
-      const text = typeof message === 'function' ? message('x', 2) : message
+      const text = typeof message === 'function' ? message(key === 'search.places' ? 2 : 'Ashland') : message
       expect(typeof text, key).toBe('string')
       expect(String(text).trim(), key).not.toBe('')
     }

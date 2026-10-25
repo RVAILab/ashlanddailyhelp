@@ -10,7 +10,7 @@ describe('/language', () => {
     const response = switchTo('?to=es&return=%2Fresources%3Fq%3Dmeal')
     expect(response.status).toBe(302)
     expect(response.headers.get('Location')).toBe('/es/resources?q=meal')
-    expect(response.headers.get('Set-Cookie')).toBe('lang=es; Path=/; Max-Age=31536000; SameSite=Lax; Secure')
+    expect(response.headers.get('Set-Cookie')).toBe('lang=es; Path=/; Max-Age=31536000; SameSite=Lax; HttpOnly; Secure')
   })
 
   it('switches back to English from a Spanish page', () => {
@@ -26,6 +26,9 @@ describe('/language', () => {
   it('only returns to pages on this site', () => {
     for (const away of ['https%3A%2F%2Fevil.example', '%2F%2Fevil.example', '%2F%5Cevil.example', 'resources'])
       expect(switchTo(`?to=es&return=${away}`).headers.get('Location')).toBe('/es')
+    for (const away of ['/.//evil.example', '/%2e//evil.example', '/a/..//evil.example', '/es/..//evil.example'])
+      for (const to of ['en', 'es', 'fr'])
+        expect(switchTo(`?to=${to}&return=${encodeURIComponent(away)}`).headers.get('Location')).toMatch(/^\/(?![/\\])/)
   })
 
   it('ignores a language the site does not have', () => {

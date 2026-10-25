@@ -1,3 +1,4 @@
+import { useI18n } from '../i18n/provider.tsx'
 import type { ListingLabel } from '../lib/listing-labels.ts'
 
 // Each kind has its own shape as well as its own colour, so the labels read the same without colour.
@@ -14,10 +15,15 @@ const shapes: Record<ListingLabel['kind'], React.ReactNode> = {
 }
 
 export function ListingStatus({ labels }: { labels: ListingLabel[] }) {
+  const { lang } = useI18n()
   return (
     <ul className="listing-status">
       {labels.map(label => (
-        <li key={`${label.kind}:${label.text}`} className={`label label-${label.kind}`} data-kind={label.kind}>
+        <li
+          key={`${label.kind}:${label.text}`}
+          className={`label label-${label.kind}`}
+          lang={label.fromFeed && lang !== 'en' ? 'en' : undefined}
+        >
           <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" fill="currentColor" stroke="currentColor">
             {shapes[label.kind]}
           </svg>{' '}

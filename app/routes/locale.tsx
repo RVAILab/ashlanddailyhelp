@@ -1,28 +1,27 @@
-import { Link, Outlet, redirect, type ShouldRevalidateFunctionArgs, useLocation } from 'react-router'
+import { data, Link, Outlet, redirect, type ShouldRevalidateFunctionArgs, useLocation } from 'react-router'
 import { type FeedStatus, listingsFeedStatus } from '../../server/feed/listings.ts'
 import { FeedFooter, type FooterFeed } from '../components/feed-footer.tsx'
 import { services } from '../context.ts'
-import { type Lang, langFromPath, localePath, messagesFor, preferredLang } from '../i18n/index.ts'
+import { type Lang, langFromPath, messagesFor } from '../i18n/index.ts'
 import { I18nProvider } from '../i18n/provider.tsx'
+import { languageRedirect } from '../i18n/redirect.ts'
 import { formatAsOf } from '../lib/format.ts'
 import type { Route } from './+types/locale'
 
-const VARY = 'Accept-Language, Cookie'
+// Runs before any page's loader, so a page that is about to redirect does no database work.
+export const middleware: Route.MiddlewareFunction[] = [
+  ({ request, url }) => {
+    const to = languageRedirect(url, request.headers)
+    if (to) throw redirect(to, { headers: { Vary: 'Accept-Language, Cookie' } })
+  },
+]
 
 function forFooter(status: FeedStatus, lang: Lang): FooterFeed {
   return status.state === 'stored' ? { ...status, asOf: formatAsOf(status.generatedAt, lang) } : status
 }
 
-export async function loader({ request, url, context }: Route.LoaderArgs) {
+export async function loader({ url, context }: Route.LoaderArgs) {
   const lang = langFromPath(url.pathname)
-  // An English (unprefixed) page sends Spanish speakers to the Spanish page; a /es link always stays Spanish.
-  if (lang === 'en') {
-    const wanted = preferredLang({
-      cookie: request.headers.get('Cookie'),
-      acceptLanguage: request.headers.get('Accept-Language'),
-    })
-    if (wanted === 'es') throw redirect(localePath(`${url.pathname}${url.search}`, 'es'), { headers: { Vary: VARY } })
-  }
   let status: FeedStatus
   try {
     status = await listingsFeedStatus(context.get(services).database())
@@ -30,11 +29,13 @@ export async function loader({ request, url, context }: Route.LoaderArgs) {
     console.error('locale: could not open the database', error)
     status = { state: 'unavailable' }
   }
-  return { lang, feed: forFooter(status, lang) }
+  // Only English pages depend on the visitor's language preferences; a /es page is the same for everyone.
+  const headers = lang === 'en' ? { Vary: 'Accept-Language, Cookie' } : undefined
+  return data({ lang, origin: url.origin, feed: forFooter(status, lang) }, { headers })
 }
 
-export function headers() {
-  return { Vary: VARY }
+export function headers({ loaderHeaders }: Route.HeadersArgs) {
+  return loaderHeaders
 }
 
 export function shouldRevalidate({
@@ -52,7 +53,13 @@ function LanguageSwitch({ lang }: { lang: Lang }) {
   const other: Lang = lang === 'es' ? 'en' : 'es'
   const back = encodeURIComponent(`${location.pathname}${location.search}`)
   return (
-    <a href={`/language?to=${other}&return=${back}`} lang={other} hrefLang={other} className="language-switch">
+    <a
+      href={`/language?to=${other}&return=${back}`}
+      lang={other}
+      hrefLang={other}
+      rel="nofollow"
+      className="language-switch"
+    >
       {messagesFor(lang).language.switchTo}
     </a>
   )
@@ -64,7 +71,7 @@ export default function Locale({ loaderData }: Route.ComponentProps) {
   return (
     <I18nProvider lang={lang}>
       <header className="site-header">
-        <Link to={localePath('/', lang)} className="site-name">
+        <Link to={lang === 'es' ? '/es' : '/'} className="site-name">
           {t.siteName}
         </Link>
         <LanguageSwitch lang={lang} />

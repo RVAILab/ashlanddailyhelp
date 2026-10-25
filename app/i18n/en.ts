@@ -15,12 +15,11 @@ export const en = {
     essentials: 'Essentials',
   } satisfies Record<Category, string>,
   areas: {
-    countyWide: (area: string) => `${area} (county-wide)`,
-    statewide: (area: string) => `${area} (statewide)`,
-  },
+    'Jackson County': 'Jackson County (county-wide)',
+    Oregon: 'Oregon (statewide)',
+  } as Record<string, string>,
   search: {
     title: 'Find help',
-    pageTitle: (query: string | undefined) => (query ? `${query} · Find help` : 'Find help · Ashland Daily Help'),
     words: 'Words to search for',
     kind: 'Kind of help',
     anyKind: 'All kinds of help',

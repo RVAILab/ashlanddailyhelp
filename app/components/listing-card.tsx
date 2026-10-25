@@ -19,11 +19,17 @@ const dialable = (phone: string) => phone.replace(/[^\d+]/g, '')
 
 export function ListingCardView({ listing }: { listing: ListingCard }) {
   const heading = useId()
-  const { t } = useI18n()
+  const { t, lang } = useI18n()
+  // Listing text comes from the steward in English; on other pages, mark it so screen readers use an English voice.
+  const feedLang = lang === 'en' ? undefined : 'en'
   return (
     <article className="listing-card" aria-labelledby={heading}>
-      <h3 id={heading}>{listing.name}</h3>
-      <p className="provider">{listing.provider}</p>
+      <h3 id={heading} lang={feedLang}>
+        {listing.name}
+      </h3>
+      <p className="provider" lang={feedLang}>
+        {listing.provider}
+      </p>
       <ListingStatus labels={listing.labels} />
       <dl>
         <dt>{t.card.kind}</dt>
@@ -31,9 +37,9 @@ export function ListingCardView({ listing }: { listing: ListingCard }) {
         <dt>{t.card.area}</dt>
         <dd>{listing.area}</dd>
         <dt>{t.card.when}</dt>
-        <dd>{listing.schedule}</dd>
+        <dd lang={feedLang}>{listing.schedule}</dd>
         <dt>{t.card.where}</dt>
-        <dd>{listing.address}</dd>
+        <dd lang={feedLang}>{listing.address}</dd>
         <dt>{t.card.phone}</dt>
         <dd>{listing.phone ? <a href={`tel:${dialable(listing.phone)}`}>{listing.phone}</a> : t.card.noPhone}</dd>
       </dl>

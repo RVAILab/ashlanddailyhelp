@@ -3,7 +3,7 @@ import type { Route } from './+types/language'
 
 const YEAR = 60 * 60 * 24 * 365
 
-// Only a path on this site: "/x", never "//host" or "/\host", which browsers treat as another site.
+// Only a path on this site; localePath also strips the leading slashes that normalizing a path can bring back.
 const localReturn = (value: string | null) => (value && /^\/(?![/\\])/.test(value) ? value : '/')
 
 export function loader({ request }: Route.LoaderArgs) {
@@ -17,7 +17,7 @@ export function loader({ request }: Route.LoaderArgs) {
     status: 302,
     headers: {
       Location: localePath(back, to),
-      'Set-Cookie': `${LANG_COOKIE}=${to}; Path=/; Max-Age=${YEAR}; SameSite=Lax${secure}`,
+      'Set-Cookie': `${LANG_COOKIE}=${to}; Path=/; Max-Age=${YEAR}; SameSite=Lax; HttpOnly${secure}`,
     },
   })
 }

@@ -16,11 +16,13 @@ export const langFromPath = (pathname: string): Lang =>
 
 export const locales: Record<Lang, string> = { en: 'en-US', es: 'es-US' }
 
+// Always a path on this site: normalizing "/.//host" yields "//host", which browsers read as another site.
 export function localePath(path: string, lang: Lang): string {
   const url = new URL(path, 'http://local')
-  const bare = langFromPath(url.pathname) === 'es' ? url.pathname.slice(3) || '/' : url.pathname
+  const local = url.pathname.replace(/^[/\\]+/, '/')
+  const bare = langFromPath(local) === 'es' ? local.slice(3) || '/' : local
   const pathname = lang === 'es' ? (bare === '/' ? '/es' : `/es${bare}`) : bare
-  return `${pathname}${url.search}`
+  return `${pathname}${url.search}${url.hash}`
 }
 
 export const LANG_COOKIE = 'lang'
@@ -33,18 +35,21 @@ function savedLang(cookie: string | null | undefined): Lang | null {
   return isLang(value) ? value : null
 }
 
-function quality(acceptLanguage: string, lang: Lang): number {
-  let best = 0
-  for (const part of acceptLanguage.split(',')) {
-    const [tag = '', ...params] = part.trim().toLowerCase().split(';')
-    if (tag !== lang && !tag.startsWith(`${lang}-`)) continue
-    const q = params.map(param => param.trim()).find(param => param.startsWith('q='))
-    best = Math.max(best, q ? Number(q.slice(2)) || 0 : 1)
-  }
-  return best
+// The browser's languages that the site has, best first; equal weights keep the browser's own order.
+function ranked(acceptLanguage: string): Lang[] {
+  return acceptLanguage
+    .split(',')
+    .map((part, order) => {
+      const [tag = '', ...params] = part.trim().toLowerCase().split(';')
+      const q = params.map(param => param.trim()).find(param => param.startsWith('q='))
+      return { lang: tag.split('-')[0], weight: q ? Number(q.slice(2)) || 0 : 1, order }
+    })
+    .filter((entry): entry is { lang: Lang; weight: number; order: number } => isLang(entry.lang) && entry.weight > 0)
+    .sort((a, b) => b.weight - a.weight || a.order - b.order)
+    .map(entry => entry.lang)
 }
 
-// A saved choice wins; otherwise Spanish only when the browser ranks it above English.
+// A saved choice wins; otherwise the browser's first choice between Spanish and English.
 export function preferredLang({
   cookie,
   acceptLanguage,
@@ -52,8 +57,5 @@ export function preferredLang({
   cookie?: string | null
   acceptLanguage?: string | null
 }): Lang {
-  const saved = savedLang(cookie)
-  if (saved) return saved
-  if (!acceptLanguage) return 'en'
-  return quality(acceptLanguage, 'es') > quality(acceptLanguage, 'en') ? 'es' : 'en'
+  return savedLang(cookie) ?? ranked(acceptLanguage ?? '')[0] ?? 'en'
 }

@@ -18,6 +18,12 @@ describe('localePath', () => {
     expect(localePath('/es/resources?q=comida', 'en')).toBe('/resources?q=comida')
     expect(localePath('/es', 'en')).toBe('/')
     expect(localePath('/es/resources', 'es')).toBe('/es/resources')
+    expect(localePath('/resources#results', 'es')).toBe('/es/resources#results')
+  })
+
+  it('never produces a path another site could be read from', () => {
+    for (const path of ['/.//evil.example', '/%2e//evil.example', '/a/..//evil.example', '/es/..//evil.example'])
+      for (const lang of ['en', 'es'] as const) expect(localePath(path, lang)).toMatch(/^\/(?![/\\])/)
   })
 })
 
@@ -32,6 +38,8 @@ describe('preferredLang', () => {
     expect(preferredLang({ acceptLanguage: 'es' })).toBe('es')
     expect(preferredLang({ acceptLanguage: 'en-US,en;q=0.9,es;q=0.8' })).toBe('en')
     expect(preferredLang({ acceptLanguage: 'fr-FR,fr' })).toBe('en')
+    expect(preferredLang({ acceptLanguage: 'es-MX, en-US' })).toBe('es')
+    expect(preferredLang({ acceptLanguage: 'en, es' })).toBe('en')
     expect(preferredLang({})).toBe('en')
   })
 

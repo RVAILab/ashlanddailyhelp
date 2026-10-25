@@ -113,9 +113,28 @@ describe('/resources', () => {
     renderPage({ results: [], filters: { query: 'zzyzx' } }, '/es/resources?q=zzyzx', 'es')
     expect(await screen.findByRole('heading', { level: 1, name: 'Buscar ayuda' })).toBeDefined()
     expect(screen.getByRole('searchbox', { name: 'Palabras para buscar' })).toBeDefined()
-    expect(screen.getByRole('option', { name: 'Condado de Jackson (todo el condado)' })).toBeDefined()
-    expect(screen.getByRole('status').textContent).toBe('Ningún lugar coincide')
+    expect(screen.getByRole('option', { name: 'Todo el condado de Jackson' })).toBeDefined()
+    expect(screen.getByRole('status').textContent).toBe('No se encontraron lugares')
     expect(screen.getByRole('link', { name: 'borrar la búsqueda' }).getAttribute('href')).toBe('/es/resources')
     expect(screen.getByRole('link', { name: 'Llamar al 211' }).getAttribute('href')).toBe('tel:211')
+  })
+
+  it('marks the steward’s English listing text as English on a Spanish page', async () => {
+    renderPage(
+      {
+        results: [
+          { ...showers, labels: [{ kind: 'source', text: 'Added by Daily Help from ohrahelps.org', fromFeed: true }] },
+        ],
+      },
+      '/es/resources',
+      'es',
+    )
+    const card = await screen.findByRole('article')
+    expect(within(card).getByRole('heading', { level: 3 }).getAttribute('lang')).toBe('en')
+    expect(within(card).getByText(showers.schedule).getAttribute('lang')).toBe('en')
+    expect(within(card).getByText('Added by Daily Help from ohrahelps.org').closest('li')?.getAttribute('lang')).toBe(
+      'en',
+    )
+    expect(within(card).getByText('Showers and hygiene').getAttribute('lang')).toBeNull()
   })
 })

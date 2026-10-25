@@ -3,6 +3,9 @@ import { defineConfig } from 'vitest/config'
 export default defineConfig({
   resolve: { tsconfigPaths: true },
   test: {
+    // Database tests start a PGlite instance each, which is slow on a busy machine.
+    testTimeout: 20_000,
+    hookTimeout: 20_000,
     projects: [
       {
         extends: true,

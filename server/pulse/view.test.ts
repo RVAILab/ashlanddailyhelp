@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { PulseEvent, PulseReport } from '../../contract/steward/feed.ts'
-import { niceMax, pulseWeek } from './view.ts'
+import { heldEvents, niceMax, pulseWeek } from './view.ts'
 
 const dates = ['2026-10-19', '2026-10-20', '2026-10-21', '2026-10-22', '2026-10-23', '2026-10-24', '2026-10-25']
 const week = { start: dates[0] as string, end: dates[6] as string, dates }
@@ -44,14 +44,22 @@ describe('pulseWeek', () => {
     expect(view).not.toHaveProperty('total')
   })
 
-  it('shows an unknown amount as unknown, never zero, and a measured zero as zero', () => {
+  it('shows an unknown amount as unknown, never zero, and holds back a measured zero like any small figure', () => {
     const view = pulseWeek({
       week,
-      events: [event('a', 'meals', '2026-10-20'), event('z', 'encounters', '2026-10-21')],
-      reports: [report('a', { value: null, method: 'not_recorded' }), report('z', { value: 0 })],
+      events: [
+        event('a', 'meals', '2026-10-20'),
+        event('y', 'encounters', '2026-10-21'),
+        event('z', 'encounters', '2026-10-21'),
+      ],
+      reports: [
+        report('a', { value: null, method: 'not_recorded' }),
+        report('y', { value: 0 }),
+        report('z', { value: 0 }),
+      ],
     })
     expect(view.units.find(unit => unit.unit === 'meals')).toMatchObject({ total: null })
-    expect(view.units.find(unit => unit.unit === 'encounters')).toMatchObject({ total: 0 })
+    expect(view.units.find(unit => unit.unit === 'encounters')).toMatchObject({ total: null, smallOnly: true })
     expect(view.units[0]?.days[1]).toMatchObject({ amount: null, status: 'not_recorded' })
   })
 
@@ -83,16 +91,43 @@ describe('pulseWeek', () => {
     expect(view.units[0]?.days[2]?.amount).toBeNull()
   })
 
-  it('shows a day’s figure under 10 from a single provider as fewer than 10, but keeps the weekly total', () => {
+  it('never lets a provider’s daily figure under 10 be read, or worked out by subtraction', () => {
     const view = pulseWeek({
       week,
-      events: [event('a', 'meals', '2026-10-20'), event('b', 'meals', '2026-10-21'), event('c', 'meals', '2026-10-21')],
-      reports: [report('a', { value: 6 }), report('b', { value: 4 }), report('c', { value: 3 })],
+      events: [
+        event('a', 'meals', '2026-10-20', 'A'),
+        event('b', 'meals', '2026-10-21', 'B'),
+        event('c', 'meals', '2026-10-21', 'C'),
+        event('d', 'meals', '2026-10-22', 'D'),
+      ],
+      reports: [
+        report('a', { value: 6 }),
+        report('b', { value: 4 }),
+        report('c', { value: 50, method: 'estimated' }),
+        report('d', { value: 30 }),
+      ],
     })
-    const days = view.units[0]?.days ?? []
-    expect(days[1]).toMatchObject({ amount: null, fewerThanTen: true, status: 'reported' })
-    expect(days[2]).toMatchObject({ amount: 7, fewerThanTen: false })
-    expect(view.units[0]?.total).toBe(13)
+    const meals = view.units[0]
+    const days = meals?.days ?? []
+    expect(days[1]).toMatchObject({ amount: null, held: { kind: 'fewer' }, status: 'reported' })
+    expect(days[2]).toMatchObject({ amount: null, held: { kind: 'atLeast', atLeast: 50 } })
+    expect(days[3]).toMatchObject({ amount: 30, held: null })
+    expect(meals).toMatchObject({ total: null, atLeast: 80, smallOnly: false, split: false })
+  })
+
+  it('holds back the week total when any small figure is in it, giving only what is certain', () => {
+    const one = pulseWeek({
+      week,
+      events: [event('a', 'meals', '2026-10-20', 'A'), event('b', 'meals', '2026-10-21', 'B')],
+      reports: [report('a', { value: 6 }), report('b', { value: 40 })],
+    })
+    expect(one.units[0]).toMatchObject({ total: null, atLeast: 40, split: false })
+    const alone = pulseWeek({
+      week,
+      events: [event('a', 'meals', '2026-10-20', 'A')],
+      reports: [report('a', { value: 6 })],
+    })
+    expect(alone.units[0]).toMatchObject({ total: null, atLeast: null, smallOnly: true })
   })
 
   it('counts the events that saw unmet need, by reason', () => {
@@ -119,5 +154,26 @@ describe('niceMax', () => {
     expect(niceMax(124)).toBe(200)
     expect(niceMax(42)).toBe(50)
     expect(niceMax(500)).toBe(500)
+  })
+})
+
+describe('heldEvents', () => {
+  it('names every event whose provider’s figure for that day is under 10, for exports one row per event', () => {
+    const held = heldEvents({
+      week,
+      events: [
+        event('a', 'meals', '2026-10-20', 'A'),
+        event('b1', 'meals', '2026-10-21', 'B'),
+        event('b2', 'meals', '2026-10-21', 'B'),
+        event('c', 'meals', '2026-10-21', 'C'),
+      ],
+      reports: [
+        report('a', { value: 6 }),
+        report('b1', { value: 6 }),
+        report('b2', { value: 6 }),
+        report('c', { value: 3 }),
+      ],
+    })
+    expect([...held].sort()).toEqual(['a', 'c'])
   })
 })

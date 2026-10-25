@@ -9,13 +9,17 @@ export interface PulseData {
 export type Unit = PulseEvent['unit']
 export type DayStatus = 'reported' | 'partial' | 'not_recorded' | 'canceled' | 'awaiting' | 'none'
 
+// How a held-back amount is shown: "fewer than 10", "at least N" (the part that is certain), or only that small
+// figures are held back.
+export type Held = { kind: 'fewer' } | { kind: 'atLeast'; atLeast: number } | { kind: 'small' }
+
 export interface PulseDay {
   date: string
   scheduled: number
   reported: number
-  // The known amount, or null when unknown or held back as fewer than 10. Never 0 for unknown.
+  // The exact amount, or null when unknown or held back. Never 0 for unknown.
   amount: number | null
-  fewerThanTen: boolean
+  held: Held | null
   status: DayStatus
 }
 
@@ -23,7 +27,13 @@ export interface PulseUnit {
   unit: Unit
   scheduled: number
   measured: number
+  // The exact total, or null when unknown or held back; then atLeast is the certain part, if any.
   total: number | null
+  atLeast: number | null
+  // Every amount in the unit is a small figure, so nothing about it is shown.
+  smallOnly: boolean
+  // Whether the counted and estimated parts can be shown without isolating a small figure.
+  split: boolean
   counted: number
   estimated: number
   days: PulseDay[]
@@ -37,7 +47,8 @@ export interface PulseWeek {
 }
 
 const UNITS: Unit[] = ['meals', 'sessions', 'encounters']
-// Steward decision 14: a single provider's daily figure under 10 is shown as "fewer than 10".
+// Steward decision 14: a provider's daily figure under 10 is never shown. It must not be worked out by subtraction
+// either, so a day or a week that includes one shows only the part made of larger figures, never its exact sum.
 const SMALL = 10
 
 const hasAmount = (report: PulseReport): report is PulseReport & { value: number } =>
@@ -64,13 +75,29 @@ export function pulseWeek({ week, events, reports }: PulseData): PulseWeek {
       measured
         .filter(({ report }) => !method || report.method === method)
         .reduce((total, { report }) => total + report.value, 0)
+    // Each provider's figure for each day, the unit the small-number rule protects.
+    const providerDays = new Map<string, { date: string; value: number }>()
+    for (const { event, report } of measured) {
+      const key = `${event.date}\u0000${event.provider}`
+      providerDays.set(key, { date: event.date, value: (providerDays.get(key)?.value ?? 0) + report.value })
+    }
+    const figures = [...providerDays.values()]
+    const large = (list: typeof figures) => list.filter(figure => figure.value >= SMALL)
+    const total = (list: typeof figures) => list.reduce((sum, figure) => sum + figure.value, 0)
     const days = week.dates.map((date): PulseDay => {
       const that = scheduled.filter(event => event.date === date)
       const reported = that.flatMap(event => byEvent.get(event.id) ?? [])
       const withAmount = measured.filter(({ event }) => event.date === date)
-      const amount = withAmount.length ? withAmount.reduce((total, { report }) => total + report.value, 0) : null
-      const fewerThanTen =
-        amount !== null && amount < SMALL && new Set(withAmount.map(({ event }) => event.provider)).size === 1
+      const today = figures.filter(figure => figure.date === date)
+      const small = today.some(figure => figure.value < SMALL)
+      const certain = total(large(today))
+      const held: Held | null = !small
+        ? null
+        : total(today) < SMALL
+          ? { kind: 'fewer' }
+          : certain > 0
+            ? { kind: 'atLeast', atLeast: certain }
+            : { kind: 'small' }
       const status: DayStatus = !that.length
         ? 'none'
         : !reported.length
@@ -86,21 +113,28 @@ export function pulseWeek({ week, events, reports }: PulseData): PulseWeek {
         date,
         scheduled: that.length,
         reported: reported.length,
-        amount: fewerThanTen ? null : amount,
-        fewerThanTen,
+        amount: withAmount.length && !small ? total(today) : null,
+        held,
         status,
       }
     })
+    const anySmall = figures.some(figure => figure.value < SMALL)
+    const certain = total(large(figures))
     return [
       {
         unit,
         scheduled: scheduled.length,
         measured: measured.length,
-        total: measured.length ? sum() : null,
-        counted: sum('counted'),
-        estimated: sum('estimated'),
+        total: measured.length && !anySmall ? sum() : null,
+        atLeast: anySmall && certain > 0 ? certain : null,
+        smallOnly: anySmall && certain === 0,
+        split: measured.length > 0 && !anySmall,
+        counted: anySmall ? 0 : sum('counted'),
+        estimated: anySmall ? 0 : sum('estimated'),
         days,
-        scaleMax: niceMax(Math.max(0, ...days.map(day => day.amount ?? 0))),
+        scaleMax: niceMax(
+          Math.max(0, ...days.map(day => day.amount ?? (day.held?.kind === 'atLeast' ? day.held.atLeast : 0))),
+        ),
       },
     ]
   })
@@ -117,4 +151,18 @@ export function pulseWeek({ week, events, reports }: PulseData): PulseWeek {
       scheduled: new Set(events.map(event => event.provider)).size,
     },
   }
+}
+
+// Events whose provider's figure for that day is under 10: an export with a row per event must hold them back too.
+export function heldEvents({ events, reports }: PulseData): Set<string> {
+  const byEvent = new Map(reports.map(report => [report.eventId, report]))
+  const figures = new Map<string, number>()
+  const key = (event: PulseEvent) => `${event.unit}\u0000${event.date}\u0000${event.provider}`
+  for (const event of events) {
+    const report = byEvent.get(event.id)
+    if (report && hasAmount(report)) figures.set(key(event), (figures.get(key(event)) ?? 0) + report.value)
+  }
+  return new Set(
+    events.filter(event => (figures.get(key(event)) ?? Number.POSITIVE_INFINITY) < SMALL).map(event => event.id),
+  )
 }

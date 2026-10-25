@@ -918,6 +918,14 @@ main h1[tabindex="-1"]:focus-visible {
   display: block;
   height: 100%;
   background: var(--accent);
+  print-color-adjust: exact;
+}
+
+@media (forced-colors: active) {
+  .pulse-bar {
+    background: CanvasText;
+    forced-color-adjust: none;
+  }
 }
 
 .pulse-value {

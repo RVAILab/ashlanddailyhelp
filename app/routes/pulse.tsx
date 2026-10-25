@@ -1,6 +1,6 @@
 import { Link } from 'react-router'
 import { pulseWeeksList, storedPulseWeek } from '../../server/feed/pulse.ts'
-import { type DayStatus, pulseWeek, type Unit } from '../../server/pulse/view.ts'
+import { type DayStatus, type Held, pulseWeek, type Unit } from '../../server/pulse/view.ts'
 import { services } from '../context.ts'
 import { type Lang, langFromPath, locales, messagesFor } from '../i18n/index.ts'
 import { useI18n } from '../i18n/provider.tsx'
@@ -45,7 +45,10 @@ export async function loader({ url, context }: Route.LoaderArgs) {
         days: unit.days.map(day => ({
           ...day,
           label: dayLabel(lang, day.date),
-          percent: day.amount === null ? 0 : Math.round((day.amount / unit.scaleMax) * 100),
+          // A held-back day draws only its certain part, so the bar never shows more than can be read.
+          percent: Math.round(
+            ((day.amount ?? (day.held?.kind === 'atLeast' ? day.held.atLeast : 0)) / unit.scaleMax) * 100,
+          ),
         })),
       })),
     },
@@ -75,7 +78,11 @@ export default function Pulse({ loaderData }: Route.ComponentProps) {
                   {item.label}
                 </Link>
                 {item.revision !== null && item.revision > 1 && <span> ({t.pulse.revision(item.revision)})</span>}
-                {item.note && <p className="pulse-note">{t.pulse.correction(item.note)}</p>}
+                {item.corrections.map(correction => (
+                  <p key={correction.revision} className="pulse-note">
+                    {t.pulse.revision(correction.revision)}: {t.pulse.correction(correction.note)}
+                  </p>
+                ))}
               </li>
             ))}
           </ul>
@@ -116,11 +123,24 @@ export default function Pulse({ loaderData }: Route.ComponentProps) {
   )
 }
 
+// Each state has a shape as well as a word, so it never depends on colour; the shape is decoration for screen readers.
+const SHAPES: Record<DayStatus, string> = {
+  reported: '■',
+  partial: '◧',
+  not_recorded: '□',
+  canceled: '✕',
+  awaiting: '◌',
+  none: '–',
+}
+
 interface ChartUnit {
   unit: Unit
   scheduled: number
   measured: number
   total: number | null
+  atLeast: number | null
+  smallOnly: boolean
+  split: boolean
   counted: number
   estimated: number
   scaleMax: number
@@ -128,7 +148,7 @@ interface ChartUnit {
     date: string
     label: string
     amount: number | null
-    fewerThanTen: boolean
+    held: Held | null
     percent: number
     status: DayStatus
   }>
@@ -142,23 +162,39 @@ function UnitChart({ unit }: { unit: ChartUnit }) {
     <section aria-labelledby={heading} className="pulse-unit">
       <h2 id={heading}>{name}</h2>
       <p className="pulse-total">
-        {unit.total === null
-          ? t.pulse.unknownTotal
-          : t.pulse.total(unit.total, name.toLowerCase(), unit.counted, unit.estimated)}{' '}
+        {unit.total !== null
+          ? unit.split
+            ? t.pulse.total(unit.total, name.toLowerCase(), unit.counted, unit.estimated)
+            : t.pulse.totalOnly(unit.total, name.toLowerCase())
+          : unit.atLeast !== null
+            ? t.pulse.atLeastTotal(unit.atLeast, name.toLowerCase())
+            : unit.smallOnly
+              ? t.pulse.smallTotal
+              : t.pulse.unknownTotal}{' '}
         {t.pulse.from(unit.measured, unit.scheduled)}
       </p>
       <p className="pulse-scale">{t.pulse.scale(unit.scaleMax)}</p>
       <ol className="pulse-days">
         {unit.days.map(day => {
-          const amount = day.fewerThanTen ? t.pulse.fewer : day.amount === null ? '' : String(day.amount)
+          const amount =
+            day.held?.kind === 'fewer'
+              ? t.pulse.fewer
+              : day.held?.kind === 'atLeast'
+                ? t.pulse.atLeast(day.held.atLeast)
+                : day.held?.kind === 'small'
+                  ? t.pulse.small
+                  : day.amount === null
+                    ? ''
+                    : String(day.amount)
           return (
             <li key={day.date}>
               <span className="pulse-day">{day.label}</span>
               <span className="pulse-track" aria-hidden="true">
-                {day.amount !== null && <span className="pulse-bar" style={{ width: `${day.percent}%` }} />}
+                {day.percent > 0 && <span className="pulse-bar" style={{ width: `${day.percent}%` }} />}
               </span>
               <span className="pulse-value">
-                {amount && <strong>{amount}</strong>} {t.pulse.status[day.status]}
+                {amount && <strong>{amount}</strong>} <span aria-hidden="true">{SHAPES[day.status]}</span>{' '}
+                {t.pulse.status[day.status]}
               </span>
             </li>
           )

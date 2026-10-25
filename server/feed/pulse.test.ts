@@ -56,8 +56,15 @@ describe('Pulse ingest', () => {
     await refreshPublishedWeeks(deps(db, feedHost().fetch))
     expect(host.requests.map(request => request.url)).toEqual(['https://feed.example.org/weeks/2026-10-19-r1.json'])
     expect(await pulseWeeksList(db)).toEqual([
-      { weekStart: '2026-10-26', live: true, revision: null, note: null, publishedAt: null },
-      { weekStart: '2026-10-19', live: false, revision: 1, note: null, publishedAt: '2026-10-26T16:00:00.000Z' },
+      { weekStart: '2026-10-26', live: true, revision: null, note: null, publishedAt: null, corrections: [] },
+      {
+        weekStart: '2026-10-19',
+        live: false,
+        revision: 1,
+        note: null,
+        publishedAt: '2026-10-26T16:00:00.000Z',
+        corrections: [],
+      },
     ])
     expect((await storedPulseWeek(db, '2026-10-19'))?.data.reports.length).toBeGreaterThan(0)
   })
@@ -76,5 +83,35 @@ describe('Pulse ingest', () => {
     const gone = await refreshFeedFile(pulseFile, deps(db, feedHost(new Response('', { status: 404 })).fetch))
     expect(gone.result).toBe('absent')
     expect(await storedPulseWeek(db, null)).toBeNull()
+  })
+
+  it('keeps a week’s revision until the correction replacing it is stored, and lists every correction note', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {})
+    await refreshFeedFile(pulseFile, deps(db, feedHost(json(live())).fetch))
+    await refreshPublishedWeeks(deps(db, feedHost(json(sample('weeks/2026-10-19-r1.json'))).fetch))
+    const second = {
+      ...published,
+      revision: 2,
+      note: 'A meal count was entered twice.',
+      path: 'weeks/2026-10-19-r2.json',
+    }
+    await refreshFeedFile(pulseFile, deps(db, feedHost(json({ ...live(), publishedWeeks: [published, second] })).fetch))
+    await refreshPublishedWeeks(deps(db, feedHost(new Response('', { status: 503 })).fetch))
+    expect((await storedPulseWeek(db, '2026-10-19'))?.revision).toBe(1)
+    const r2 = { ...sample('weeks/2026-10-19-r1.json'), revision: 2, note: second.note }
+    await refreshPublishedWeeks(deps(db, feedHost(json(r2)).fetch))
+    expect((await storedPulseWeek(db, '2026-10-19'))?.revision).toBe(2)
+    const listed = (await pulseWeeksList(db)).find(week => week.weekStart === '2026-10-19')
+    expect(listed?.corrections).toEqual([{ revision: 2, note: 'A meal count was entered twice.' }])
+    vi.restoreAllMocks()
+  })
+
+  it('refuses a week file that isn’t the revision listed for it', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {})
+    await refreshFeedFile(pulseFile, deps(db, feedHost(json(live())).fetch))
+    const wrong = { ...sample('weeks/2026-10-19-r1.json'), revision: 3, note: 'Another revision.' }
+    await refreshPublishedWeeks(deps(db, feedHost(json(wrong)).fetch))
+    expect(await storedPulseWeek(db, '2026-10-19')).toBeNull()
+    vi.restoreAllMocks()
   })
 })

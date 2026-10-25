@@ -1,4 +1,5 @@
 import { storedPulseWeek } from '../../server/feed/pulse.ts'
+import { heldEvents } from '../../server/pulse/view.ts'
 import { services } from '../context.ts'
 import { weekParam } from '../lib/pulse-week.ts'
 import type { Route } from './+types/pulse-csv'
@@ -25,12 +26,13 @@ function cell(value: string): string {
 }
 
 // One row per scheduled event. Every row names the dataset, so fictional numbers stay labelled wherever the file goes;
-// a single provider's figure under 10 reads "fewer than 10", as on the page.
+// an amount from a provider's daily figure under 10 is held back, as on the page.
 export async function loader({ url, context }: Route.LoaderArgs) {
   const db = context.get(services).database()
   const week = db ? await storedPulseWeek(db, weekParam(url.searchParams)) : null
   if (!week) return new Response('No Pulse week here.', { status: 404 })
   const reports = new Map(week.data.reports.map(report => [report.eventId, report]))
+  const held = heldEvents(week.data)
   const rows = week.data.events.map(event => {
     const report = reports.get(event.id)
     const value = report?.value ?? null
@@ -44,7 +46,7 @@ export async function loader({ url, context }: Route.LoaderArgs) {
       event.unit,
       report?.outcome ?? 'awaiting_report',
       report?.method ?? '',
-      value === null ? '' : value < 10 ? 'fewer than 10' : String(value),
+      value === null ? '' : held.has(event.id) ? 'held back: a figure under 10' : String(value),
       report?.unmet ?? '',
       report?.reasons.join(' ') ?? '',
     ]

@@ -3,8 +3,8 @@ metadata:
   created_at:   2026-10-25T11:06:46-07:00
   activated_at: 2026-10-25T15:55:22-07:00
   planned_at:   2026-10-25T15:55:22-07:00
-  finished_at:
-  updated_at:   2026-10-25T15:55:22-07:00
+  finished_at:  2026-10-25T16:18:43-07:00
+  updated_at:   2026-10-25T16:18:43-07:00
 -->
 
 # Story: Community Pulse
@@ -66,3 +66,35 @@ Tests:
 - `server/feed/pulse.test.ts`: stores the live week; fetches each published week once; a 404 clears the rows.
 - A loader test and a view test for `/pulse`, and a CSV test with the fictional label.
 
+
+## Review
+
+Reviewed 2026-10-25 at `043d048` plus fixes. A subagent did an independent read.
+
+| Criterion | Verdict | Evidence |
+| --- | --- | --- |
+| Pulse page from `pulse.json` and the frozen `weeks/` files, newest first, with correction notes | ✅ | `server/feed/pulse.ts` (`refreshPublishedWeeks`, `pulseWeeksList` with every revision's note), `app/routes/pulse.tsx` |
+| Units never added; unknown never zero; canceled and unknown carry no amount | ✅ | `server/pulse/view.ts`, `view.test.ts`. The CSV leaves unknown values blank. |
+| Under 10 shows as "fewer than 10"; youth-serving counts never show | ✅ | Small numbers: see below. Youth-serving: the steward leaves those reports out of `pulse.json` at single-provider level, and the feed can't tell them apart, so the steward is the one place that rule lives. |
+| Fictional data labelled everywhere, CSV included | ✅ | The page notice, and `dataset` in every CSV row (`app/routes/pulse-csv.ts`) |
+| Every state a shape and a word; bars on a labelled linear scale from zero | ✅ | `SHAPES` and the status words, "Bars run from 0 to N" with the axis, and `niceMax` |
+| The live week labelled as such | ✅ | `pulse.tsx` |
+
+These findings were fixed:
+
+- **Small numbers could be worked out by subtraction.** Examples: the week total minus the other days, or the page's day total minus a CSV row. The rule now protects each provider's daily figure.
+  - A day or a week that includes a figure under 10 shows only what is certain: "fewer than 10", "at least N" (the larger figures), or "small figures held back".
+  - The counted and estimated split is hidden then.
+  - The CSV holds back those events.
+  - This is stricter than decision 14, which lets weekly totals show. It has to be, or one small figure is always recoverable.
+  - A measured zero is a figure under 10 too, so there is no separate "measured zero" status.
+- **A correction could make a week disappear.** The old revision was deleted before the new one was fetched. Now it is replaced only after the new revision is stored.
+- **A week file wasn't checked against its listing.** A file that isn't the revision listed for it is now refused.
+- **Earlier revisions' notes weren't listed.** Every correction note is listed now.
+- **Accessibility.** The status shapes are hidden from screen readers. Bars stay visible in forced colours and in print.
+
+## Learnings
+
+- **Went well:** porting the legacy `core.js` math into a pure function kept the steward's contract ("the arrays core.js takes") true and easy to test.
+- **Surprising:** a "fewer than 10" rule applied to one number isn't a rule at all once totals, splits and exports sit next to it. Small-number protection has to be about what can be derived, not what is displayed.
+- **Next time:** for any privacy threshold, list every place the protected figure feeds into (totals, splits, scales, exports) and test subtraction across them.

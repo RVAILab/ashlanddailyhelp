@@ -9,7 +9,7 @@ const day = (date: string, label: string, extra = {}) => ({
   scheduled: 0,
   reported: 0,
   amount: null,
-  fewerThanTen: false,
+  held: null,
   percent: 0,
   status: 'none',
   ...extra,
@@ -26,6 +26,7 @@ const data = {
       label: 'This week so far',
       href: '/pulse',
       current: true,
+      corrections: [],
     },
     {
       weekStart: '2026-10-19',
@@ -33,6 +34,7 @@ const data = {
       revision: 2,
       note: 'A meal count was entered twice.',
       publishedAt: '2026-10-27T16:00:00.000Z',
+      corrections: [{ revision: 2, note: 'A meal count was entered twice.' }],
       label: 'Week of Mon, Oct 19',
       href: '/pulse?week=2026-10-19',
       current: false,
@@ -53,12 +55,15 @@ const data = {
         scheduled: 3,
         measured: 1,
         total: 124,
+        atLeast: null,
+        smallOnly: false,
+        split: true,
         counted: 124,
         estimated: 0,
         scaleMax: 200,
         days: [
           day('2026-10-26', 'Mon, Oct 26', { scheduled: 1, reported: 1, amount: 124, percent: 62, status: 'reported' }),
-          day('2026-10-27', 'Tue, Oct 27', { scheduled: 1, reported: 1, fewerThanTen: true, status: 'reported' }),
+          day('2026-10-27', 'Tue, Oct 27', { scheduled: 1, reported: 1, held: { kind: 'fewer' }, status: 'reported' }),
           day('2026-10-28', 'Wed, Oct 28', { scheduled: 1, status: 'awaiting' }),
         ],
       },
@@ -76,9 +81,10 @@ describe('/pulse', () => {
     expect(within(meals).getByText(/124 meals: 124 counted, 0 estimated\./)).toBeDefined()
     expect(within(meals).getByText('Bars run from 0 to 200.')).toBeDefined()
     expect(within(meals).getByText('Fewer than 10')).toBeDefined()
-    expect(within(meals).getByText('◌ Awaiting a report')).toBeDefined()
-    expect(within(meals).getAllByText('■ Amount reported')).toHaveLength(2)
-    expect(screen.getByText('Correction: A meal count was entered twice.')).toBeDefined()
+    expect(within(meals).getByText('Awaiting a report')).toBeDefined()
+    expect(within(meals).getAllByText('Amount reported')).toHaveLength(2)
+    expect(within(meals).getAllByText('■')[0]?.getAttribute('aria-hidden')).toBe('true')
+    expect(screen.getByText('revision 2: Correction: A meal count was entered twice.')).toBeDefined()
     expect(screen.getByRole('link', { name: 'This week so far' }).getAttribute('aria-current')).toBe('page')
     expect(screen.getByText('Ran out of supplies: 1 event')).toBeDefined()
     expect(handle).toEqual({ hydrate: false })

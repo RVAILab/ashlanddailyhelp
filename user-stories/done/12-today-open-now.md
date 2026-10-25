@@ -3,8 +3,8 @@ metadata:
   created_at:   2026-10-25T11:06:46-07:00
   activated_at: 2026-10-25T14:15:10-07:00
   planned_at:   2026-10-25T14:15:36-07:00
-  finished_at:
-  updated_at:   2026-10-25T14:15:36-07:00
+  finished_at:  2026-10-25T14:24:11-07:00
+  updated_at:   2026-10-25T14:24:11-07:00
 -->
 
 # Story: Today: What's Open Now
@@ -51,3 +51,26 @@ None beyond the optional `openings` inside the stored listing.
 ### Tests
 
 `group.test.ts` (each group, overnight windows, Pacific day boundaries, conflict and cancellations), contract tests (openings accepted, other unknown fields still dropped, steward checks still applied), route tests, and an end-to-end visit.
+
+## Review
+
+Reviewed 2026-10-25 at `7d977e8` by an independent agent; findings fixed in the next commit unless noted.
+
+| Criterion | Verdict | Evidence |
+| --- | --- | --- |
+| Four groups in Pacific time from structured hours | ✅ | `server/today/group.ts`, with tests for overnight windows and daylight saving |
+| Entries: name, kind, today's hours, closes/opens, address, phone | ✅ | All of today's windows listed; a window's own location shown |
+| No structured hours, never open | ✅ | Also for stale windows, conflicts and may-be-canceled listings or windows |
+| Status labels from the feed | ✅ | Shared `listingLabels`; window notes shown |
+| Filters in the URL | ✅ | Kind of help and area |
+| Worked-out time and regrouping | ✅ | Server-clock timer |
+| Word and shape per status | ✅ | Shapes marked as decoration for screen readers |
+| Offline | ⚠️ | With `15-offline-pwa` |
+
+Fixed: may-be-canceled windows counted as open; window locations were dropped; stale windows read as closed; only one window shown; text sorting across offsets; a timer that could loop on a wrong phone clock. Left: one malformed opening rejects the whole listings file (as the steward's strictness already does for other fields), and route stops are not shown yet.
+
+## Learnings
+
+- Went well: building against the proposed `openings` with the honest default ("Hours not confirmed") means the page is correct today and fills in when the steward ships #39.
+- Surprising: the client and server clocks disagreeing is enough to turn a polite refresh timer into a request loop.
+- Next time: compute every client delay from server-provided times.

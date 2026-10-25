@@ -4,7 +4,7 @@ metadata:
   activated_at: 2026-10-25T12:14:19-07:00
   planned_at:   2026-10-25T12:14:19-07:00
   finished_at:
-  updated_at:   2026-10-25T12:14:19-07:00
+  updated_at:   2026-10-25T12:17:04-07:00
 -->
 
 # Story: Request an Alerts Feed from the Steward
@@ -24,6 +24,7 @@ SO THAT /today and the homepage can show them before someone travels
 
 ## Notes
 
+- Filed as [RVAILab/daily-help-steward#41](https://github.com/RVAILab/daily-help-steward/issues/41) on 2026-10-25, aligned with #39 and #40 (one 1.4 release).
 - Blocks `14-today-alerts`.
 - The steward already has a `city_alert` source type and a cold-weather fixture (`fixtures/alerts/cold-weather-2026-10-25.html`).
 

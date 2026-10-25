@@ -4,7 +4,7 @@ metadata:
   activated_at:
   planned_at:
   finished_at:
-  updated_at:   2026-10-25T11:06:46-07:00
+  updated_at:   2026-10-25T13:03:56-07:00
 -->
 
 # Story: Machine-Translate Listing Text
@@ -26,6 +26,7 @@ SO THAT I understand what a service offers and what it requires
 
 ## Notes
 
+- From `07-browse-and-search`: searching in Spanish needs the translated text in the search. Translations live in their own table (keyed by a hash of the English), which a generated column on `listings` can't read, so search will match against a Spanish `tsvector` kept on the translations table (or rebuilt into a listings column when translations are stored) and `searchListings` will query both. Accent-insensitive matching (`unaccent`, wrapped as an immutable function) belongs here too.
 - Decided Oct 25: this app translates; the steward sends English.
 - Use Claude with an API key held as a Cloudflare secret.
 - Risk: a mistranslated requirement (for example "ID required") misleads. Consider a glossary of fixed terms.

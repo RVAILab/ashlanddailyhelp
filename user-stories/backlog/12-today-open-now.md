@@ -4,7 +4,7 @@ metadata:
   activated_at:
   planned_at:
   finished_at:
-  updated_at:   2026-10-25T11:35:21-07:00
+  updated_at:   2026-10-25T13:03:56-07:00
 -->
 
 # Story: Today: What's Open Now
@@ -28,6 +28,7 @@ SO THAT I know where I can go next
 
 ## Notes
 
+- Reuse `app/lib/listing-labels.ts` and `app/components/listing-status.tsx` from `07-browse-and-search`, so `/today` and `/resources` show the same evidence labels.
 - Blocked by `02-request-structured-hours`.
 
 ## Implementation Plan

@@ -4,7 +4,7 @@ metadata:
   activated_at:
   planned_at:
   finished_at:
-  updated_at:   2026-10-25T11:06:46-07:00
+  updated_at:   2026-10-25T13:03:56-07:00
 -->
 
 # Story: Installable Offline App
@@ -28,6 +28,7 @@ SO THAT I can still find help when I'm offline
 
 ## Notes
 
+- From `07-browse-and-search`: offline, search runs on the device over the cached listings (the same words, kind of help and area filters as `/resources`).
 - The old site's `sw.js` shows the pattern: network first, last good copy offline, version-named caches.
 
 ## Implementation Plan

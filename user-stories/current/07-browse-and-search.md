@@ -34,7 +34,7 @@ A `/resources` page rendered on the server: a plain GET form (words, category, a
 
 ### Steps
 
-1. Migration: a generated `search` `tsvector` column on `listings` over name, provider, description and tags (weighted in that order), with a GIN index; and `categories` and `places` (area plus coverage) as generated text arrays for filtering.
+1. Migration: a generated `search` `tsvector` column on `listings` over name, provider, description and tags (name, then provider, then description and tags), with a GIN index. Filtering by category and area uses `jsonb` operators on `data` directly, so no array columns are needed. (Changed in review: a second, unstemmed `words` column for part-words and common words.)
 2. `server/listings/search.ts`: `searchListings(db, { query, category, area }, now)` returns current listings (not past `endsAt`) in feed order, or by rank when there are words; words become prefix terms (`show` finds "showers"), and punctuation can't break the query. `listingAreas(db)` gives the places the feed names, Ashland first, then county-wide, then the rest.
 3. `app/components/listing-status.tsx`: the evidence labels, each with a word and a shape: "Schedule needs checking" (`conflict`), "Not yet confirmed by provider" (`unconfirmed`), the `mayBeCanceled` note as written, "Ends …" (`endsAt`), "Last confirmed …" (`lastConfirmed`), and the `provenanceLabel` or "Source reviewed · Oct 23".
 4. `app/components/listing-card.tsx`: name, provider, categories, area, the prose schedule, address, a tap-to-call phone, and the status labels.
@@ -43,7 +43,7 @@ A `/resources` page rendered on the server: a plain GET form (words, category, a
 
 ### Data model
 
-Generated columns on `listings`: `search` (`tsvector`, GIN index), `categories` (`text[]`), `places` (`text[]`). No change to ingest: Postgres keeps them in step with `data`.
+Generated columns on `listings`: `search` (stemmed English) and `words` (unstemmed), both `tsvector` with GIN indexes. No change to ingest: Postgres keeps them in step with `data`.
 
 ### Tests
 

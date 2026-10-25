@@ -14,11 +14,13 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "e2e": "playwright test",
-    "db:generate": "drizzle-kit generate",
+    "db:generate": "scripts/db-generate.sh",
     "db:migrate": "node --env-file-if-exists=.dev.vars scripts/migrate.ts",
     "deploy": "react-router build && wrangler deploy",
     "db:start": "scripts/dev-db.sh start",
-    "db:stop": "scripts/dev-db.sh stop"
+    "db:stop": "scripts/dev-db.sh stop",
+    "feed:ingest": "node --env-file-if-exists=.dev.vars scripts/ingest.ts",
+    "feed:sync": "scripts/sync-steward.sh"
   },
   "dependencies": {
     "drizzle-orm": "^0.45.4",
@@ -26,7 +28,8 @@
     "postgres": "^3.4.9",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
-    "react-router": "^8.5.0"
+    "react-router": "^8.5.0",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.6.3",

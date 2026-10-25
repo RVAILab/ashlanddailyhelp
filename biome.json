@@ -6,7 +6,16 @@
     "useIgnoreFile": true
   },
   "files": {
-    "includes": ["**", "!legacy", "!user-stories", "!.claude", "!db/migrations", "!**/*.md"]
+    "includes": [
+      "**",
+      "!legacy",
+      "!user-stories",
+      "!.claude",
+      "!db/migrations",
+      "!**/*.md",
+      "!contract/steward",
+      "!test/fixtures"
+    ]
   },
   "formatter": {
     "indentStyle": "space",

@@ -42,7 +42,9 @@ Chosen in `01-cloudflare-app-setup`:
 - Biome for lint and format (single quotes, no semicolons, 120 columns); TypeScript 7 strict with `noUncheckedIndexedAccess`.
 - Production Postgres: Neon, set up once by hand (README, "Production setup"). The app deploys to the `ashlanddailyhelp-app` Worker; the static site keeps the `ashlanddailyhelp` Worker.
 
-Commands: `npm run dev`, `npm test`, `npm run e2e`, `npm run lint`, `npm run typecheck`, `npm run db:start` (a private Postgres on port 5433), `npm run db:generate`, `npm run db:migrate`. Local secrets go in `.dev.vars` (see `.dev.vars.example`).
+The feed: `server/feed/` refreshes each feed file into Postgres (`refreshFeedFile` with a per-file spec such as `listingsFile`), run every 5 minutes by the Worker's `scheduled` handler from `FEED_BASE_URL`. `contract/steward/` is a verbatim copy of the steward's zod contract and `test/fixtures/feed-sample/` of its sample feed; refresh both with `npm run feed:sync`, never edit them by hand. `server/feed/contract.ts` loosens the steward's strict schemas so unknown fields are dropped rather than rejected. Read listings through `currentListings(db, now)`, which hides listings past `endsAt`.
+
+Commands: `npm run dev`, `npm test`, `npm run e2e`, `npm run lint`, `npm run typecheck`, `npm run db:start` (a private Postgres on port 5433), `npm run db:generate`, `npm run db:migrate`, `npm run feed:ingest`, `npm run feed:sync`. Local secrets go in `.dev.vars` (see `.dev.vars.example`).
 
 ## How we work
 

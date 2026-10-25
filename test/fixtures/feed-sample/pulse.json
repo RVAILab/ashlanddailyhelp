@@ -1,0 +1,78 @@
+{
+  "schemaVersion": "1.3",
+  "generatedAt": "2026-10-25T19:00:00.000Z",
+  "dataset": "FICTIONAL_DEMONSTRATION",
+  "week": {
+    "start": "2026-10-19",
+    "end": "2026-10-25",
+    "dates": [
+      "2026-10-19",
+      "2026-10-20",
+      "2026-10-21",
+      "2026-10-22",
+      "2026-10-23",
+      "2026-10-24",
+      "2026-10-25"
+    ]
+  },
+  "events": [
+    {
+      "id": "demo-meal-a",
+      "provider": "Sample meal team A",
+      "service": "Community meal",
+      "unit": "meals",
+      "date": "2026-10-20"
+    },
+    {
+      "id": "demo-meal-b",
+      "provider": "Sample meal team B",
+      "service": "Community meal",
+      "unit": "meals",
+      "date": "2026-10-21"
+    },
+    {
+      "id": "demo-shower",
+      "provider": "Sample hygiene team",
+      "service": "Shower service",
+      "unit": "sessions",
+      "date": "2026-10-22"
+    },
+    {
+      "id": "demo-navigation",
+      "provider": "Sample navigation team",
+      "service": "Resource navigation",
+      "unit": "encounters",
+      "date": "2026-10-23"
+    }
+  ],
+  "reports": [
+    {
+      "eventId": "demo-meal-a",
+      "outcome": "completed",
+      "value": 124,
+      "method": "counted",
+      "unmet": "observed",
+      "reasons": [
+        "supplies"
+      ]
+    },
+    {
+      "eventId": "demo-meal-b",
+      "outcome": "completed",
+      "value": 96,
+      "method": "estimated",
+      "unmet": "not_assessed",
+      "reasons": []
+    },
+    {
+      "eventId": "demo-shower",
+      "outcome": "completed",
+      "value": 42,
+      "method": "counted",
+      "unmet": "none_observed",
+      "reasons": []
+    }
+  ],
+  "snapshots": [],
+  "publishedWeeks": []
+}

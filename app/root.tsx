@@ -1,6 +1,13 @@
 import { isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router'
+import { listingsFeedHeader } from '../server/feed/listings.ts'
 import type { Route } from './+types/root'
 import './app.css'
+import { FeedFooter } from './components/feed-footer.tsx'
+import { services } from './context.ts'
+
+export async function loader({ context }: Route.LoaderArgs) {
+  return { feed: await listingsFeedHeader(context.get(services).database()) }
+}
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -20,8 +27,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
   )
 }
 
-export default function App() {
-  return <Outlet />
+export default function App({ loaderData }: Route.ComponentProps) {
+  return (
+    <>
+      <Outlet />
+      <FeedFooter feed={loaderData.feed} />
+    </>
+  )
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {

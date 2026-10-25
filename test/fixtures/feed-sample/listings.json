@@ -1,0 +1,357 @@
+{
+  "schemaVersion": "1.3",
+  "generatedAt": "2026-10-25T19:00:00.000Z",
+  "dataset": "FICTIONAL_DEMONSTRATION",
+  "listings": [
+    {
+      "id": "ohra-navigation",
+      "name": "A little help with the next step",
+      "provider": "OHRA Resource Center",
+      "categories": [
+        "essentials",
+        "housing",
+        "health"
+      ],
+      "area": "Ashland",
+      "coverage": [
+        "Ashland"
+      ],
+      "description": "Resource navigators can help connect you with housing, benefits, identification, mail and other support.",
+      "address": "2350 Ashland Street, Ashland",
+      "schedule": "Website lists weekdays, 9 a.m.–2 p.m. Confirm before visiting.",
+      "access": "Call to ask about a navigator appointment.",
+      "requirements": "Requirements vary by service; ask a navigator.",
+      "cost": "Not confirmed",
+      "phone": "541-631-2235",
+      "source": "https://ohrahelps.org/get-help/program-services/",
+      "tags": [
+        "Navigation",
+        "Documents",
+        "Benefits"
+      ],
+      "reviewedDate": "2026-10-23",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from ohrahelps.org"
+    },
+    {
+      "id": "access-pantries",
+      "name": "Groceries for the week ahead",
+      "provider": "ACCESS food pantry network",
+      "categories": [
+        "food"
+      ],
+      "area": "Jackson County",
+      "coverage": [
+        "Ashland",
+        "Medford",
+        "Jackson County"
+      ],
+      "description": "Find a pantry in the county through ACCESS. Each location has its own schedule.",
+      "address": "Multiple locations; use the provider’s pantry finder.",
+      "schedule": "Check the provider’s current pantry list and closure updates.",
+      "access": "Choose a pantry on the provider’s website.",
+      "requirements": "The website describes a basic registration form. Check eligibility with the pantry.",
+      "cost": "Check the pantry’s current guidance",
+      "phone": null,
+      "source": "https://accesshelps.org/food-pantries/",
+      "tags": [
+        "Groceries",
+        "Pantry finder"
+      ],
+      "reviewedDate": "2026-10-23",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from accesshelps.org"
+    },
+    {
+      "id": "ohra-showers",
+      "name": "A shower and a fresh start",
+      "provider": "OHRA Laundry & Shower Trailer",
+      "categories": [
+        "hygiene"
+      ],
+      "area": "Ashland",
+      "coverage": [
+        "Ashland"
+      ],
+      "description": "Shower and laundry services at the OHRA Center.",
+      "address": "2350 Ashland Street, Ashland",
+      "schedule": "Website lists Tuesday and Thursday, 10 a.m.–2 p.m. Confirm before visiting.",
+      "access": "Website describes first-come, first-served access.",
+      "requirements": "What to bring has not been confirmed.",
+      "cost": "Not confirmed",
+      "phone": "541-631-2235",
+      "source": "https://ohrahelps.org/get-help/program-services/",
+      "tags": [
+        "Showers",
+        "Laundry"
+      ],
+      "reviewedDate": "2026-10-23",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from ohrahelps.org"
+    },
+    {
+      "id": "uncle-foods",
+      "name": "A seat at the community table",
+      "provider": "Uncle Food’s Diner · Peace House",
+      "categories": [
+        "food"
+      ],
+      "area": "Ashland",
+      "coverage": [
+        "Ashland"
+      ],
+      "description": "A free community meal organized by Peace House in Ashland.",
+      "address": "Website names Trinity Episcopal Church Parish Hall; alley entrance behind the church.",
+      "schedule": "Tuesday meal. The provider page and calendar show different end times; confirm directly.",
+      "access": "Check the current meal details with Peace House.",
+      "requirements": "Additional requirements have not been confirmed.",
+      "cost": "Free, according to the provider’s website",
+      "phone": "541-482-9625",
+      "source": "https://peacehouse.net/uncle-foods-diner/",
+      "tags": [
+        "Community meal",
+        "Schedule needs checking"
+      ],
+      "conflict": true,
+      "reviewedDate": "2026-10-23",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from peacehouse.net"
+    },
+    {
+      "id": "ohra-shelter",
+      "name": "Talk through shelter options",
+      "provider": "OHRA Shelter navigation",
+      "categories": [
+        "housing"
+      ],
+      "area": "Ashland",
+      "coverage": [
+        "Ashland"
+      ],
+      "description": "Start the shelter application process with an OHRA resource navigator. Availability is not known here.",
+      "address": "Resource Center: 2350 Ashland Street, Ashland",
+      "schedule": "Arrange an appointment with a navigator.",
+      "access": "A navigator appointment starts the application process; admission is not guaranteed.",
+      "requirements": "Website describes an adult shelter. Households with children can ask a navigator about other options.",
+      "cost": "Not confirmed",
+      "phone": "541-631-2235",
+      "source": "https://ohrahelps.org/get-help/program-services/",
+      "tags": [
+        "Shelter navigation",
+        "Appointment"
+      ],
+      "reviewedDate": "2026-10-23",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from ohrahelps.org"
+    },
+    {
+      "id": "jcls-resources",
+      "name": "Find your way with library support",
+      "provider": "Jackson County Library District",
+      "categories": [
+        "essentials",
+        "housing",
+        "health"
+      ],
+      "area": "Jackson County",
+      "coverage": [
+        "Ashland",
+        "Medford",
+        "Jackson County"
+      ],
+      "description": "The community resources team offers referrals for food, housing, benefits and health care connections.",
+      "address": "Contact the community resources team through the library website.",
+      "schedule": "Team availability has not been confirmed.",
+      "access": "Use the community resources contact form on the provider’s website.",
+      "requirements": "Not confirmed",
+      "cost": "Not confirmed",
+      "phone": null,
+      "source": "https://jcls.org/services/community-resources/",
+      "tags": [
+        "Referrals",
+        "Benefits",
+        "Library support"
+      ],
+      "reviewedDate": "2026-10-23",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from jcls.org"
+    },
+    {
+      "id": "rogue-retreat",
+      "name": "Explore supportive shelter programs",
+      "provider": "Rogue Retreat",
+      "categories": [
+        "housing"
+      ],
+      "area": "Medford",
+      "coverage": [
+        "Medford",
+        "Jackson County"
+      ],
+      "description": "Learn about community living programs and ask the provider about intake and eligibility.",
+      "address": "Program locations vary; contact the provider before traveling.",
+      "schedule": "Intake hours have not been confirmed.",
+      "access": "Use the provider’s Get Help information.",
+      "requirements": "Program-specific; confirm directly.",
+      "cost": "Not confirmed",
+      "phone": null,
+      "source": "https://rogueretreat.org/community-living/",
+      "tags": [
+        "Shelter programs",
+        "Intake information"
+      ],
+      "reviewedDate": "2026-10-23",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from rogueretreat.org"
+    },
+    {
+      "id": "211-directory",
+      "name": "More places to turn",
+      "provider": "211info resource database",
+      "categories": [
+        "essentials",
+        "food",
+        "housing",
+        "health"
+      ],
+      "area": "Oregon",
+      "coverage": [
+        "Ashland",
+        "Medford",
+        "Jackson County"
+      ],
+      "description": "Search a broader directory of community resources and services.",
+      "address": "Online resource search",
+      "schedule": "Individual service hours vary.",
+      "access": "Open the resource database to search.",
+      "requirements": "Each listed service has its own requirements.",
+      "cost": "Service costs vary",
+      "phone": null,
+      "source": "https://www.211info.org/resource-database/",
+      "tags": [
+        "Resource search",
+        "Regional support"
+      ],
+      "reviewedDate": "2026-10-23",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from 211info.org"
+    },
+    {
+      "id": "sample-unconfirmed-meal",
+      "name": "Sample meal found only on a flyer",
+      "provider": "Sample meal team (fictional)",
+      "categories": [
+        "food"
+      ],
+      "area": "Ashland",
+      "coverage": [
+        "Ashland"
+      ],
+      "description": "A free community meal organized by Peace House in Ashland.",
+      "address": "Website names Trinity Episcopal Church Parish Hall; alley entrance behind the church.",
+      "schedule": "Tuesday meal. The provider page and calendar show different end times; confirm directly.",
+      "access": "Check the current meal details with Peace House.",
+      "requirements": "Additional requirements have not been confirmed.",
+      "cost": "Free, according to the provider’s website",
+      "phone": "541-482-9625",
+      "source": "https://peacehouse.net/uncle-foods-diner/",
+      "tags": [
+        "FICTIONAL_DEMONSTRATION"
+      ],
+      "conflict": false,
+      "reviewedDate": "2026-10-23",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from the Jackson County resource packet, page 5",
+      "unconfirmed": true
+    },
+    {
+      "id": "sample-may-be-canceled",
+      "name": "Sample meal reported canceled tonight",
+      "provider": "Sample meal team (fictional)",
+      "categories": [
+        "food"
+      ],
+      "area": "Ashland",
+      "coverage": [
+        "Ashland"
+      ],
+      "description": "A free community meal organized by Peace House in Ashland.",
+      "address": "Website names Trinity Episcopal Church Parish Hall; alley entrance behind the church.",
+      "schedule": "Tuesday meal. The provider page and calendar show different end times; confirm directly.",
+      "access": "Check the current meal details with Peace House.",
+      "requirements": "Additional requirements have not been confirmed.",
+      "cost": "Free, according to the provider’s website",
+      "phone": "541-482-9625",
+      "source": "https://peacehouse.net/uncle-foods-diner/",
+      "tags": [
+        "FICTIONAL_DEMONSTRATION"
+      ],
+      "conflict": false,
+      "reviewedDate": "2026-10-23",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Posted by Sample meal team",
+      "mayBeCanceled": "May be canceled tonight. Reported by a neighbor's post. Call before traveling."
+    },
+    {
+      "id": "sample-weather-shelter",
+      "name": "Sample severe weather shelter",
+      "provider": "Sample meal team (fictional)",
+      "categories": [
+        "food"
+      ],
+      "area": "Ashland",
+      "coverage": [
+        "Ashland"
+      ],
+      "description": "A free community meal organized by Peace House in Ashland.",
+      "address": "Website names Trinity Episcopal Church Parish Hall; alley entrance behind the church.",
+      "schedule": "Tuesday meal. The provider page and calendar show different end times; confirm directly.",
+      "access": "Check the current meal details with Peace House.",
+      "requirements": "Additional requirements have not been confirmed.",
+      "cost": "Free, according to the provider’s website",
+      "phone": "541-482-9625",
+      "source": "https://peacehouse.net/uncle-foods-diner/",
+      "tags": [
+        "FICTIONAL_DEMONSTRATION"
+      ],
+      "conflict": false,
+      "reviewedDate": "2026-10-23",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from a City of Ashland alert",
+      "endsAt": "2026-10-26T14:30:00.000Z"
+    }
+  ]
+}

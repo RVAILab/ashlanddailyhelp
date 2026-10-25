@@ -33,7 +33,21 @@ npm run dev
 
 Then open <http://localhost:5173>. `/health` reports whether the app can reach its database.
 
-The app does not read the steward's feed yet (story `06-ingest-feed`). When it does, it will read the steward's sample feed from `../daily-help-steward/fixtures/feed-sample/` when the steward is checked out next to this repo.
+### The steward's feed
+
+The app keeps a copy of the steward's feed in Postgres. A scheduled Worker refreshes it every 5 minutes from `FEED_BASE_URL` (a Worker variable; `listings.json` is fetched relative to it), with `If-None-Match`, and keeps the last good copy when a fetch fails or a file doesn't match the contract. Every page shows "Listings as of" the copy's `generatedAt`.
+
+To load a feed by hand:
+
+```sh
+npm run feed:ingest                                   # the sample feed copied into test/fixtures/feed-sample/
+npm run feed:ingest -- ../daily-help-steward/fixtures/feed-sample
+npm run feed:ingest -- https://feed.example.org/feed/
+```
+
+To try the scheduled refresh locally, add `FEED_BASE_URL` to `.dev.vars` (for example a `python3 -m http.server` serving a feed folder), run `npm run dev`, and open `/cdn-cgi/handler/scheduled`.
+
+The steward's contract (`contract/steward/`) and sample feed (`test/fixtures/feed-sample/`) are copies. After the steward changes either, run `npm run feed:sync` with the steward checked out at `../daily-help-steward`; a test fails while the copies differ.
 
 `.dev.vars` holds local secrets and is not committed. To use another Postgres (Docker, Postgres.app), point `DATABASE_URL` in `.dev.vars` at it. Postgres.app asks for permission each time a new program connects, which shows up as connection timeouts from the Workers runtime, so the private cluster is easier.
 
@@ -50,7 +64,7 @@ Before the first `npm run e2e`, run `npx playwright install chromium`. The journ
 
 ### Database migrations
 
-Tables are defined in `db/schema.ts`. After changing it, `npm run db:generate` writes a new SQL migration to `db/migrations/`; commit it with the change. `npm run db:migrate` applies pending migrations to `DATABASE_URL`, and the deploy job runs it before each deploy.
+Tables are defined in `db/schema.ts`. After changing it, `npm run db:generate` writes a new SQL migration to `db/migrations/`; commit it with the change, and never edit a migration that has been applied. `npm run db:migrate` applies pending migrations to `DATABASE_URL`, and the deploy job runs it before each deploy.
 
 ### Production setup (one time)
 
@@ -59,6 +73,7 @@ The app deploys to the `ashlanddailyhelp-app` Worker on every push to `main` onc
 1. Create a Postgres database, for example on [Neon](https://neon.tech/).
 2. Give the Worker its connection string, either as a secret (`npx wrangler secret put DATABASE_URL`) or, better, through a [Hyperdrive](https://developers.cloudflare.com/hyperdrive/) configuration bound as `HYPERDRIVE` in `wrangler.jsonc`, which pools connections. When both are set, Hyperdrive wins. With a Hyperdrive binding, give it a `localConnectionString` so `npm run dev` still uses the local database.
 3. Add the same connection string as the `DATABASE_URL` repository secret in GitHub, so the deploy job can run migrations.
+4. Once the steward publishes its feed, set the Worker variable `FEED_BASE_URL` to the folder that holds `listings.json` (in `wrangler.jsonc` under `vars`, or in the Cloudflare dashboard).
 
 ## Deploys
 

@@ -8,5 +8,5 @@ export async function testDatabase(): Promise<Database & { close: () => Promise<
   const client = new PGlite()
   const db = drizzle({ client, schema })
   await migrate(db, { migrationsFolder: 'db/migrations' })
-  return Object.assign(db, { close: () => client.close() })
+  return Object.assign(db, { close: async () => (client.closed ? undefined : client.close()) })
 }

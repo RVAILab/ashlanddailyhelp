@@ -23,8 +23,8 @@
 </head>
 <body>
   <a class="skip" href="#main">Skip to content</a>
-  <div class="preview-bar" role="note"><span class="status-dot" aria-hidden="true"></span><strong>Build preview</strong><span>Resource details await provider confirmation. Dashboard numbers are fictional.</span></div>
-  <div id="offline-banner" class="offline-banner" hidden>You’re offline. This saved guide may be out of date. Source review: October 23, 2026. Calls and external links need a connection.</div>
+  <div class="preview-bar" role="note"><span class="status-dot" aria-hidden="true"></span><strong>Build preview</strong><span>Resource details await provider confirmation.<span data-demo> Dashboard numbers are fictional.</span></span></div>
+  <div id="offline-banner" class="offline-banner" hidden>You’re offline. This saved guide may be out of date. <span data-asof>Source review: October 23, 2026</span>. Calls and external links need a connection.</div>
   <header class="site-header">
     <div class="site-header-inner wrap">
       <a class="dh-brand" href="?view=resources" data-view="resources" aria-label="Ashland Daily Help home"><svg class="dh-mark" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="23" class="m-ring"/><circle cx="31.5" cy="15.5" r="5" class="m-sun"/><path d="M4.5 30c6-6.5 11-9.5 16-9.5 6 0 9 5 15.5 5 3.2 0 5.7-1 7.6-2.2" class="m-hill"/><path d="M4.2 34.5c7.2-3.4 13.6-5 19.4-5 6.4 0 10.2 2.4 20.6 2.6" class="m-hill2"/><path d="M20.4 46.4c1.7-4.4 5.9-7.6 13-9.6" class="m-path"/></svg><span class="dh-word"><span class="dh-name">Daily Help</span><span class="dh-sub">Ashland &amp; Jackson County</span></span></a>
@@ -84,19 +84,19 @@
         <div id="resource-grid" class="rgrid" data-reveal></div>
         <div id="empty-state" class="dir-empty" hidden><span class="dir-empty-art" aria-hidden="true"><picture><source type="image/avif" srcset="./art/lantern-160.avif 1x, ./art/lantern-320.avif 2x"><source type="image/webp" srcset="./art/lantern-160.webp 1x, ./art/lantern-320.webp 2x"><img src="./art/lantern-160.png" alt="" width="160" height="160" loading="lazy" decoding="async"></picture></span><h3>No matching resources in this first collection.</h3><p>Try a broader search or explore the wider 211info directory.</p><div class="dir-empty-actions"><button id="reset-filters" class="button primary" type="button">Clear filters</button><a class="button" href="https://www.211info.org/resource-database/" target="_blank" rel="noopener noreferrer">Search 211info <span aria-hidden="true">↗</span></a></div></div>
         <noscript><p class="dir-noscript">This interactive directory needs JavaScript. You can still visit <a href="https://ohrahelps.org/get-help/program-services/">OHRA</a>, <a href="https://accesshelps.org/food-pantries/">ACCESS food pantries</a>, or <a href="https://www.211info.org/resource-database/">211info</a> directly.</p></noscript>
-        <div class="dir-foot"><span>Sources reviewed October 23, 2026 · Provider confirmation pending</span><button id="clear-saved" class="inline-link" type="button">Clear my saved list</button></div>
+        <div class="dir-foot"><span><span data-asof>Sources reviewed October 23, 2026</span> · Provider confirmation pending</span><button id="clear-saved" class="inline-link" type="button">Clear my saved list</button></div>
       </section>
       <section class="provider-band wrap" aria-labelledby="provider-band-title" data-reveal>
         <div class="lb-art" aria-hidden="true"><picture><source type="image/avif" sizes="(max-width: 760px) 92vw, 520px" srcset="./art/provider-kitchen-800.avif 800w, ./art/provider-kitchen-1400.avif 1400w"><source type="image/webp" sizes="(max-width: 760px) 92vw, 520px" srcset="./art/provider-kitchen-800.webp 800w, ./art/provider-kitchen-1400.webp 1400w"><img src="./art/provider-kitchen-800.jpg" alt="" width="800" height="597" loading="lazy" decoding="async"></picture></div>
         <div class="lb-copy"><p class="eyebrow">Small connections. Stronger community.</p><h2 id="provider-band-title">Good information is a <em>shared effort.</em></h2><p>See how a short provider report can help a community understand its needs.</p>
-        <div class="lb-actions"><a class="button light" href="?view=providers" data-view="providers">Try the provider preview <span aria-hidden="true">→</span></a><a class="lb-link" href="?view=impact" data-view="impact">See the sample Community Pulse <span aria-hidden="true">→</span></a></div></div>
+        <div class="lb-actions"><a class="button light" href="?view=providers" data-view="providers">Try the provider preview <span aria-hidden="true">→</span></a><a class="lb-link" href="?view=impact" data-view="impact">See the <span data-demo>sample </span>Community Pulse <span aria-hidden="true">→</span></a></div></div>
       </section>
     </section>
     <section id="view-impact" class="view wrap inner-page" hidden aria-labelledby="pulse-title">
       <header class="pl-hero">
         <div class="pl-hero-stage">
           <div class="pl-hero-copy">
-            <p class="pl-badge">Fictional sample data</p>
+            <p class="pl-badge" data-demo>Fictional sample data</p><p class="pl-badge" data-live hidden>This week so far</p>
             <p class="pl-kicker">02 / Community Pulse</p>
             <h1 id="pulse-title">Care, made <em>visible.</em></h1>
             <p class="pl-lede">Every report lights a lantern. When providers share what happened at a meal, a shower or a conversation, the week becomes easier to see, and so do the places still waiting for a report.</p>
@@ -111,12 +111,13 @@
           </picture>
         </div>
         <div class="pl-hero-band">
-          <p class="pl-fiction" role="note"><strong>Fictional demonstration.</strong> These are sample service amounts for one invented week. They are not Ashland statistics and do not count unique people. Approve a practice report to see the charts update in this tab.</p>
+          <p class="pl-fiction" role="note" data-demo><strong>Fictional demonstration.</strong> These are sample service amounts for one invented week. They are not Ashland statistics and do not count unique people. Approve a practice report to see the charts update in this tab.</p>
+          <p class="pl-fiction" role="note" data-live hidden><strong>This week so far.</strong> Numbers can change until the week is published. They count servings and visits, not unique people.</p>
           <div class="pl-tally"><span id="pulse-hero-lanterns" class="pl-lanterns" aria-hidden="true"></span><p id="pulse-hero-coverage">3 of 4 sample providers have reported this week.</p></div>
         </div>
       </header>
       <div class="pl-meta">
-        <p class="pl-week"><span>Sample week</span>October 19–25, 2026</p>
+        <p class="pl-week"><span data-demo>Sample week</span><span data-live hidden>This week</span><time data-week="year">October 19–25, 2026</time></p>
         <p id="pulse-updated" class="pl-updated" role="status">Sample reports loaded</p>
         <a href="?view=providers" data-view="providers" class="button primary pl-try">Try a practice report <span aria-hidden="true">↗</span></a>
       </div>
@@ -127,7 +128,7 @@
         <section class="pl-chart" aria-labelledby="trend-title">
           <div class="pl-chart-head">
             <div><p class="pl-eyebrow">The week, day by day</p><h3 id="trend-title">Meals provided.</h3></div>
-            <p class="pl-chart-sub">One column per day, October 19–25. Solid is counted, hatched is estimated. Days without an amount say why.</p>
+            <p class="pl-chart-sub">One column per day, <span data-week>October 19–25</span>. Solid is counted, hatched is estimated. Days without an amount say why.</p>
           </div>
           <div id="daily-chart" class="pl-daily"></div>
           <div class="pl-readout"><p class="pl-readout-label">Selected day</p><p id="chart-selection" class="pl-selection" aria-live="polite">Select a day for its amount or reporting status.</p></div>
@@ -137,7 +138,7 @@
             <li><span class="pl-key is-partial" aria-hidden="true"></span>Partial: known amounts only</li>
             <li><span class="pl-key is-zero" aria-hidden="true"></span>Measured zero</li>
           </ul>
-          <details class="pl-table"><summary>Read the exact values</summary><div class="pl-table-scroll" role="region" aria-labelledby="chart-table-caption" tabindex="0"><table><caption id="chart-table-caption">Sample daily service amounts</caption><thead><tr><th scope="col">Date</th><th scope="col">Counted</th><th scope="col">Estimated</th><th scope="col">Total</th><th scope="col">Sample events reported</th><th scope="col">Status</th></tr></thead><tbody id="chart-table-body"></tbody></table></div></details>
+          <details class="pl-table"><summary>Read the exact values</summary><div class="pl-table-scroll" role="region" aria-labelledby="chart-table-caption" tabindex="0"><table><caption id="chart-table-caption">Sample daily service amounts</caption><thead><tr><th scope="col">Date</th><th scope="col">Counted</th><th scope="col">Estimated</th><th scope="col">Total</th><th scope="col"><span data-demo>Sample events</span><span data-live hidden>Events</span> reported</th><th scope="col">Status</th></tr></thead><tbody id="chart-table-body"></tbody></table></div></details>
         </section>
         </div>
       </section>
@@ -147,7 +148,7 @@
           <section class="pl-card pl-coverage" aria-labelledby="pl-coverage-title" data-pl-reveal>
             <p class="pl-eyebrow">How much of the picture?</p>
             <h3 id="pl-coverage-title">Lanterns lit.</h3>
-            <div class="pl-ring"><div id="coverage-ring"></div><p class="pl-ring-label"><span id="coverage-count">3 of 4</span><span>sample providers reported</span></p></div>
+            <div class="pl-ring"><div id="coverage-ring"></div><p class="pl-ring-label"><span id="coverage-count">3 of 4</span><span><span data-demo>sample </span>providers reported</span></p></div>
             <progress id="coverage-progress" class="sr-only" value="3" max="4" aria-label="Sample provider reporting coverage">3 of 4</progress>
             <ul id="coverage-list" class="pl-providers" aria-label="Fictional participating providers"></ul>
             <p id="coverage-caption" class="pl-note"></p>
@@ -163,7 +164,7 @@
             <p class="pl-eyebrow">Where more support could help</p>
             <h3 id="pl-barriers-title">Reported barriers.</h3>
             <div id="barriers"></div>
-            <p class="pl-note">One report can mention several barriers. These are counts of sample reports, not people.</p>
+            <p class="pl-note">One report can mention several barriers. These are counts of <span data-demo>sample </span>reports, not people.</p>
           </section>
         </div>
       </section>
@@ -183,11 +184,11 @@
           <div class="pl-method-notes">
             <p>Meals, shower sessions and navigation encounters have separate definitions. Counts of zero are shown as zero; blanks are explained, never filled in.</p>
             <p>Corrections replace earlier amounts only after review. Approving a revised practice report swaps the old amount out instead of adding to it.</p>
-            <p>Reporting coverage includes only the four fictional participating providers in this demonstration. Real publication will require provider permission and disclosure review.</p>
+            <p data-demo>Reporting coverage includes only the fictional participating providers in this demonstration. Real publication will require provider permission and disclosure review.</p><p data-live hidden>Reporting coverage includes only providers who agreed to share their counts. It is not coverage of all providers in the county.</p>
             <div class="pl-download">
-              <p class="pl-eyebrow">Take the sample data</p>
-              <p>A CSV with one row per unit. Unknown amounts are left blank, and every row is labelled <code>FICTIONAL_DEMONSTRATION</code>.</p>
-              <div class="pl-download-actions"><button id="download-data" type="button" class="button primary"><span data-icon="download"></span> Download sample CSV</button><a href="?view=providers" data-view="providers" class="inline-link">Try a practice report →</a></div>
+              <p class="pl-eyebrow">Take the <span data-demo>sample </span>data</p>
+              <p>A CSV with one row per unit. Unknown amounts are left blank, and every row is labelled <code data-dataset>FICTIONAL_DEMONSTRATION</code>.</p>
+              <div class="pl-download-actions"><button id="download-data" type="button" class="button primary"><span data-icon="download"></span> Download <span data-demo>sample </span>CSV</button><a href="?view=providers" data-view="providers" class="inline-link">Try a practice report →</a></div>
             </div>
           </div>
         </div>
@@ -207,7 +208,7 @@
       <ol id="pg-stages" class="pg-stages pg-reveal" data-stage="report" aria-label="How a sample report travels">
         <li data-step="report" data-state="current" aria-current="step"><span class="pg-stage-dot" aria-hidden="true">1</span><span class="pg-stage-text"><strong>You report</strong><small>Three questions, sent to review</small></span></li>
         <li data-step="review" data-state="next"><span class="pg-stage-dot" aria-hidden="true">2</span><span class="pg-stage-text"><strong>A coordinator reviews</strong><small>Waiting reports are not public</small></span></li>
-        <li data-step="publish" data-state="next"><span class="pg-stage-dot" aria-hidden="true">3</span><span class="pg-stage-text"><strong>Totals update</strong><small>Only approved reports reach the sample dashboard</small></span></li>
+        <li data-step="publish" data-state="next"><span class="pg-stage-dot" aria-hidden="true">3</span><span class="pg-stage-text"><strong>Totals update</strong><small>Only approved reports reach the <span data-demo>sample </span>dashboard</small></span></li>
       </ol>
       <div class="pg-tool">
         <form id="report-form" class="pg-form pg-reveal" novalidate aria-labelledby="report-title">
@@ -217,7 +218,7 @@
           </div>
           <div id="pg-progress" class="pg-progress" aria-hidden="true"><span data-q="1" data-state="done"><i></i>Happened</span><span data-q="2" data-state="todo"><i></i>Amount</span><span data-q="3" data-state="done"><i></i>Unmet need</span></div>
           <p id="pg-progress-text" class="pg-progress-text" aria-live="polite">2 of 3 answered · add an amount or choose Not recorded</p>
-          <fieldset class="pg-event-field"><legend class="pg-sub-legend">Reporting for <span>(sample service)</span></legend><div id="event" class="pg-choices pg-events"></div><p id="event-meta" class="pg-hint"></p></fieldset>
+          <fieldset class="pg-event-field"><legend class="pg-sub-legend">Reporting for <span data-demo>(sample service)</span></legend><div id="event" class="pg-choices pg-events"></div><p id="event-meta" class="pg-hint"></p></fieldset>
           <fieldset class="pg-q"><legend><span class="pg-q-num" aria-hidden="true">1</span><span class="pg-q-title">Did the service happen?</span></legend>
             <div class="pg-choices pg-two">
               <label class="pg-choice"><input type="radio" name="outcome" value="completed" checked><span class="pg-dot" aria-hidden="true"></span><span class="pg-choice-body"><strong>As planned</strong><small>Ran as scheduled</small></span></label>
@@ -264,12 +265,12 @@
           <div class="pg-desk review-panel pg-reveal">
             <p class="pg-kicker">Step 2 · Coordinator <span class="pg-sim">Simulated</span></p>
             <h2 id="review-title" tabindex="-1">A moment to review.</h2>
-            <p class="pg-desk-intro">Reports wait here until approved. Only an approved report changes the sample dashboard, and only in this tab.</p>
+            <p class="pg-desk-intro">Reports wait here until approved. Only an approved report changes the <span data-demo>sample </span>dashboard, and only in this tab.</p>
             <div id="review-queue"></div>
             <a class="inline-link pg-desk-link" href="?view=impact" data-view="impact">View community pulse <span aria-hidden="true">→</span></a>
           </div>
           <div class="pg-team pg-reveal"><span class="pg-team-icon" data-icon="users" aria-hidden="true"></span><div><h3>Designed for a team</h3><p>The future service will have separate provider, coordinator and technical roles, with documented access and a backup for each responsibility.</p><p>Ongoing roles will belong to the adopting team.</p></div></div>
-          <button id="reset-demo" type="button" class="text-button pg-reset">Reset sample reports</button>
+          <button id="reset-demo" type="button" class="text-button pg-reset">Reset <span data-demo>sample</span><span data-live hidden>practice</span> reports</button>
         </aside>
       </div>
     </section>
@@ -315,7 +316,7 @@
     <div class="wrap sf-grid">
       <div class="sf-brand"><a class="dh-brand" href="?view=resources" data-view="resources" aria-label="Ashland Daily Help, back to finding help"><svg class="dh-mark" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="23" class="m-ring"/><circle cx="31.5" cy="15.5" r="5" class="m-sun"/><path d="M4.5 30c6-6.5 11-9.5 16-9.5 6 0 9 5 15.5 5 3.2 0 5.7-1 7.6-2.2" class="m-hill"/><path d="M4.2 34.5c7.2-3.4 13.6-5 19.4-5 6.4 0 10.2 2.4 20.6 2.6" class="m-hill2"/><path d="M20.4 46.4c1.7-4.4 5.9-7.6 13-9.6" class="m-path"/></svg><span class="dh-word"><span class="dh-name">Daily Help</span><span class="dh-sub">Ashland &amp; Jackson County</span></span></a><p class="sf-line">A little connection can change <em>what comes next.</em></p></div>
       <nav class="sf-nav" aria-label="Footer"><h2 class="sf-h">Explore</h2><ul><li><a href="?view=resources" data-view="resources">Find help</a></li><li><a href="?view=impact" data-view="impact">Community Pulse</a></li><li><a href="?view=providers" data-view="providers">For providers</a></li><li><a href="?view=about" data-view="about">About, privacy &amp; offline access</a></li></ul></nav>
-      <div class="sf-meta"><h2 class="sf-h">This preview</h2><p>Ashland &amp; Jackson County, Oregon</p><p>Initial build · Made for a community handoff</p><p>Sources reviewed October 23, 2026</p></div>
+      <div class="sf-meta"><h2 class="sf-h">This preview</h2><p>Ashland &amp; Jackson County, Oregon</p><p>Initial build · Made for a community handoff</p><p data-asof>Sources reviewed October 23, 2026</p></div>
     </div>
   </footer>
   <dialog id="resource-dialog" aria-labelledby="resource-dialog-title"><button class="dialog-close" type="button" data-close aria-label="Close resource details"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button><div id="resource-detail"></div></dialog>

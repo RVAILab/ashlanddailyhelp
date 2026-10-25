@@ -854,6 +854,85 @@ main h1[tabindex="-1"]:focus-visible {
   margin: 0;
 }
 
+/* Community Pulse */
+
+.pulse-weeks ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  padding: 0;
+  list-style: none;
+}
+
+.pulse-weeks a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-weight: 600;
+}
+
+.pulse-weeks a[aria-current="page"] {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.pulse-note {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.pulse-unit {
+  margin: 1.5rem 0;
+  padding: 1.1rem 1.25rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-m);
+  background: var(--card);
+}
+
+.pulse-unit h2 {
+  margin-top: 0;
+}
+
+.pulse-days {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pulse-days li {
+  display: grid;
+  grid-template-columns: 7rem 1fr;
+  gap: 0.25rem 0.75rem;
+  align-items: center;
+}
+
+.pulse-track {
+  height: 1rem;
+  border-left: 2px solid var(--field);
+}
+
+.pulse-bar {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+}
+
+.pulse-value {
+  grid-column: 2;
+  font-size: 0.95rem;
+}
+
+.pulse-axis {
+  display: flex;
+  justify-content: space-between;
+  margin: 0.25rem 0 0 7.75rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
 /* Today */
 
 .today-when {

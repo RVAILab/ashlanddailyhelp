@@ -132,6 +132,9 @@ export default function Home({ loaderData }: Route.ComponentProps) {
             <Link to={path('/providers')}>{t.home.providers}</Link>
           </li>
           <li>
+            <Link to={path('/pulse')}>{t.home.pulse}</Link>
+          </li>
+          <li>
             <Link to={path('/about')}>{t.home.about}</Link>
           </li>
         </ul>

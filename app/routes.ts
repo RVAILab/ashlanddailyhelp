@@ -8,6 +8,7 @@ export default [
   route('list/toggle', 'routes/list-toggle.ts'),
   route('list/save', 'routes/list-save.ts'),
   route('offline-pages.json', 'routes/offline-pages.ts'),
+  route('pulse.csv', 'routes/pulse-csv.ts'),
   route('es?', 'routes/locale.tsx', [
     index('routes/home.tsx'),
     route('resources', 'routes/resources.tsx'),
@@ -15,6 +16,7 @@ export default [
     route('about', 'routes/about.tsx'),
     route('today', 'routes/today.tsx'),
     route('next', 'routes/next.tsx'),
+    route('pulse', 'routes/pulse.tsx'),
     route('providers', 'routes/providers.tsx'),
     route('report', 'routes/report.tsx'),
     route('list', 'routes/list.tsx'),

@@ -35,6 +35,9 @@ export default function About() {
       <p>
         <Link to={path('/providers')}>{t.providers.title}</Link>
       </p>
+      <p>
+        <Link to={path('/pulse')}>{t.pulse.link}</Link>
+      </p>
     </main>
   )
 }

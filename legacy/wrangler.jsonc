@@ -6,11 +6,7 @@
   "compatibility_date": "2026-10-01",
   "workers_dev": true,
   "preview_urls": false,
-  // ashlanddailyhelp.com moved from Bluehost to Cloudflare on Oct 25; listed here so a deploy keeps both.
-  "routes": [
-    { "pattern": "ashlanddailyhelp.com", "custom_domain": true },
-    { "pattern": "www.ashlanddailyhelp.com", "custom_domain": true }
-  ],
+  // No custom domains: ashlanddailyhelp.com belongs to the app Worker (../wrangler.jsonc); two claims race on each deploy.
   // worker.js handles /index.html and paths with no asset; every other path is served straight from the assets.
   "main": "worker.js",
   // Files left out of the upload are listed in .assetsignore.

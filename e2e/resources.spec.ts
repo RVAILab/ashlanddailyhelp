@@ -29,3 +29,21 @@ test('a shared search link opens the same results, even without JavaScript', asy
   await expect(page.getByRole('article', { name: 'Explore supportive shelter programs' })).toBeVisible()
   await context.close()
 })
+
+test('open a listing from a search, then go back to the same results', async ({ page }) => {
+  await page.goto('/resources?q=show')
+  await page.getByRole('link', { name: 'A shower and a fresh start' }).click()
+  await expect(page).toHaveURL(/\/resources\/ohra-showers$/)
+  await expect(page.getByRole('heading', { level: 1, name: 'A shower and a fresh start' })).toBeVisible()
+  await expect(page.getByRole('region', { name: 'Sources' })).toBeVisible()
+
+  await page.goBack()
+  await expect(page.getByRole('searchbox', { name: 'Words to search for' })).toHaveValue('show')
+})
+
+test('a listing that is not there answers 404 inside the site', async ({ page }) => {
+  const response = await page.goto('/es/resources/no-such-listing')
+  expect(response?.status()).toBe(404)
+  await expect(page.getByRole('heading', { level: 1, name: 'Este servicio no está disponible' })).toBeVisible()
+  await expect(page.getByRole('contentinfo')).toBeVisible()
+})

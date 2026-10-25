@@ -6,6 +6,7 @@ export default [
   route('es?', 'routes/locale.tsx', [
     index('routes/home.tsx'),
     route('resources', 'routes/resources.tsx'),
+    route('resources/:id', 'routes/resource.tsx'),
     route('*', 'routes/not-found.tsx'),
   ]),
 ] satisfies RouteConfig

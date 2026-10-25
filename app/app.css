@@ -207,6 +207,50 @@ a {
   color: var(--muted);
 }
 
+.listing-card h3 a {
+  color: inherit;
+}
+
+.listing-page .actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.listing-page .action {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 1rem;
+  border: 1px solid var(--field);
+  border-radius: 6px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.listing-fields div {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.listing-fields dt {
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+.listing-fields dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+details summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-weight: 600;
+}
+
 .site-footer {
   margin-top: 3rem;
   padding: 1rem 0 2rem;

@@ -26,7 +26,7 @@ SO THAT every chat channel gives the same accurate, sourced answers
 
 ## Notes
 
-- Decided Oct 25: chat comes after v1. Shared by `25-chat-on-website`, `26-chat-by-sms` and `27-navigator-assistant`.
+- Decided Oct 25: chat comes after v1. Shared by `26-chat-on-website`, `27-chat-by-sms` and `28-navigator-assistant`.
 
 ## Implementation Plan
 

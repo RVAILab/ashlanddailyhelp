@@ -23,7 +23,7 @@ SO THAT people can find help nearby and open a map
 
 ## Notes
 
-- Blocks `22-find-help-nearby` and map links that don't depend on the address text.
+- Blocks `23-find-help-nearby` and map links that don't depend on the address text.
 
 ## Implementation Plan
 

@@ -17,13 +17,13 @@ SO THAT I get an answer without knowing which category to look in
 
 ## Acceptance Criteria
 
-- A chat entry on the homepage and /today that uses `24-chat-grounding`.
+- A chat entry on the homepage and /today that uses `25-chat-grounding`.
 - Answers link to the resource pages they cite.
 - Usable by keyboard and screen reader; says clearly when it is offline.
 
 ## Notes
 
-- Depends on `24-chat-grounding`.
+- Depends on `25-chat-grounding`.
 
 ## Implementation Plan
 

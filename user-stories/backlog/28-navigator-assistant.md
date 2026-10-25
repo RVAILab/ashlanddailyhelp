@@ -17,13 +17,13 @@ SO THAT I can help more people, faster
 
 ## Acceptance Criteria
 
-- Uses `24-chat-grounding`, with fuller answers and every source shown.
+- Uses `25-chat-grounding`, with fuller answers and every source shown.
 - Can turn an answer into a shareable list or handout (`17-shareable-lists`, `18-print-handout`).
 - Access approach decided (open, or limited to known navigators) without adding accounts to the public site.
 
 ## Notes
 
-- Depends on `24-chat-grounding`.
+- Depends on `25-chat-grounding`.
 
 ## Implementation Plan
 

@@ -1,4 +1,5 @@
-feed/
+/feed/
+/legacy/feed/
 node_modules/
 build/
 .react-router/

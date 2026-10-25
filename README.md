@@ -67,7 +67,7 @@ To answer texts, connect a Twilio number once:
 2. `npx wrangler secret put TWILIO_AUTH_TOKEN --name ashlanddailyhelp-app` with the account's auth token, which signs every webhook. Without it, `/sms` answers 503.
 3. Text the number "HELP", then a question.
 
-Twilio handles STOP and START for the number itself. Replies are plain text, at most three segments.
+Twilio handles STOP and START for the number itself. In the number's Advanced Opt-Out settings, turn off Twilio's own HELP reply, since the site answers HELP with the crisis numbers. Replies are plain text, at most three segments. A text not answered within 12 seconds gets the 211 answer, because Twilio stops waiting at 15.
 
 ### Tests and checks
 

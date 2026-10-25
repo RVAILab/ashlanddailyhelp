@@ -1,6 +1,6 @@
 import { createHmac } from 'node:crypto'
-import { describe, expect, it } from 'vitest'
-import { validTwilioSignature } from './twilio.ts'
+import { describe, expect, it, vi } from 'vitest'
+import { validTwilioSignature, within } from './twilio.ts'
 
 const url = 'https://ashlanddailyhelp.com/sms'
 const params = { Body: 'Where can I shower?', From: '+15415550100', To: '+15415550199', MessageSid: 'SM123' }
@@ -24,5 +24,17 @@ describe('validTwilioSignature', () => {
       await validTwilioSignature(url, { ...params, Body: 'changed' }, reference('secret-token'), 'secret-token'),
     ).toBe(false)
     expect(await validTwilioSignature(url, params, null, 'secret-token')).toBe(false)
+  })
+})
+
+describe('within', () => {
+  it('gives up after the time allowed, so a slow answer never outlasts Twilio’s wait', async () => {
+    vi.useFakeTimers()
+    const slow = within(12_000, new Promise(() => {}))
+    await vi.advanceTimersByTimeAsync(12_000)
+    expect(await slow).toBeNull()
+    vi.useRealTimers()
+    expect(await within(1000, Promise.resolve('answer'))).toBe('answer')
+    expect(await within(1000, Promise.reject(new Error('failed')))).toBeNull()
   })
 })

@@ -1,4 +1,4 @@
-import { createHmac } from 'node:crypto'
+import { createHash, createHmac } from 'node:crypto'
 import { type ActionFunctionArgs, RouterContextProvider } from 'react-router'
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 import type { Answerer } from '../../server/chat/claude.ts'
@@ -82,6 +82,7 @@ describe('/sms', () => {
     const key = askAllowed.mock.calls[0]?.[0] ?? ''
     expect(key).toMatch(/^[0-9a-f]{64}$/)
     expect(key).not.toContain('5415550100')
+    expect(key).not.toBe(createHash('sha256').update('sms:+15415550100').digest('hex'))
     expect(JSON.stringify(logs.mock.calls)).not.toContain('5415550100')
     vi.restoreAllMocks()
   })

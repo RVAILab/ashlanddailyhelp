@@ -1,7 +1,7 @@
 import { answerQuestion } from '../../server/chat/answer.ts'
 import { findListing } from '../../server/listings/listing.ts'
 import { keyword, smsLanguage, smsReply } from '../../server/sms/reply.ts'
-import { validTwilioSignature } from '../../server/sms/twilio.ts'
+import { validTwilioSignature, within } from '../../server/sms/twilio.ts'
 import { services } from '../context.ts'
 import { messagesFor } from '../i18n/index.ts'
 import type { Route } from './+types/sms'
@@ -15,11 +15,22 @@ const twiml = (message: string | null) =>
     { headers: { 'Content-Type': 'text/xml; charset=utf-8' } },
   )
 
-// The rate limit needs to tell senders apart, not know who they are, so it sees only a hash of the number.
-async function senderKey(from: string): Promise<string> {
-  const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(`sms:${from}`))
+// The rate limit needs to tell senders apart, not know who they are, so it sees only a keyed hash of the number: a
+// plain hash of a phone number can be reversed by trying every number.
+async function senderKey(from: string, secret: string): Promise<string> {
+  const key = await crypto.subtle.importKey(
+    'raw',
+    new TextEncoder().encode(secret),
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign'],
+  )
+  const digest = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(`sms:${from}`))
   return [...new Uint8Array(digest)].map(byte => byte.toString(16).padStart(2, '0')).join('')
 }
+
+// Twilio waits 15 seconds for a reply and then gives up, sending nothing, so a slow answer becomes the 211 answer.
+const ANSWER_WITHIN = 12_000
 
 // Twilio's messaging webhook. Each text is answered from the directory (story 25); nothing about the sender is kept.
 export async function action({ request, context }: Route.ActionArgs) {
@@ -43,9 +54,13 @@ export async function action({ request, context }: Route.ActionArgs) {
       return twiml(t.help)
   }
   if (!body) return twiml(t.help)
-  if (askAllowed && !(await askAllowed(await senderKey(params.From ?? '')))) return twiml(t.limited)
+  if (askAllowed && !(await askAllowed(await senderKey(params.From ?? '', smsAuthToken)))) return twiml(t.limited)
   const now = new Date()
-  const answer = await answerQuestion({ db, answerer, question: body, lang, now })
+  const answer = await within(ANSWER_WITHIN, answerQuestion({ db, answerer, question: body, lang, now }))
+  if (!answer) {
+    console.error('sms: no answer within', ANSWER_WITHIN, 'ms')
+    return twiml(smsReply({ text: messagesFor(lang).chat.unknown, crisis: false }, [], lang))
+  }
   const places = (
     await Promise.all(
       answer.citations.map(citation => (citation.listingId ? findListing(db, citation.listingId, now) : null)),

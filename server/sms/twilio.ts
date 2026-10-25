@@ -32,3 +32,20 @@ export async function validTwilioSignature(
   for (let index = 0; index < expected.length; index++) difference |= (expected[index] ?? 0) ^ (given[index] ?? 0)
   return difference === 0
 }
+
+// The work's result, or null when it fails or takes longer than ms.
+export function within<T>(ms: number, work: Promise<T>): Promise<T | null> {
+  return new Promise(resolve => {
+    const timer = setTimeout(() => resolve(null), ms)
+    work.then(
+      value => {
+        clearTimeout(timer)
+        resolve(value)
+      },
+      () => {
+        clearTimeout(timer)
+        resolve(null)
+      },
+    )
+  })
+}

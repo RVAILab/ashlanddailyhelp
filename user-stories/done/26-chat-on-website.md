@@ -3,8 +3,8 @@ metadata:
   created_at:   2026-10-25T11:06:46-07:00
   activated_at: 2026-10-25T16:27:52-07:00
   planned_at:   2026-10-25T16:28:09-07:00
-  finished_at:
-  updated_at:   2026-10-25T16:28:09-07:00
+  finished_at:  2026-10-25T16:41:03-07:00
+  updated_at:   2026-10-25T16:41:03-07:00
 -->
 
 # Story: Chat on the Website
@@ -51,3 +51,30 @@ Tests:
 - Home and today tests: the ask form is there and posts to `/ask`.
 - e2e: ask a question with JavaScript turned off. CI has no key, so the e2e build runs without one and checks the "not available" state.
 
+
+## Review
+
+Reviewed 2026-10-25 at `5d6a2c8` plus fixes. A subagent did an independent read.
+
+| Criterion | Verdict | Evidence |
+| --- | --- | --- |
+| A chat entry on the homepage and /today using `25-chat-grounding` | ✅ | `AskForm` (`app/components/ask-form.tsx`) on both pages posts to `path('/ask')`, which is `/es/ask` on Spanish pages. `app/routes/ask.tsx` calls `answerQuestion`. |
+| Answers link to the resource pages they cite | ✅ | Citations link to `/resources/:listingId`; events with no listing show as text (tested). |
+| Usable by keyboard and screen reader; says clearly when offline | ✅ | Labelled field, 48px button, 44px links, tel links for every number. Offline, a sent question gets a page saying asking needs a connection, with 211 and 911 (`askOffline` in `public/sw.js`). Before sending, the note under the form says so. |
+
+These findings were fixed:
+
+- A question sent offline got the browser's error page, or on /today the app's error page. The form now always posts the whole page, and the service worker answers an offline post with a clear page.
+- Crisis and service numbers in answers were plain text. They are now tap-to-call links.
+
+Not changed:
+
+- Everyone on one shared connection, such as a shelter's Wi-Fi, shares 10 questions a minute.
+- Refreshing the answer page asks again, which counts against the limit.
+- Cross-site posts are already refused by React Router's origin check.
+
+## Learnings
+
+- **Went well:** posting the question, with no loader, made "no model call from a crawler" true by construction.
+- **Surprising:** a hydrated page turns a form into a client-side fetch, so offline it fails in a different place than on a plain page. `reloadDocument` keeps one behaviour.
+- **Next time:** for each form, ask what happens when it is sent offline, on pages with and without JavaScript.

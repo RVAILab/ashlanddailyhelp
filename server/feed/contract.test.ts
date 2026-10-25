@@ -3,7 +3,7 @@ import { sampleListingsFeed } from '../../test/feed.ts'
 import { ListingsFile } from './contract.ts'
 
 describe('ListingsFile', () => {
-  it('keeps proposed opening windows (steward #39) and drops other unknown fields', () => {
+  it('keeps opening windows (feed 1.4) and drops other unknown fields', () => {
     const feed = sampleListingsFeed()
     const openings = [
       {

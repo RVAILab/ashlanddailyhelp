@@ -3,8 +3,8 @@ metadata:
   created_at:   2026-10-25T11:06:46-07:00
   activated_at: 2026-10-25T16:37:05-07:00
   planned_at:   2026-10-25T16:37:05-07:00
-  finished_at:
-  updated_at:   2026-10-25T16:37:05-07:00
+  finished_at:  2026-10-25T16:44:17-07:00
+  updated_at:   2026-10-25T16:44:17-07:00
 -->
 
 # Story: Chat by Text Message
@@ -54,3 +54,29 @@ Tests:
 
 Open, for the user: choosing the provider, buying a number, and the budget.
 
+
+## Review
+
+Reviewed 2026-10-25 at `cde4fff` plus fixes. A subagent did an independent read.
+
+| Criterion | Verdict | Evidence |
+| --- | --- | --- |
+| A phone number that answers texts using `25-chat-grounding`, in short messages with addresses and phones | ⚠️ | `app/routes/sms.ts` (signed Twilio webhook, TwiML) and `server/sms/reply.ts` (three segments for the alphabet used, with each place's name, address and phone). The number itself waits on the user: choosing the provider, buying the number, the budget, and `TWILIO_AUTH_TOKEN` (README). |
+| Replies in the language the person writes in | ✅ | `smsLanguage`; Spanish safety and HELP text is real Spanish. Other Spanish wording waits for story 29. |
+| STOP and HELP work; phone numbers not kept longer than needed | ✅ | STOP gets no reply (Twilio opts the number out), and HELP gets the crisis numbers. The number is never stored or logged; the rate limit sees only an HMAC of it (tested). |
+
+These findings were fixed:
+
+- Twilio stops waiting after 15 seconds, so a slow answer reached no one. Texts not answered within 12 seconds now get the 211 answer.
+- Accented letters, "…" and curly apostrophes pushed replies out of the basic SMS alphabet, roughly doubling their segments. Punctuation is now plain, and the length limit follows the alphabet: 459 characters or 201.
+- "Confirm before you go" and the link could be cut. They are now always kept.
+- A plain SHA-256 of a phone number can be reversed. The key is now an HMAC with the auth token.
+- Spanish is recognised from more words. "hay" is no longer one, since it is also English.
+- A place cited twice appeared twice. It now appears once.
+- README: turn off Twilio's own HELP reply, so people don't get two.
+
+## Learnings
+
+- **Went well:** the shared answering service made SMS a thin adapter: signature, keywords, length and TwiML.
+- **Surprising:** a single curly apostrophe changes a text's encoding and more than doubles its cost.
+- **Next time:** for any channel with a timeout set by someone else, test the slow path first.

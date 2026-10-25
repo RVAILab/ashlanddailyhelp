@@ -126,6 +126,15 @@ export const en = {
     mayBeCanceled: 'May be canceled',
     related: 'More about this service',
   },
+  alerts: {
+    label: 'Alerts',
+    urgent: 'Urgent',
+    notice: 'Notice',
+    window: (start: string, end: string) => `From ${start} to ${end}`,
+    canceled: 'Canceled',
+    mayBeCanceled: 'May be canceled',
+    affects: 'See',
+  },
   detail: {
     backToSearch: 'Back to search',
     details: 'Details',

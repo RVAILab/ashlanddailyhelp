@@ -1,4 +1,5 @@
 import { data, Link, useLocation } from 'react-router'
+import { pageAlerts } from '../../server/feed/page-alerts.ts'
 import { findListing } from '../../server/listings/listing.ts'
 import { translationsFor } from '../../server/translate/lookup.ts'
 import { translatableTexts } from '../../server/translate/texts.ts'
@@ -23,7 +24,10 @@ export async function loader({ url, params, context }: Route.LoaderArgs) {
           'es',
         )
       : new Map<string, string>()
-  return data({ listing: listingDetail(listing, lang, translated) })
+  const detail = listingDetail(listing, lang, translated)
+  const alert = (await pageAlerts(db, lang, new Date())).byListing[listing.id]
+  if (alert) detail.labels.unshift({ kind: 'warning', text: alert })
+  return data({ listing: detail })
 }
 
 export function meta({ loaderData, location }: Route.MetaArgs) {

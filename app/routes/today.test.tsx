@@ -25,6 +25,7 @@ describe('/today', () => {
       workedOut: '11:00 AM',
       now: '2026-10-25T18:00:00.000Z',
       nextChange: null,
+      alerts: { alerts: [], listingNames: {}, byListing: {} },
       eventsDemonstration: false,
       events: {
         today: [
@@ -86,6 +87,7 @@ describe('/today', () => {
       workedOut: '11:00 AM',
       now: '2026-10-25T18:00:00.000Z',
       nextChange: null,
+      alerts: { alerts: [], listingNames: {}, byListing: {} },
       eventsDemonstration: true,
       events: { today: [], finished: [], tomorrow: [], thisWeek: [] },
       groups: { openNow: [], later: [], closed: [], notConfirmed: [] },

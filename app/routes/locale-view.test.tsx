@@ -11,7 +11,7 @@ function renderAt(url: string, lang: 'en' | 'es') {
       path: '/:lang?',
       Component: Locale,
       loader: () => ({ lang, feed }),
-      children: [{ index: true, Component: Home }],
+      children: [{ index: true, Component: Home, loader: () => ({ alerts: [], listingNames: {}, byListing: {} }) }],
     },
   ])
   render(<Stub initialEntries={[url]} />)

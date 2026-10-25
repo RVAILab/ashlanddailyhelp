@@ -4,9 +4,11 @@ import type { FeedEvent, StoredListing } from '../../server/feed/contract.ts'
 import { upcomingEvents } from '../../server/feed/events.ts'
 import { feedFileStatus } from '../../server/feed/ingest.ts'
 import { currentListings } from '../../server/feed/listings.ts'
+import { pageAlerts } from '../../server/feed/page-alerts.ts'
 import { listingAreas, searchListings } from '../../server/listings/search.ts'
 import { groupEvents } from '../../server/today/events.ts'
 import { groupToday, type TodayEntry } from '../../server/today/group.ts'
+import { AlertList } from '../components/alert-list.tsx'
 import { type ListingCard, ListingCardView } from '../components/listing-card.tsx'
 import { ListingStatus } from '../components/listing-status.tsx'
 import { services } from '../context.ts'
@@ -36,6 +38,7 @@ function toEntry(
   lang: Lang,
   t: Messages,
   group: 'openNow' | 'later' | 'closed' | 'notConfirmed',
+  alert?: string,
 ): TodayCard {
   const listing: StoredListing = entry.listing
   const window = entry.window
@@ -69,7 +72,7 @@ function toEntry(
       // A window can be somewhere other than the listing's usual address.
       address: window?.location ?? listing.address,
       phone: listing.phone,
-      labels: listingLabels(listing, lang),
+      labels: [...(alert ? [{ kind: 'warning' as const, text: alert }] : []), ...listingLabels(listing, lang)],
     },
   }
 }
@@ -129,6 +132,7 @@ export async function loader({ url, context }: Route.LoaderArgs) {
   if (area) filters.area = area
   else delete filters.area
   const groups = groupToday(await searchListings(db, filters, now, lang), now)
+  const alerts = await pageAlerts(db, lang, now)
   const scheduled = groupEvents(
     (await upcomingEvents(db, now)).filter(
       event =>
@@ -156,11 +160,14 @@ export async function loader({ url, context }: Route.LoaderArgs) {
       })),
     },
     eventsDemonstration: eventsFeed?.dataset === 'FICTIONAL_DEMONSTRATION',
+    alerts,
     groups: {
-      openNow: groups.openNow.map(entry => toEntry(entry, lang, t, 'openNow')),
-      later: groups.later.map(entry => toEntry(entry, lang, t, 'later')),
-      closed: groups.closed.map(entry => toEntry(entry, lang, t, 'closed')),
-      notConfirmed: groups.notConfirmed.map(entry => toEntry(entry, lang, t, 'notConfirmed')),
+      openNow: groups.openNow.map(entry => toEntry(entry, lang, t, 'openNow', alerts.byListing[entry.listing.id])),
+      later: groups.later.map(entry => toEntry(entry, lang, t, 'later', alerts.byListing[entry.listing.id])),
+      closed: groups.closed.map(entry => toEntry(entry, lang, t, 'closed', alerts.byListing[entry.listing.id])),
+      notConfirmed: groups.notConfirmed.map(entry =>
+        toEntry(entry, lang, t, 'notConfirmed', alerts.byListing[entry.listing.id]),
+      ),
     },
   }
 }
@@ -188,11 +195,12 @@ function useRegroup(serverNow: string, nextChange: string | null) {
 const GROUPS = ['openNow', 'later', 'closed', 'notConfirmed'] as const
 
 export default function Today({ loaderData }: Route.ComponentProps) {
-  const { filters, areas, workedOut, now, nextChange, groups, events, eventsDemonstration } = loaderData
+  const { filters, areas, workedOut, now, nextChange, groups, events, eventsDemonstration, alerts } = loaderData
   const { t, path } = useI18n()
   useRegroup(now, nextChange)
   return (
     <main>
+      <AlertList alerts={alerts.alerts} listingNames={alerts.listingNames} />
       <h1>{t.today.title}</h1>
       <p>{t.today.workedOut(workedOut)}</p>
       <Form method="get" className="search-form">

@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import { data, Form, Link } from 'react-router'
 import type { FeedListing } from '../../contract/steward/feed.ts'
 import { listingsFeedStatus } from '../../server/feed/listings.ts'
+import { pageAlerts } from '../../server/feed/page-alerts.ts'
 import { listingAreas, searchListings } from '../../server/listings/search.ts'
 import { translationsFor } from '../../server/translate/lookup.ts'
 import { translatableTexts } from '../../server/translate/texts.ts'
@@ -16,10 +17,13 @@ import { readFilters } from '../lib/filters.ts'
 import { listingLabels } from '../lib/listing-labels.ts'
 import type { Route } from './+types/resources'
 
-function toCard(listing: FeedListing, lang: Lang, translated: Map<string, string>): ListingCard {
+function toCard(listing: FeedListing, lang: Lang, translated: Map<string, string>, alert?: string): ListingCard {
   const t = messagesFor(lang)
   const schedule = translated.get(listing.schedule.trim())
-  const labels = listingLabels(listing, lang, translated)
+  const labels = [
+    ...(alert ? [{ kind: 'warning' as const, text: alert }] : []),
+    ...listingLabels(listing, lang, translated),
+  ]
   return {
     id: listing.id,
     name: listing.name,
@@ -46,6 +50,7 @@ export async function loader({ url, context }: Route.LoaderArgs) {
   if (area) filters.area = area
   else delete filters.area
   const found = await searchListings(db, filters, now, lang)
+  const alerts = await pageAlerts(db, lang, now)
   const translated =
     lang === 'es'
       ? await translationsFor(
@@ -57,7 +62,7 @@ export async function loader({ url, context }: Route.LoaderArgs) {
   return {
     filters,
     areas,
-    results: found.map(listing => toCard(listing, lang, translated)),
+    results: found.map(listing => toCard(listing, lang, translated, alerts.byListing[listing.id])),
     feedLoaded: feed.state !== 'none',
     demonstration: feed.state === 'stored' && feed.dataset === 'FICTIONAL_DEMONSTRATION',
   }

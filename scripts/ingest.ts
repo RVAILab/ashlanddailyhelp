@@ -11,7 +11,11 @@ const baseUrl = remote ? target : pathToFileURL(`${resolve(target)}/`).href
 const readLocal: typeof fetch = async (input, init) => {
   const url = new URL(input instanceof Request ? input.url : input)
   if (url.protocol !== 'file:') return fetch(input, init)
-  return new Response(await readFile(fileURLToPath(url)), { headers: { 'Content-Type': 'application/json' } })
+  // A folder without a file stands in for a host that doesn't publish it (events and alerts are optional).
+  const body = await readFile(fileURLToPath(url)).catch(() => null)
+  return body
+    ? new Response(body, { headers: { 'Content-Type': 'application/json' } })
+    : new Response('not found', { status: 404 })
 }
 
 const outcome = await runIngest(

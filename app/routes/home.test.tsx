@@ -5,7 +5,13 @@ import { I18nProvider } from '../i18n/provider.tsx'
 import Home, { handle } from './home.tsx'
 
 function renderHome(lang: 'en' | 'es' = 'en') {
-  const Stub = createRoutesStub([{ path: lang === 'es' ? '/es' : '/', Component: Home }])
+  const Stub = createRoutesStub([
+    {
+      path: lang === 'es' ? '/es' : '/',
+      Component: Home,
+      loader: () => ({ alerts: [], listingNames: {}, byListing: {} }),
+    },
+  ])
   render(
     <I18nProvider lang={lang}>
       <Stub initialEntries={[lang === 'es' ? '/es' : '/']} />

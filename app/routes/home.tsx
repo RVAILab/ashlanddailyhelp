@@ -1,4 +1,7 @@
 import { Link } from 'react-router'
+import { pageAlerts } from '../../server/feed/page-alerts.ts'
+import { AlertList } from '../components/alert-list.tsx'
+import { services } from '../context.ts'
 import { langFromPath, messagesFor } from '../i18n/index.ts'
 import { useI18n } from '../i18n/provider.tsx'
 import { categories } from '../lib/categories.ts'
@@ -6,14 +9,25 @@ import type { Route } from './+types/home'
 
 export const handle = { hydrate: false }
 
+export async function loader({ url, context }: Route.LoaderArgs) {
+  let db = null
+  try {
+    db = context.get(services).database()
+  } catch (error) {
+    console.error('home: could not open the database', error)
+  }
+  return pageAlerts(db, langFromPath(url.pathname), new Date())
+}
+
 export function meta({ location }: Route.MetaArgs) {
   return [{ title: messagesFor(langFromPath(location.pathname)).siteName }]
 }
 
-export default function Home() {
+export default function Home({ loaderData }: Route.ComponentProps) {
   const { t, path } = useI18n()
   return (
     <main className="home">
+      <AlertList alerts={loaderData.alerts} listingNames={loaderData.listingNames} />
       <h1>{t.home.title}</h1>
       <p>{t.home.tagline}</p>
       <p>

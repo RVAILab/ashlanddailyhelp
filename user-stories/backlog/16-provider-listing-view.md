@@ -4,7 +4,7 @@ metadata:
   activated_at:
   planned_at:
   finished_at:
-  updated_at:   2026-10-25T11:06:46-07:00
+  updated_at:   2026-10-25T13:15:37-07:00
 -->
 
 # Story: Provider Listing Check and Corrections
@@ -25,6 +25,7 @@ SO THAT people get accurate information about my service
 
 ## Notes
 
+- From `09-resource-detail`: add the "Report a problem with this listing" link to the listing page (`app/routes/resource.tsx`) when this page exists.
 - Decided Oct 25: providers are read-only plus links; all collecting stays in the steward.
 - The steward's intake address is in its `docs/CONTEXT.md` (decision 11). Ask the steward's owner whether a form is coming before hard-coding an email address.
 

@@ -3,8 +3,8 @@ metadata:
   created_at:   2026-10-25T11:06:46-07:00
   activated_at: 2026-10-25T12:20:46-07:00
   planned_at:   2026-10-25T12:21:28-07:00
-  finished_at:
-  updated_at:   2026-10-25T12:21:28-07:00
+  finished_at:  2026-10-25T12:47:25-07:00
+  updated_at:   2026-10-25T12:47:25-07:00
 -->
 
 # Story: Ingest the Steward Feed
@@ -66,3 +66,44 @@ A scheduled Worker fetches `listings.json` from the feed's base URL with `If-Non
 
 - Production has no feed URL yet: the steward isn't hosted (steward #24). The scheduled ingest runs and logs until `FEED_BASE_URL` is set.
 - "The steward's JSON Schema" is checked through the zod schemas it is generated from; a zod and JSON Schema mismatch on the steward's side is the steward's test to catch (it has one).
+
+## Review
+
+Reviewed 2026-10-25 at `65161d1` by an independent agent; every finding was checked and fixed in `4387057` unless noted.
+
+| Criterion | Verdict | Evidence |
+| --- | --- | --- |
+| Postgres tables and migrations, queries tested on a real Postgres | ✅ | `db/schema.ts`, `db/migrations/0000_feed.sql`, PGlite in `test/db.ts`; postgres.js in the end-to-end job |
+| Scheduled fetch from one base URL, `If-None-Match`, 304 changes nothing | ✅ | `wrangler.jsonc` cron, `workers/app.ts` `scheduled`, `server/feed/ingest.ts`; tests for the first fetch (no ETag) and a 304 |
+| Contract check before writing; failures and unknown majors treated as failed fetches and logged | ✅ | `parse` in `server/feed/ingest.ts`; checked with the steward's zod schemas (its JSON Schema is generated from them) |
+| One transaction; dropped listings disappear | ✅ | Rollback test: a store failing after the delete keeps the last good copy |
+| Last good copy kept; pages show "as of" | ✅ | Ingest failure tests; the footer on every page, including not found (end-to-end) |
+| Every field stored; unknown fields ignored | ✅ | Optional fields kept; unknown fields dropped at every depth, then the steward's strict schema applied |
+| Listings past `endsAt` hidden before the next refresh | ✅ | `currentListings`, boundary test |
+| `dataset` stored and on every page | ✅ | Footer demonstration note; the root error boundary (a real server error) shows 211 instead |
+| Tests use the sample feed, including invalid and unknown versions | ✅ | `test/fixtures/feed-sample/`, the failure cases in `server/feed/ingest.test.ts` |
+| Events and alerts files ingested the same way | ⚠️ | `FeedFileSpec` is the plug-in point; the files don't exist yet (steward #40, #41) |
+
+Findings:
+
+1. Fixed: an unknown field nested in `provenance` rejected the whole file and would have frozen the copy. Unknown fields are now dropped at every depth before the steward's schema runs.
+2. Fixed: every page waited on the database with no timeout. Connections time out after 5 s and statements after 10 s, the footer's status read gives up after 2 s, the root loader catches errors opening the database, and it isn't reloaded when only the URL changes.
+3. Fixed: `FEED_BASE_URL` without a trailing slash fetched the parent folder's file, and an invalid URL escaped the error record. It is now treated as a folder and validated.
+4. Fixed: the CLI dropped request headers and the timeout for http(s) feeds.
+5. Fixed: database errors outside the main `try`, or while recording an error, escaped; they are now caught and logged.
+6. Fixed: a timed-out or reset body was reported as invalid JSON, and contract errors could be unbounded. Errors are now specific and at most 500 characters.
+7. Fixed: a 304 didn't clear a recorded error.
+8. Fixed: the footer's time was formatted in both the Worker and the browser, risking a hydration mismatch; it is formatted once, in the loader.
+9. Fixed: the duplicate-id rule was copied by hand; the steward's own refinement now runs.
+10. Fixed: overlapping refreshes could collide; they now take an advisory lock.
+11. Fixed: two types named `FeedHeader`, and an unstyled footer class.
+12. Fixed: missing tests (rollback, root loader, first fetch, timeouts, roles in the footer test, the not-found page).
+13. Process: two pushed commits were red (an over-broad `feed/` ignore rule left `server/feed/` uncommitted, then a formatting failure). `npm run check` and a pre-push hook now run lint, types and tests before every push.
+14. Fixed: the footer now gives the year and time zone in a `<time>` element, warns when the latest update failed, and tells "no listings yet" apart from "unavailable" (with 211). The demonstration label next to listings comes with `07-browse-and-search`.
+15. Fixed: README and CLAUDE.md statements (the local scheduled URL, the folder URL, what loosening covers, that only `listings.json` is refreshed so far, that the end-to-end setup replaces local listings).
+
+## Learnings
+
+- Went well: building ingest around a per-file spec kept failure handling in one place, and testing it against the steward's real sample feed caught the strictness problem before a real 1.4 feed would have.
+- Surprising: a `.gitignore` rule written for the old site (`feed/`) silently ignored `server/feed/`, and Biome, which reads `.gitignore`, skipped linting it too, so local checks passed on code that was never committed.
+- Next time: run `npm run check` from a clean clone of what's committed (or look at `git status` for untracked source) before pushing; the pre-push hook now covers the checks, and anchoring ignore rules to the root avoids the rest.

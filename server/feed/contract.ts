@@ -1,5 +1,15 @@
 import { z } from 'zod'
-import { FeedListing, FeedOpening, FeedProvenance, ListingsFeed } from '../../contract/steward/feed.ts'
+import {
+  FeedListing,
+  FeedOpening,
+  FeedProvenance,
+  ListingsFeed,
+  PulseEvent,
+  PulseFeed,
+  PulseReport,
+  PulseSnapshot,
+  WeekSnapshot,
+} from '../../contract/steward/feed.ts'
 
 export const KNOWN_MAJOR = '1'
 
@@ -133,3 +143,43 @@ export const AlertsFile = z.object({
 })
 
 export type AlertsFile = z.infer<typeof AlertsFile>
+
+// pulse.json and the frozen weeks/ files, read the same way: unknown fields dropped at every level, then the steward's
+// own schema, refinements included, applied to the rest.
+const pulseArrays = {
+  events: z.array(z.object(PulseEvent.shape)),
+  reports: z.array(z.object(PulseReport.shape)),
+}
+const Snapshot = z.object(PulseSnapshot.shape)
+
+function stewardCheck(schema: z.ZodType) {
+  return (file: unknown, ctx: z.RefinementCtx) => {
+    const steward = schema.safeParse(file)
+    if (!steward.success)
+      for (const issue of steward.error.issues)
+        ctx.addIssue({ code: 'custom', message: issue.message, path: issue.path })
+  }
+}
+
+export const PulseFile = z
+  .object({
+    ...PulseFeed.shape,
+    ...pulseArrays,
+    snapshots: z.array(Snapshot),
+    publishedWeeks: z.array(Snapshot).optional(),
+  })
+  .superRefine(stewardCheck(PulseFeed))
+
+export type PulseFile = z.infer<typeof PulseFile>
+
+export const WeekFile = z
+  .object({
+    ...WeekSnapshot.shape,
+    ...pulseArrays,
+    amounts: z.array(z.object(WeekSnapshot.shape.amounts.element.shape)),
+    coverage: z.object(WeekSnapshot.shape.coverage.shape),
+    outcomes: z.object(WeekSnapshot.shape.outcomes.shape),
+  })
+  .superRefine(stewardCheck(WeekSnapshot))
+
+export type WeekFile = z.infer<typeof WeekFile>

@@ -1,6 +1,8 @@
 import { sql } from 'drizzle-orm'
 import { customType, index, integer, jsonb, pgTable, text, timestamp } from 'drizzle-orm/pg-core'
+import type { PulseSnapshot } from '../contract/steward/feed.ts'
 import type { FeedAlert, FeedEvent, StoredListing } from '../server/feed/contract.ts'
+import type { PulseData } from '../server/pulse/view.ts'
 
 const instant = (name: string) => timestamp(name, { withTimezone: true })
 
@@ -87,4 +89,17 @@ export const alerts = pgTable('alerts', {
   position: integer().notNull(),
   endsAt: instant('ends_at').notNull(),
   data: jsonb().$type<FeedAlert>().notNull(),
+})
+
+// Community Pulse weeks: the live week from pulse.json (key `live`, no revision) and the latest published revision of
+// each finished week from its frozen weeks/ file (key `<weekStart>-r<revision>`).
+export const pulseWeeks = pgTable('pulse_weeks', {
+  key: text().primaryKey(),
+  weekStart: text('week_start').notNull(),
+  revision: integer(),
+  publishedAt: instant('published_at'),
+  note: text(),
+  dataset: text().notNull(),
+  // The live row also keeps pulse.json's list of published weeks, which says which week files to fetch.
+  data: jsonb().$type<PulseData & { publishedWeeks?: PulseSnapshot[] }>().notNull(),
 })

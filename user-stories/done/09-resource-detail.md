@@ -3,8 +3,8 @@ metadata:
   created_at:   2026-10-25T11:06:46-07:00
   activated_at: 2026-10-25T13:15:37-07:00
   planned_at:   2026-10-25T13:15:37-07:00
-  finished_at:
-  updated_at:   2026-10-25T13:15:37-07:00
+  finished_at:  2026-10-25T13:55:34-07:00
+  updated_at:   2026-10-25T13:55:34-07:00
 -->
 
 # Story: Resource Detail Page
@@ -62,3 +62,39 @@ None.
 
 - The sample feed has no `provenance` or `sourceUrls`, so those parts are covered by unit tests with hand-made listings until the steward's sample carries them.
 - Structured hours appear here once `12-today-open-now` reads them from the feed.
+
+## Review
+
+Reviewed 2026-10-25 at `427af8b` by an independent agent; findings checked and fixed in `31ad3cb` unless noted.
+
+| Criterion | Verdict | Evidence |
+| --- | --- | --- |
+| A stable, shareable URL per listing id | ✅ | `resources/:id` under the `es?` segment; cards link to it in the page's language |
+| Every field; "Not confirmed" for unknowns | ✅ | `app/lib/listing-detail.ts`; empty values and the steward's "Unknown" become "Not confirmed" in the page's language (steward #45 asks for empty values). Structured hours wait for `12-today-open-now`. |
+| Evidence: provenance label, review or last-confirmed date, conflict, source links | ✅ | Labels from `listingLabels`; sources (web addresses only) named by site and page; the review date shown once |
+| "Where does this come from?" | ✅ | A `<details>` disclosure from `provenance`, in the details' order, with the source, quoted text and date seen |
+| Sensitive location: the steward's wording, no map | ✅ | Matched loosely; no map; the address's provenance dropped (tested). Steward #45 asks for a flag instead of matching wording. |
+| Automatic-translation label | ⚠️ | Moved to `11-translate-listings`, recorded there |
+| "Report a problem" link | ⚠️ | Moved to `16-provider-listing-view`, recorded there |
+
+Findings:
+
+1. Fixed: no tests guarded the safety branches. Tests now show `javascript:`, `data:` and other non-web addresses never become links, and a sensitive location's address provenance never appears.
+2. Fixed: the steward's "Unknown" slipped past "Not confirmed", and an empty description showed nothing; raised with the steward as #45.
+3. Fixed: the disclosure lost its marker (a flex `summary`); it now keeps the browser's marker, scoped to the listing page.
+4. Fixed: "Back to search" dropped the search; cards now pass it along.
+5. Fixed: two sources on one site had the same link text; they are named by site and page.
+6. Fixed: provenance keys could collide, fields with no sources showed an empty term, unknown field names weren't marked English, and the order didn't follow the details.
+7. Fixed: the review date appeared twice when there was no provenance label.
+8. Fixed: any text with a digit was mapped; now only a street address (a number followed by a street name), from where it starts.
+9. Fixed: field labels were typed loosely and the phone label was unused.
+10. Kept: the not-found wording says "This listing is not available" (it may have ended) rather than the generic not-found page, with a link back to search; the plan's wording was the less useful one.
+11. Fixed: the loader test covers an ended listing; the source link test uses a literal name. Left: the sample-feed helper returns an untyped value, so hand-made test listings aren't checked against the contract.
+12. Fixed: the map link says it opens Google Maps in a new tab, the phone link says "Call …", focus moves to the new page's heading after an in-app navigation, non-web references are marked English on Spanish pages, and the provenance list has no wide indent. Left: inline source and provenance links are text-sized, which WCAG allows for links in text.
+13. Fixed: Spanish wording ("Descripción", "Zonas que atiende", "Consultado el", "Guía de recursos del condado", "Equipo de Daily Help").
+
+## Learnings
+
+- Went well: building the page from a server-side view model kept every safety rule (sensitive locations, link schemes) in one tested function.
+- Surprising: zod's `z.url()` accepts `javascript:` URLs, so a contract-valid feed can still carry an unsafe link; and the steward's placeholders ("Unknown") are data, not absence.
+- Next time: treat every URL from the feed as untrusted at the point it becomes an `href`, and ask the steward for flags rather than matching its wording.

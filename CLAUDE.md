@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 Ashland Daily Help lists community resources for Ashland and Jackson County, Oregon. The repo holds two apps:
 
 - The new app at the repo root: a full-stack TypeScript app (see "The new app" and "How we work"). All new work goes here.
-- The original static site in `legacy/`: dependency-free HTML, CSS and ES modules, served exactly as committed. It stays live until `17-domain-cutover`; the "Static site" sections below describe it, and their paths are relative to `legacy/`.
+- The original static site in `legacy/`: dependency-free HTML, CSS and ES modules, served exactly as committed. It still deploys to its own Worker until it is retired (the steward first has to stop reading its files, steward #42); the "Static site" sections below describe it, and their paths are relative to `legacy/`.
 
 ## Sibling repo: RogueRaise
 

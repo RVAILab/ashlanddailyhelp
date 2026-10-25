@@ -8,5 +8,6 @@
   "workers_dev": true,
   "preview_urls": false,
   "observability": { "enabled": true },
-  "triggers": { "crons": ["*/5 * * * *"] }
+  "triggers": { "crons": ["*/5 * * * *"] },
+  "vars": { "FEED_BASE_URL": "https://steward.ashlanddailyhelp.com/feed/" }
 }

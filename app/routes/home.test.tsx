@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest'
 import { I18nProvider } from '../i18n/provider.tsx'
 import Home, { handle } from './home.tsx'
 
-function renderHome(lang: 'en' | 'es' = 'en') {
+function renderHome(lang: 'en' | 'es' = 'en', art = true) {
   const Stub = createRoutesStub([
     {
       path: lang === 'es' ? '/es' : '/',
@@ -16,6 +16,7 @@ function renderHome(lang: 'en' | 'es' = 'en') {
         closedListings: [],
         demonstration: false,
         nextEnd: null,
+        art,
       }),
     },
   ])
@@ -61,6 +62,21 @@ describe('homepage', () => {
     expect(await screen.findByRole('heading', { level: 1, name: 'Encuentre ayuda' })).toBeDefined()
     expect(screen.getByRole('link', { name: /Comida/ }).getAttribute('href')).toBe('/es/resources?category=food')
     expect(screen.getByRole('link', { name: 'Acerca de Daily Help' }).getAttribute('href')).toBe('/es/about')
+  })
+
+  it('shows the valley and each kind of help’s picture as decoration', async () => {
+    renderHome()
+    const kinds = await screen.findByRole('region', { name: 'What do you need?' })
+    const pictures = kinds.querySelectorAll('img')
+    expect(pictures).toHaveLength(6)
+    for (const picture of pictures) expect(picture.getAttribute('alt')).toBe('')
+    expect(document.querySelector('.hero-art img')?.getAttribute('alt')).toBe('')
+  })
+
+  it('shows no pictures when the browser asks to save data', async () => {
+    renderHome('en', false)
+    await screen.findByRole('region', { name: 'What do you need?' })
+    expect(document.querySelectorAll('img, picture')).toHaveLength(0)
   })
 
   it('ships no JavaScript, since it is only links and text', () => {

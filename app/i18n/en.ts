@@ -3,6 +3,7 @@ import type { Category, SourceType } from '../../contract/steward/values.ts'
 export const en = {
   siteName: 'Ashland Daily Help',
   language: { name: 'English', switchTo: 'Español' },
+  brand: { name: 'Daily Help', place: 'Ashland, Oregon' },
   home: {
     title: 'Find help',
     tagline: 'Food, shelter, showers, health care and everyday essentials in Ashland and Jackson County.',
@@ -13,6 +14,7 @@ export const en = {
       crisis: 'Mental Health Crisis Line',
       services: 'Help finding services',
     },
+    eyebrow: 'Here for each other',
     kinds: 'What do you need?',
     hints: {
       food: 'Meals and groceries',

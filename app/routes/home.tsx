@@ -1,4 +1,4 @@
-import { Link } from 'react-router'
+import { data, Link } from 'react-router'
 import { pageAlerts } from '../../server/feed/page-alerts.ts'
 import { AlertList } from '../components/alert-list.tsx'
 import { services } from '../context.ts'
@@ -9,15 +9,28 @@ import type { Route } from './+types/home'
 
 export const handle = { hydrate: false }
 
-export async function loader({ url, context }: Route.LoaderArgs) {
+// Art and motion are extras: a browser asking to save data gets neither.
+export async function loader({ request, url, context }: Route.LoaderArgs) {
   let db = null
   try {
     db = context.get(services).database()
   } catch (error) {
     console.error('home: could not open the database', error)
   }
-  return pageAlerts(db, langFromPath(url.pathname), new Date())
+  const art = request.headers.get('Save-Data')?.toLowerCase() !== 'on'
+  return data({ ...(await pageAlerts(db, langFromPath(url.pathname), new Date())), art })
 }
+
+export function headers({ parentHeaders }: Route.HeadersArgs) {
+  const headers = new Headers(parentHeaders)
+  headers.set('Vary', [parentHeaders.get('Vary'), 'Save-Data'].filter(Boolean).join(', '))
+  return headers
+}
+
+const art = (name: string) => ({
+  avif: `/art/${name}.avif`,
+  webp: `/art/${name}.webp`,
+})
 
 export function meta({ location }: Route.MetaArgs) {
   return [{ title: messagesFor(langFromPath(location.pathname)).siteName }]
@@ -25,26 +38,44 @@ export function meta({ location }: Route.MetaArgs) {
 
 export default function Home({ loaderData }: Route.ComponentProps) {
   const { t, path } = useI18n()
+  const { art: showArt } = loaderData
   return (
-    <main className="home">
-      <h1>{t.home.title}</h1>
+    <main className={showArt ? 'home home-motion' : 'home'}>
+      <div className="hero">
+        <div className="hero-copy">
+          <p className="eyebrow">
+            <span aria-hidden="true">✳</span> {t.home.eyebrow}
+          </p>
+          <h1>{t.home.title}</h1>
+          <p className="lede">{t.home.tagline}</p>
+          <p>
+            <Link to={path('/today')} className="today-link">
+              {t.today.link} <span aria-hidden="true">→</span>
+            </Link>
+          </p>
+        </div>
+        {showArt && (
+          <picture className="hero-art">
+            <source type="image/avif" media="(max-width: 40rem)" srcSet={art('valley-m-640').avif} />
+            <source type="image/webp" media="(max-width: 40rem)" srcSet={art('valley-m-640').webp} />
+            <source type="image/avif" srcSet={art('valley-960').avif} />
+            <source type="image/webp" srcSet={art('valley-960').webp} />
+            <img src="/art/valley-960.jpg" alt="" width="960" height="538" decoding="async" fetchPriority="low" />
+          </picture>
+        )}
+      </div>
       <AlertList
         alerts={loaderData.alerts}
         listingNames={loaderData.listingNames}
         demonstration={loaderData.demonstration}
       />
-      <p>{t.home.tagline}</p>
-      <p>
-        <Link to={path('/today')} className="today-link">
-          {t.today.link}
-        </Link>
-      </p>
       <section aria-labelledby="kinds-heading">
         <h2 id="kinds-heading">{t.home.kinds}</h2>
         <ul className="kinds">
           {categories.map(id => (
             <li key={id}>
               <Link to={path(`/resources?category=${id}`)}>
+                {showArt && <TileArt name={`cat-${id}-160`} />}
                 <strong>{t.categories[id]}</strong>
                 <span>{t.home.hints[id]}</span>
               </Link>
@@ -52,6 +83,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
           ))}
           <li>
             <Link to={path('/resources')} className="search-all">
+              {showArt && <TileArt name="cat-all-160" />}
               <strong>{t.home.searchAll}</strong>
             </Link>
           </li>
@@ -72,5 +104,15 @@ export default function Home({ loaderData }: Route.ComponentProps) {
         </ul>
       </section>
     </main>
+  )
+}
+
+function TileArt({ name }: { name: string }) {
+  return (
+    <picture>
+      <source type="image/avif" srcSet={art(name).avif} />
+      <source type="image/webp" srcSet={art(name).webp} />
+      <img src={`/art/${name}.png`} alt="" width="56" height="56" loading="lazy" decoding="async" />
+    </picture>
   )
 }

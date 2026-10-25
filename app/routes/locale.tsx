@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { data, Link, Outlet, redirect, type ShouldRevalidateFunctionArgs, useLocation } from 'react-router'
 import { type FeedStatus, listingsFeedStatus } from '../../server/feed/listings.ts'
+import { BrandMark } from '../components/brand-mark.tsx'
 import { FeedFooter, type FooterFeed } from '../components/feed-footer.tsx'
 import { services } from '../context.ts'
 import { type Lang, langFromPath, messagesFor } from '../i18n/index.ts'
@@ -91,8 +92,12 @@ export default function Locale({ loaderData }: Route.ComponentProps) {
   return (
     <I18nProvider lang={lang}>
       <header className="site-header">
-        <Link to={lang === 'es' ? '/es' : '/'} className="site-name">
-          {t.siteName}
+        <Link to={lang === 'es' ? '/es' : '/'} className="site-name" aria-label={t.siteName}>
+          <BrandMark />
+          <span className="brand-word">
+            <span className="brand-name">{t.brand.name}</span>
+            <span className="brand-place">{t.brand.place}</span>
+          </span>
         </Link>
         <Link to={lang === 'es' ? '/es/list' : '/list'} className="list-link">
           {t.list.link}

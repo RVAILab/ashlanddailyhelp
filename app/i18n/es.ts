@@ -4,6 +4,7 @@ import type { Messages } from './en.ts'
 export const es = {
   siteName: 'Ashland Daily Help',
   language: { name: 'Español', switchTo: 'English' },
+  brand: { name: 'Daily Help', place: 'Ashland, Oregon' },
   home: {
     title: 'Encuentre ayuda',
     tagline:
@@ -15,6 +16,7 @@ export const es = {
       crisis: 'Mental Health Crisis Line',
       services: 'Ayuda para encontrar servicios',
     },
+    eyebrow: 'Here for each other',
     kinds: '¿Qué necesita?',
     hints: {
       food: 'Comidas y despensas',

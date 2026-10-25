@@ -9,7 +9,14 @@ function renderHome(lang: 'en' | 'es' = 'en') {
     {
       path: lang === 'es' ? '/es' : '/',
       Component: Home,
-      loader: () => ({ alerts: [], listingNames: {}, byListing: {} }),
+      loader: () => ({
+        alerts: [],
+        listingNames: {},
+        byListing: {},
+        closedListings: [],
+        demonstration: false,
+        nextEnd: null,
+      }),
     },
   ])
   render(

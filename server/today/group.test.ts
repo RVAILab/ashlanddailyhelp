@@ -170,3 +170,12 @@ describe('groupToday, from the review', () => {
     expect(ids(grouped.later)).toEqual(['pdt', 'pst'])
   })
 })
+
+describe('groupToday with closure alerts', () => {
+  it('never shows a listing as open while an alert closes it', () => {
+    const open = [window('2026-10-25T09:00:00-07:00', '2026-10-25T12:00:00-07:00')]
+    const grouped = groupToday([listing('closed-by-alert', { openings: open })], now, new Set(['closed-by-alert']))
+    expect(grouped.openNow).toEqual([])
+    expect(grouped.closed.map(entry => entry.listing.id)).toEqual(['closed-by-alert'])
+  })
+})

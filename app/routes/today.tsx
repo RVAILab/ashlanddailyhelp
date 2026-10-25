@@ -121,6 +121,9 @@ const dayName = (lang: Lang, date: string) =>
     new Date(`${date}T12:00:00Z`),
   )
 
+const soonest = (...times: Array<string | null>) =>
+  times.filter((time): time is string => time !== null).sort((a, b) => Date.parse(a) - Date.parse(b))[0] ?? null
+
 export async function loader({ url, context }: Route.LoaderArgs) {
   const db = context.get(services).database()
   if (!db) throw data('The listings database is not configured.', { status: 503 })
@@ -128,8 +131,8 @@ export async function loader({ url, context }: Route.LoaderArgs) {
   const t = messagesFor(lang)
   const now = new Date()
   const { query: _, ...filters } = readFilters(url.searchParams)
-  const groups = groupToday(await searchListings(db, filters, now, lang), now)
   const alerts = await pageAlerts(db, lang, now)
+  const groups = groupToday(await searchListings(db, filters, now, lang), now, new Set(alerts.closedListings))
   const scheduled = groupEvents(
     (await upcomingEvents(db, now)).filter(
       event => (!filters.category || event.categories.includes(filters.category)) && servesAshland(event.area),
@@ -143,7 +146,7 @@ export async function loader({ url, context }: Route.LoaderArgs) {
     filters,
     workedOut: clock(lang, now),
     now: now.toISOString(),
-    nextChange: groups.nextChange?.toISOString() ?? null,
+    nextChange: soonest(groups.nextChange?.toISOString() ?? null, alerts.nextEnd),
     events: {
       today: view(scheduled.today),
       finished: view(scheduled.finished),
@@ -194,8 +197,8 @@ export default function Today({ loaderData }: Route.ComponentProps) {
   useRegroup(now, nextChange)
   return (
     <main>
-      <AlertList alerts={alerts.alerts} listingNames={alerts.listingNames} />
       <h1>{t.today.title}</h1>
+      <AlertList alerts={alerts.alerts} listingNames={alerts.listingNames} demonstration={alerts.demonstration} />
       <p>{t.today.workedOut(workedOut)}</p>
       <Form method="get" className="search-form">
         <label>

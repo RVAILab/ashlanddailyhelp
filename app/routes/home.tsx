@@ -27,8 +27,12 @@ export default function Home({ loaderData }: Route.ComponentProps) {
   const { t, path } = useI18n()
   return (
     <main className="home">
-      <AlertList alerts={loaderData.alerts} listingNames={loaderData.listingNames} />
       <h1>{t.home.title}</h1>
+      <AlertList
+        alerts={loaderData.alerts}
+        listingNames={loaderData.listingNames}
+        demonstration={loaderData.demonstration}
+      />
       <p>{t.home.tagline}</p>
       <p>
         <Link to={path('/today')} className="today-link">

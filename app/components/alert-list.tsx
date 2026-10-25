@@ -5,11 +5,20 @@ import type { AlertView } from '../lib/alert-view.ts'
 const shapes = { urgent: '▲', notice: '●' } as const
 
 // A plain region, not a live one: screen readers read the alerts once, with the page, not on every refresh.
-export function AlertList({ alerts, listingNames }: { alerts: AlertView[]; listingNames: Record<string, string> }) {
+export function AlertList({
+  alerts,
+  listingNames,
+  demonstration = false,
+}: {
+  alerts: AlertView[]
+  listingNames: Record<string, string>
+  demonstration?: boolean
+}) {
   const { t, path } = useI18n()
   if (alerts.length === 0) return null
   return (
     <section aria-label={t.alerts.label} className="alerts">
+      {demonstration && <p className="notice">{t.feed.demonstration}</p>}
       {alerts.map(alert => (
         <article key={alert.id} aria-labelledby={`alert-${alert.id}`} className={`alert alert-${alert.severity}`}>
           <p className="alert-severity">

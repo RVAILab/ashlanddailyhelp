@@ -24,12 +24,21 @@ const time = (iso: string) => Date.parse(iso)
 // Which of today's groups each listing belongs in, worked out in Pacific time from its opening windows. A listing is
 // never "open" without windows, when its schedule needs checking or may be canceled, when today's window may be or is
 // canceled, or when its windows don't reach today (a stale copy says nothing about today).
-export function groupToday(listings: StoredListing[], now: Date): TodayGroups {
+export function groupToday(
+  listings: StoredListing[],
+  now: Date,
+  closedByAlert: ReadonlySet<string> = new Set(),
+): TodayGroups {
   const today = pacificDate(now)
   const groups: TodayGroups = { openNow: [], later: [], closed: [], notConfirmed: [], nextChange: null }
   const changes: number[] = []
   const nowMs = now.getTime()
   for (const listing of listings) {
+    // An in-effect closure or cancellation alert overrides the listing's windows.
+    if (closedByAlert.has(listing.id)) {
+      groups.closed.push({ listing, today: [] })
+      continue
+    }
     const openings = [...(listing.openings ?? [])].sort((a, b) => time(a.startsAt) - time(b.startsAt))
     const coversToday = openings.some(
       window =>

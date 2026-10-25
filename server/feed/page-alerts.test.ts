@@ -33,8 +33,64 @@ describe('pageAlerts', () => {
     const db = await testDatabase()
     await db.close()
     vi.spyOn(console, 'error').mockImplementation(() => {})
-    expect(await pageAlerts(db, 'en', new Date())).toEqual({ alerts: [], listingNames: {}, byListing: {} })
-    expect(await pageAlerts(null, 'en', new Date())).toEqual({ alerts: [], listingNames: {}, byListing: {} })
+    expect(await pageAlerts(db, 'en', new Date())).toMatchObject({ alerts: [], byListing: {}, closedListings: [] })
+    expect(await pageAlerts(null, 'en', new Date())).toMatchObject({ alerts: [], byListing: {}, closedListings: [] })
     vi.restoreAllMocks()
+  })
+})
+
+describe('pageAlerts, from the review', () => {
+  const store = async (change: (feed: { alerts: Array<Record<string, unknown>> }) => void) => {
+    const db = await testDatabase()
+    await storeListings(db)
+    const feed = JSON.parse(readFileSync('test/fixtures/proposed/alerts.json', 'utf8'))
+    change(feed)
+    await refreshFeedFile(alertsFile, {
+      db,
+      baseUrl: 'https://feed.example.org/',
+      fetch: feedHost(json(feed)).fetch,
+      now: () => new Date(),
+    })
+    return db
+  }
+
+  it('says a named listing’s alert was canceled, rather than repeating "open"', async () => {
+    const db = await store(feed =>
+      Object.assign(feed.alerts[1] ?? {}, { status: 'canceled', note: 'Canceled: the shelter will not open.' }),
+    )
+    const page = await pageAlerts(db, 'en', new Date('2026-10-25T18:00:00Z'))
+    expect(page.byListing['ohra-shelter']).toBe(
+      'Severe weather shelter open Sunday night: Canceled: the shelter will not open.',
+    )
+    await db.close()
+  })
+
+  it('names the listings an in-effect closure or cancellation shuts', async () => {
+    const db = await store(feed =>
+      Object.assign(feed.alerts[1] ?? {}, { kind: 'closure', startsAt: '2026-10-25T08:00:00-07:00' }),
+    )
+    const page = await pageAlerts(db, 'en', new Date('2026-10-25T18:00:00Z'))
+    expect(page.closedListings).toEqual(['ohra-shelter'])
+    await db.close()
+  })
+
+  it('waits until a day before an alert starts to show it', async () => {
+    const db = await store(feed =>
+      Object.assign(feed.alerts[0] ?? {}, {
+        startsAt: '2026-10-27T08:00:00-07:00',
+        endsAt: '2026-10-28T08:00:00-07:00',
+      }),
+    )
+    const ids = (await pageAlerts(db, 'en', new Date('2026-10-25T18:00:00Z'))).alerts.map(alert => alert.id)
+    expect(ids).not.toContain('notice-smoke')
+    await db.close()
+  })
+
+  it('says when the alerts are a demonstration, and when the next one ends', async () => {
+    const db = await store(() => {})
+    const page = await pageAlerts(db, 'en', new Date('2026-10-25T18:00:00Z'))
+    expect(page.demonstration).toBe(true)
+    expect(page.nextEnd).toBe('2026-10-26T14:30:00.000Z')
+    await db.close()
   })
 })

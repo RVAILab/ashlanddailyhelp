@@ -66,6 +66,13 @@ const pageName = (url: string) => {
 // A map search helps only for a street address: a number followed by a street name, from wherever it starts.
 const streetAddress = (address: string) => address.match(/\b\d+\s+[A-Za-z][\s\S]*$/)?.[0] ?? null
 
+// Where to go, as a page should say it: the steward's sensitive wording as ours, and an unknown place as unconfirmed.
+export function whereText(address: string, lang: Lang): string {
+  const t = messagesFor(lang)
+  if (normalize(address) === SENSITIVE_ADDRESS) return t.detail.locationNotPublished
+  return UNKNOWN.includes(normalize(address)) ? t.detail.notConfirmed : address.trim()
+}
+
 export function listingDetail(listing: FeedListing, lang: Lang, translated = new Map<string, string>()): ListingDetail {
   const t = messagesFor(lang)
   const day = (iso: string, timeZone = 'America/Los_Angeles') =>

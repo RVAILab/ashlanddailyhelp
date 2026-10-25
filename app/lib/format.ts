@@ -16,3 +16,8 @@ export function formatAsOf(iso: string, lang: Lang): string {
   })
   return format.format(new Date(iso)).replace(/\s/g, ' ')
 }
+
+export const clock = (lang: Lang, iso: string | Date) =>
+  new Intl.DateTimeFormat(locales[lang], { timeZone: 'America/Los_Angeles', hour: 'numeric', minute: '2-digit' })
+    .format(new Date(iso))
+    .replace(/\s/g, ' ')

@@ -13,6 +13,7 @@ export default [
     route('resources/:id', 'routes/resource.tsx'),
     route('about', 'routes/about.tsx'),
     route('today', 'routes/today.tsx'),
+    route('next', 'routes/next.tsx'),
     route('providers', 'routes/providers.tsx'),
     route('report', 'routes/report.tsx'),
     route('list', 'routes/list.tsx'),

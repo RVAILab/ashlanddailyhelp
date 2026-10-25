@@ -13,6 +13,8 @@ export interface PageAlerts {
   byListing: Record<string, string>
   // Listings an in-effect closure or cancellation shuts, which /today never shows as open.
   closedListings: string[]
+  // Events an in-effect closure or cancellation shuts.
+  closedEvents: string[]
   demonstration: boolean
   // When the soonest alert ends, so /today can drop it without a reload.
   nextEnd: string | null
@@ -23,6 +25,7 @@ const empty: PageAlerts = {
   listingNames: {},
   byListing: {},
   closedListings: [],
+  closedEvents: [],
   demonstration: false,
   nextEnd: null,
 }
@@ -45,20 +48,21 @@ export async function pageAlerts(db: Database | null, lang: Lang, now: Date): Pr
       const status = views[index]?.status
       for (const id of alert.listingIds ?? []) byListing[id] ??= status ? `${alert.title}: ${status}` : alert.title
     })
-    const closedListings = alerts
-      .filter(
-        alert =>
-          (alert.kind === 'closure' || alert.kind === 'cancellation') &&
-          !alert.status &&
-          Date.parse(alert.startsAt) <= now.getTime(),
-      )
-      .flatMap(alert => alert.listingIds ?? [])
+    const closing = alerts.filter(
+      alert =>
+        (alert.kind === 'closure' || alert.kind === 'cancellation') &&
+        !alert.status &&
+        Date.parse(alert.startsAt) <= now.getTime(),
+    )
+    const closedListings = closing.flatMap(alert => alert.listingIds ?? [])
+    const closedEvents = closing.flatMap(alert => alert.eventIds ?? [])
     const file = await feedFileStatus(db, 'alerts.json')
     return {
       alerts: views,
       listingNames,
       byListing,
       closedListings,
+      closedEvents,
       demonstration: file?.dataset === 'FICTIONAL_DEMONSTRATION',
       nextEnd: new Date(Math.min(...alerts.map(alert => Date.parse(alert.endsAt)))).toISOString(),
     }

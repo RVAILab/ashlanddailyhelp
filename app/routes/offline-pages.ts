@@ -2,7 +2,7 @@ import { currentListings } from '../../server/feed/listings.ts'
 import { services } from '../context.ts'
 import type { Route } from './+types/offline-pages'
 
-const MAIN = ['/', '/today', '/resources', '/about']
+const MAIN = ['/', '/next', '/today', '/resources', '/about']
 
 // The pages the service worker keeps on the device after it installs.
 export async function loader({ context }: Route.LoaderArgs) {

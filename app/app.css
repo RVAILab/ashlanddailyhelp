@@ -292,7 +292,8 @@ main h1[tabindex="-1"]:focus-visible {
 .call-211,
 .today-link,
 .search-form button,
-.listing-page .action {
+.listing-page .action,
+.next-actions .action {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -312,7 +313,8 @@ main h1[tabindex="-1"]:focus-visible {
   color: var(--on-accent);
 }
 
-.listing-page .action {
+.listing-page .action,
+.next-actions .action {
   border-color: var(--line-2);
   background: var(--card);
   color: var(--accent);
@@ -360,6 +362,89 @@ main h1[tabindex="-1"]:focus-visible {
   font-size: clamp(3rem, 9vw, 5.5rem);
   line-height: 0.95;
   letter-spacing: -0.04em;
+}
+
+.hero > * {
+  min-width: 0;
+}
+
+.hero h1 span {
+  display: block;
+}
+
+.hero h1 em {
+  display: block;
+  font-style: italic;
+  font-weight: 340;
+  color: var(--clay);
+}
+
+.hero-search {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  max-width: 34rem;
+  margin: 0 0 1rem;
+  padding: 0.4rem 0.4rem 0.4rem 1.1rem;
+  border: 1px solid var(--field);
+  border-radius: 999px;
+  background: var(--card);
+  box-shadow: var(--shadow-lift);
+}
+
+.hero-search:focus-within {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.hero-search input {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  min-height: 48px;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font: 500 1.1rem / 1.2 var(--sans);
+}
+
+.hero-search input:focus {
+  outline: none;
+}
+
+.hero-search button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 48px;
+  padding: 0 1.3rem;
+  border: 0;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font: 600 1rem / 1 var(--sans);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.next-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-weight: 600;
+}
+
+.belonging {
+  margin: 2.5rem 0 0;
+  text-align: center;
+  font: italic 340 clamp(1.4rem, 3vw, 2.1rem) / 1.3 var(--serif);
+  color: var(--moss);
+}
+
+.belonging span[aria-hidden] {
+  margin: 0 0.4em;
+  font: 400 1rem / 1 var(--sans);
+  color: var(--clay);
 }
 
 .lede {
@@ -686,6 +771,46 @@ main h1[tabindex="-1"]:focus-visible {
   align-items: center;
   min-height: 44px;
   font-weight: 600;
+}
+
+/* Next */
+
+.next-pick {
+  margin: 1.5rem 0;
+  padding: 1.25rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-m);
+  background: var(--card);
+  box-shadow: var(--shadow-soft);
+  font-size: 1.25rem;
+}
+
+.next-pick h2 {
+  margin: 0;
+  font: 700 0.8rem / 1.3 var(--sans);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--moss);
+}
+
+.next-pick h3 {
+  margin: 0.5rem 0 0;
+  font-size: clamp(1.75rem, 6vw, 2.5rem);
+}
+
+.next-when {
+  margin: 0.5rem 0 0;
+  font-weight: 700;
+}
+
+.next-where {
+  margin: 0.25rem 0 0;
+}
+
+.next-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
 }
 
 /* Today */

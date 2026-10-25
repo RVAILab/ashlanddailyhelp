@@ -18,13 +18,9 @@ import { type Lang, langFromPath, locales, messagesFor } from '../i18n/index.ts'
 import { useI18n } from '../i18n/provider.tsx'
 import { areaName } from '../lib/areas.ts'
 import { toCard } from '../lib/card-data.ts'
+import { clock } from '../lib/format.ts'
 import { savedIds } from '../lib/saved-list.ts'
 import type { Route } from './+types/today'
-
-const clock = (lang: Lang, iso: string | Date) =>
-  new Intl.DateTimeFormat(locales[lang], { timeZone: 'America/Los_Angeles', hour: 'numeric', minute: '2-digit' })
-    .format(new Date(iso))
-    .replace(/\s/g, ' ')
 
 interface TodayCard {
   card: ListingCard
@@ -192,6 +188,9 @@ export default function Today({ loaderData }: Route.ComponentProps) {
       <h1>{t.today.title}</h1>
       <AlertList alerts={alerts.alerts} listingNames={alerts.listingNames} demonstration={alerts.demonstration} />
       <p>{t.today.workedOut(workedOut)}</p>
+      <p>
+        <Link to={path('/next')}>{t.next.link}</Link>
+      </p>
       <section aria-labelledby="events-heading" className="today-events">
         <h2 id="events-heading">{t.events.title}</h2>
         {eventsDemonstration && <p className="notice">{t.feed.demonstration}</p>}

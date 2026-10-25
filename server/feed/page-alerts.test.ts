@@ -67,10 +67,15 @@ describe('pageAlerts, from the review', () => {
 
   it('names the listings an in-effect closure or cancellation shuts', async () => {
     const db = await store(feed =>
-      Object.assign(feed.alerts[1] ?? {}, { kind: 'closure', startsAt: '2026-10-25T08:00:00-07:00' }),
+      Object.assign(feed.alerts[1] ?? {}, {
+        kind: 'closure',
+        startsAt: '2026-10-25T08:00:00-07:00',
+        eventIds: ['breakfast-1'],
+      }),
     )
     const page = await pageAlerts(db, 'en', new Date('2026-10-25T18:00:00Z'))
     expect(page.closedListings).toEqual(['ohra-shelter'])
+    expect(page.closedEvents).toEqual(['breakfast-1'])
     await db.close()
   })
 

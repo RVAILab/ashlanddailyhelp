@@ -3,8 +3,8 @@ metadata:
   created_at:   2026-10-25T11:06:46-07:00
   activated_at: 2026-10-25T13:47:32-07:00
   planned_at:   2026-10-25T13:47:32-07:00
-  finished_at:
-  updated_at:   2026-10-25T13:47:32-07:00
+  finished_at:  2026-10-25T14:09:30-07:00
+  updated_at:   2026-10-25T14:09:30-07:00
 -->
 
 # Story: Homepage
@@ -61,3 +61,25 @@ None.
 
 - Without JavaScript, links from the homepage are full page loads; that is the point for the first visit, and later pages hydrate.
 - The wording of the crisis lines (988 for a mental-health or suicide crisis) should be checked against how 988 and 211 describe themselves.
+
+## Review
+
+Reviewed 2026-10-25 at `3c9c02a` by an independent agent; findings fixed in the next commit unless noted.
+
+| Criterion | Verdict | Evidence |
+| --- | --- | --- |
+| Alerts first, then /today, then the kinds of help | ⚠️ | Kinds of help built; alerts (`14-today-alerts`) and the /today link (`12-today-open-now`) come with those stories |
+| 911, 988, 211 visible without scrolling | ✅ | `e2e/home.spec.ts` at 320×568 |
+| Ways in for navigators, providers, the public | ⚠️ | Links exist; sharing and printing come with `17-shareable-lists` and `18-print-handout`, checking a listing with `16-provider-listing-view` |
+| "As of" and demonstration note | ✅ | Server-rendered footer |
+| 320px, 44px targets, keyboard and screen reader | ✅ | End-to-end checks for size, scroll and keyboard; a real screen-reader pass is still a manual check |
+| Under 100 KB first load | ✅ | About 7 KB, no scripts (end-to-end, bytes counted after every response) |
+| English and Spanish | ✅ | Both; Spanish polish deferred, as asked |
+
+Fixed: the About page overstated human review, missed sources (city alerts, flyers) and the freshness reason for "not yet confirmed", and said nothing is kept although Cloudflare logs requests; 988 is now "Suicide and crisis line, call or text"; emergency links read "Call 911 …"; the heading is shorter, so a kind of help shows on the first screen; the byte count waits for every response; the no-JavaScript switch has a unit test; the size check covers every link. Left: CSS specificity warnings, the favicon 404, and the Spanish wording notes (polish deferred).
+
+## Learnings
+
+- Went well: rendering the homepage with no JavaScript met the budget by a wide margin without compromising the interactive pages.
+- Surprising: the riskiest text on a static page was the About page's claims; it said more about review and privacy than the systems do.
+- Next time: check every claim about another system against that system's own docs before writing it.

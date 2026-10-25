@@ -20,6 +20,8 @@ export const shipsJavaScript = (handles: unknown[]) => handles.every(handle => !
 const hasHydrateFalse = (handle: unknown) =>
   typeof handle === 'object' && handle !== null && 'hydrate' in handle && handle.hydrate === false
 
+const OFFLINE_SCRIPT = `(function(){var n=document.getElementById('offline-notice');function u(){if(n)n.hidden=navigator.onLine}u();addEventListener('online',u);addEventListener('offline',u);if('serviceWorker' in navigator&&location.search.indexOf('cleared')<0)navigator.serviceWorker.register('/sw.js')})()`
+
 export function Layout({ children }: { children: React.ReactNode }) {
   const { pathname, search } = useLocation()
   const origin = useRouteLoaderData<typeof localeLoader>('routes/locale')?.origin
@@ -30,6 +32,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="theme-color" content="#1f5f4a" />
+        <link rel="manifest" href="/manifest.webmanifest" />
+        <link rel="icon" href="/icon.svg" type="image/svg+xml" />
         <Meta />
         {origin && (
           <>
@@ -42,7 +47,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
+        <p id="offline-notice" className="notice offline-notice" hidden suppressHydrationWarning>
+          {messagesFor(langFromPath(pathname)).feed.offline}
+        </p>
         {children}
+        <script
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: a fixed string, no data; inline so even pages without JavaScript work offline and say so
+          dangerouslySetInnerHTML={{ __html: OFFLINE_SCRIPT }}
+        />
         {hydrate && (
           <>
             <ScrollRestoration />

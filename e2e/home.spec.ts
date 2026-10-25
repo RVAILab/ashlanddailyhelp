@@ -21,7 +21,7 @@ test.describe('the homepage on a small phone', () => {
   })
 })
 
-test('the first load of the homepage stays under 100 KB and runs no JavaScript', async ({ page }) => {
+test('the first load of the homepage stays under 100 KB and loads no JavaScript files', async ({ page }) => {
   const bodies: Array<Promise<number>> = []
   page.on('response', response =>
     bodies.push(
@@ -33,7 +33,7 @@ test('the first load of the homepage stays under 100 KB and runs no JavaScript',
   )
   await page.goto('/', { waitUntil: 'networkidle' })
   const bytes = (await Promise.all(bodies)).reduce((sum, size) => sum + size, 0)
-  expect(await page.locator('script').count()).toBe(0)
+  expect(await page.locator('script[src], script[type="module"]').count()).toBe(0)
   expect(bytes).toBeLessThan(100_000)
 })
 

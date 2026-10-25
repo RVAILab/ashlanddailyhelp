@@ -186,6 +186,9 @@ export const en = {
     updateFailing: 'The latest update could not be loaded, so these listings may be out of date.',
     demonstration: 'This is demonstration data. Some listings are fictional.',
     none: 'Listings have not loaded yet.',
+    offline:
+      'You’re offline. These are the copies saved on this device, as of the date below; call before you go when you can.',
+    clearDevice: 'Clear this device',
     unavailable: 'Listings are unavailable right now. For help finding services, call',
   },
   errors: {

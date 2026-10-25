@@ -189,6 +189,9 @@ export const es = {
     updateFailing: 'No se pudo cargar la última actualización, así que esta información podría no estar al día.',
     demonstration: 'Estos son datos de demostración. Algunos lugares de la lista son ficticios.',
     none: 'La lista todavía no se ha cargado.',
+    offline:
+      'You’re offline. These are the copies saved on this device, as of the date below; call before you go when you can.',
+    clearDevice: 'Clear this device',
     unavailable: 'La información no está disponible en este momento. Para encontrar ayuda, llame al',
   },
   errors: {

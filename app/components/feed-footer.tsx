@@ -29,6 +29,11 @@ export function FeedFooter({ feed }: { feed: FooterFeed }) {
         ))}
       </nav>
       {content(feed, t)}
+      <p>
+        <a href="/forget" rel="nofollow">
+          {t.feed.clearDevice}
+        </a>
+      </p>
     </footer>
   )
 }

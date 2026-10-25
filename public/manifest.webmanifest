@@ -1,0 +1,13 @@
+{
+  "id": "/",
+  "name": "Ashland Daily Help",
+  "short_name": "Daily Help",
+  "description": "Food, shelter, showers, health care and everyday essentials in Ashland.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#fbfaf6",
+  "theme_color": "#1f5f4a",
+  "lang": "en",
+  "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}

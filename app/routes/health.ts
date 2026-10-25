@@ -5,9 +5,9 @@ import type { Route } from './+types/health'
 type DatabaseStatus = 'ok' | 'unavailable' | 'not_configured'
 
 async function databaseStatus(context: Route.LoaderArgs['context']): Promise<DatabaseStatus> {
-  const db = context.get(services).database()
-  if (!db) return 'not_configured'
   try {
+    const db = context.get(services).database()
+    if (!db) return 'not_configured'
     await db.execute(sql`select 1`)
     return 'ok'
   } catch (error) {

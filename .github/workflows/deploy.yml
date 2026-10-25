@@ -1,7 +1,4 @@
-# Checks every push and pull request, and deploys on every push to main.
-# The old static site (legacy/) keeps deploying to the ashlanddailyhelp Worker until the domain cutover.
-# The new app deploys to the ashlanddailyhelp-app Worker once the DATABASE_URL repository secret exists.
-# Secrets: CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID, and DATABASE_URL for the app's migrations.
+# The app deploys only when the DATABASE_URL repository secret is set; see the README's production setup.
 name: Check and deploy
 on:
   push:
@@ -13,8 +10,8 @@ jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: 24
           cache: npm
@@ -23,6 +20,8 @@ jobs:
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
+      - run: for f in legacy/*.js; do node --check "$f"; done
+      - run: npx wrangler deploy --dry-run -c legacy/wrangler.jsonc
 
   e2e:
     runs-on: ubuntu-latest
@@ -36,8 +35,8 @@ jobs:
     env:
       DATABASE_URL: postgres://postgres:postgres@127.0.0.1:5432/postgres
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: 24
           cache: npm
@@ -49,40 +48,47 @@ jobs:
 
   deploy-legacy:
     needs: [check, e2e]
-    if: github.event_name != 'pull_request'
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: 24
-      - run: for f in legacy/*.js; do node --check "$f"; done
-      - run: npx --yes wrangler@4.152.0 deploy -c legacy/wrangler.jsonc
+          cache: npm
+      - run: npm ci
+      - run: npx wrangler deploy -c legacy/wrangler.jsonc
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
   deploy-app:
     needs: [check, e2e]
-    if: github.event_name != 'pull_request'
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     env:
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
-      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      HAS_DATABASE: ${{ secrets.DATABASE_URL != '' }}
     steps:
-      - if: env.DATABASE_URL == ''
-        run: echo "::notice::DATABASE_URL is not set, so the app is not deployed. See the README's production setup."
-      - if: env.DATABASE_URL != ''
-        uses: actions/checkout@v4
-      - if: env.DATABASE_URL != ''
-        uses: actions/setup-node@v4
+      - if: env.HAS_DATABASE != 'true'
+        run: echo "::notice::The DATABASE_URL repository secret is not set, so the app is not deployed."
+      - if: env.HAS_DATABASE == 'true'
+        uses: actions/checkout@v5
+      - if: env.HAS_DATABASE == 'true'
+        uses: actions/setup-node@v5
         with:
           node-version: 24
           cache: npm
-      - if: env.DATABASE_URL != ''
+      - if: env.HAS_DATABASE == 'true'
         run: npm ci
-      - if: env.DATABASE_URL != ''
+      - if: env.HAS_DATABASE == 'true'
         run: npm run db:migrate
-      - if: env.DATABASE_URL != ''
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      - if: env.HAS_DATABASE == 'true'
         run: npm run deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      - if: env.HAS_DATABASE == 'true'
+        name: The deployed app reaches its database
+        run: curl --fail --silent --show-error --retry 5 --retry-delay 5 --retry-all-errors https://ashlanddailyhelp-app.kitchenlab.workers.dev/health

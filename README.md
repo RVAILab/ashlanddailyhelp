@@ -33,20 +33,20 @@ npm run dev
 
 Then open <http://localhost:5173>. `/health` reports whether the app can reach its database.
 
-`.dev.vars` holds local secrets and is not committed. To use another Postgres (Docker, Postgres.app), point `DATABASE_URL` in `.dev.vars` at it. Postgres.app asks for permission each time a new program connects, which shows up as connection timeouts from the Workers runtime, so the private cluster is easier.
+The app does not read the steward's feed yet (story `06-ingest-feed`). When it does, it will read the steward's sample feed from `../daily-help-steward/fixtures/feed-sample/` when the steward is checked out next to this repo.
 
-The steward's sample feed is in `../daily-help-steward/fixtures/feed-sample/` when the steward is checked out next to this repo.
+`.dev.vars` holds local secrets and is not committed. To use another Postgres (Docker, Postgres.app), point `DATABASE_URL` in `.dev.vars` at it. Postgres.app asks for permission each time a new program connects, which shows up as connection timeouts from the Workers runtime, so the private cluster is easier.
 
 ### Tests and checks
 
 ```sh
 npm test            # unit and integration tests (Vitest; database tests run on PGlite, no server needed)
-npm run e2e         # end-to-end journeys in a mobile browser against the built Worker (Playwright; needs .dev.vars)
+npm run e2e         # end-to-end journeys in a mobile browser against the built Worker (Playwright)
 npm run lint        # Biome
 npm run typecheck   # generated Worker and route types, then tsc
 ```
 
-Run `npx playwright install chromium` once before the first `npm run e2e`.
+Before the first `npm run e2e`, run `npx playwright install chromium`. The journeys use the database in `.dev.vars`, so start it and apply migrations first (`npm run db:start`, `npm run db:migrate`).
 
 ### Database migrations
 
@@ -54,10 +54,10 @@ Tables are defined in `db/schema.ts`. After changing it, `npm run db:generate` w
 
 ### Production setup (one time)
 
-The app deploys to the `ashlanddailyhelp-app` Worker on every push to `main` once a production database exists. Until then the deploy job skips it with a notice.
+The app deploys to the `ashlanddailyhelp-app` Worker on every push to `main` once the `DATABASE_URL` repository secret is set. Until then the deploy job skips it with a notice. After each deploy the job checks that `/health` on the deployed app reaches the database, so set up the Worker's own connection (step 2) before the repository secret (step 3).
 
 1. Create a Postgres database, for example on [Neon](https://neon.tech/).
-2. Give the Worker its connection string, either as a secret (`npx wrangler secret put DATABASE_URL`) or, better, through a [Hyperdrive](https://developers.cloudflare.com/hyperdrive/) configuration bound as `HYPERDRIVE` in `wrangler.jsonc`.
+2. Give the Worker its connection string, either as a secret (`npx wrangler secret put DATABASE_URL`) or, better, through a [Hyperdrive](https://developers.cloudflare.com/hyperdrive/) configuration bound as `HYPERDRIVE` in `wrangler.jsonc`, which pools connections. When both are set, Hyperdrive wins. With a Hyperdrive binding, give it a `localConnectionString` so `npm run dev` still uses the local database.
 3. Add the same connection string as the `DATABASE_URL` repository secret in GitHub, so the deploy job can run migrations.
 
 ## Deploys
@@ -67,7 +67,7 @@ GitHub Actions (`.github/workflows/deploy.yml`) runs lint, type checks, tests, t
 - the static site from `legacy/` to <https://ashlanddailyhelp.kitchenlab.workers.dev> (the `ashlanddailyhelp` Worker), and
 - the new app to the `ashlanddailyhelp-app` Worker, once `DATABASE_URL` is set.
 
-The live domain, ashlanddailyhelp.com, is still served from Bluehost and is not touched by either. The workflow needs the repository secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`.
+The live domain, ashlanddailyhelp.com, is still served from Bluehost and is not touched by either. The workflow needs the repository secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`, and `DATABASE_URL` for the app's migrations. Only `main` deploys, including manual runs.
 
 ## The static site
 

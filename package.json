@@ -8,8 +8,7 @@
   "scripts": {
     "dev": "react-router dev",
     "build": "react-router build",
-    "preview": "vite preview",
-    "typecheck": "wrangler types && react-router typegen && tsc --noEmit",
+    "typecheck": "wrangler types --include-env=false && react-router typegen && tsc --noEmit",
     "lint": "biome check .",
     "format": "biome check --write .",
     "test": "vitest run",
@@ -37,7 +36,6 @@
     "@react-router/dev": "^8.5.0",
     "@testing-library/dom": "^10.4.2",
     "@testing-library/react": "^16.3.3",
-    "@testing-library/user-event": "^14.6.8",
     "@types/node": "^26.6.5",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",

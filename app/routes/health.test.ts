@@ -25,6 +25,15 @@ describe('/health', () => {
     expect(await response.json()).toEqual({ ok: false, database: 'unavailable' })
   })
 
+  it('reports unavailable when the database cannot even be opened', async () => {
+    const database = () => {
+      throw new Error('Invalid URL')
+    }
+    const response = await loader(loaderArgs('/health', { database }))
+    expect(response.status).toBe(503)
+    expect(await response.json()).toEqual({ ok: false, database: 'unavailable' })
+  })
+
   it('reports not configured with a 503 when there is no database', async () => {
     const response = await loader(loaderArgs('/health'))
     expect(response.status).toBe(503)

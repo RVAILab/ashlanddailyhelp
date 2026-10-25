@@ -41,21 +41,22 @@ function overnight(startsAt: string, endsAt: string | null) {
 
 const category = { meal: 'food', sleep: 'housing' } as const
 
-function fromListing(entry: TodayEntry, openNow: boolean): NextPlace | null {
-  const window = entry.window as Opening | undefined
-  if (!window) return null
-  return {
-    source: 'listing',
-    id: entry.listing.id,
-    name: entry.listing.name,
-    provider: entry.listing.provider,
-    where: window.location ?? entry.listing.address,
-    phone: entry.listing.phone,
-    listingId: entry.listing.id,
-    startsAt: window.startsAt,
-    endsAt: window.endsAt ?? null,
-    openNow,
-  }
+// Every usable window today, not only the one that decides the listing's group on /today.
+function fromListing(entry: TodayEntry, now: number): NextPlace[] {
+  return entry.today
+    .filter(window => window.status !== 'canceled')
+    .map((window: Opening) => ({
+      source: 'listing' as const,
+      id: entry.listing.id,
+      name: entry.listing.name,
+      provider: entry.listing.provider,
+      where: window.location ?? entry.listing.address,
+      phone: entry.listing.phone,
+      listingId: entry.listing.id,
+      startsAt: window.startsAt,
+      endsAt: window.endsAt ?? null,
+      openNow: time(window.startsAt) <= now,
+    }))
 }
 
 function fromEvent(event: FeedEvent, now: number): NextPlace | null {
@@ -87,8 +88,9 @@ export function nextPlace(
   const nowMs = now.getTime()
   const wanted = (categories: readonly string[]) => categories.includes(category[kind])
   const candidates = [
-    ...groups.openNow.filter(entry => wanted(entry.listing.categories)).map(entry => fromListing(entry, true)),
-    ...groups.later.filter(entry => wanted(entry.listing.categories)).map(entry => fromListing(entry, false)),
+    ...[...groups.openNow, ...groups.later]
+      .filter(entry => wanted(entry.listing.categories))
+      .flatMap(entry => fromListing(entry, nowMs)),
     ...events
       .filter(
         event =>

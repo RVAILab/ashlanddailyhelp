@@ -3,8 +3,8 @@ metadata:
   created_at:   2026-10-25T14:44:10-07:00
   activated_at: 2026-10-25T15:16:55-07:00
   planned_at:   2026-10-25T15:17:45-07:00
-  finished_at:
-  updated_at:   2026-10-25T15:17:45-07:00
+  finished_at:  2026-10-25T15:32:03-07:00
+  updated_at:   2026-10-25T15:32:03-07:00
 -->
 
 # Story: The Next Meal and Place to Sleep
@@ -61,3 +61,30 @@ Tests:
 
 Open question for the steward: a way to mark a listing as a place to sleep (a shelter or a camp), rather than guessing from overnight hours.
 
+
+## Review
+
+Reviewed 2026-10-25 at `cca49e9` plus uncommitted fixes. A subagent did an independent read.
+
+| Criterion | Verdict | Evidence |
+| --- | --- | --- |
+| Next meal: where and when, in Pacific time, from windows and events | ✅ | `server/next/next.ts`, `app/routes/next.tsx` `toView` |
+| Next place to sleep, if known | ✅ | Housing windows that run overnight, from every window today (`next.ts` `fromListing`) |
+| Nothing competes: large type, one tap to call, details and a /today link | ✅ | `next.tsx` `Pick`. Call 211 shows when a place has no phone. |
+| Nothing known: says so, points to /today and 211 | ✅ | `next.tsx` empty state |
+| Never a doubtful, canceled or alert-closed place | ✅ | `groupToday` filters the listings. Events skip their status, conflicts, alert closures and doubtful listings. |
+| No JavaScript; works offline | ✅ | `handle.hydrate = false`, `/next` in `offline-pages.ts`, and "Worked out at … on <day>" |
+
+These findings were fixed:
+
+- An overnight shelter seen after midnight said its closing time was "tomorrow". "Tomorrow" is now judged against today, not against the start.
+- `/today`'s grouping keeps one deciding window per listing, which hid a later overnight window. The pick now looks at every window today.
+- The offline copy showed only the time. It now gives the day too.
+- An event run by a listing with a conflict or a possible cancellation could still be picked. Those listings now count as closed.
+- Both "Details" links now name their place for screen readers. There is a Call 211 button when there is no phone, and the /today link is 44px tall.
+
+## Learnings
+
+- **Went well:** keeping the pick a pure function over `groupToday`'s output gave alert closures and doubtful schedules for free, and made the edge cases cheap to test.
+- **Surprising:** "place to sleep" can't be read from the feed. Housing mixes shelters and help offices, so overnight hours stand in until the steward can mark shelters.
+- **Next time:** when reusing a summary such as `/today`'s groups, check what it throws away (here, all windows but one) before relying on it.

@@ -114,6 +114,9 @@ export const en = {
     tomorrow: (time: string) => `${time} tomorrow`,
     call: (phone: string) => `Call ${phone}`,
     details: 'Details',
+    about: (name: string) => `about ${name}`,
+    workedOut: (time: string, day: string) =>
+      `Worked out at ${time} on ${day}. Hours change; call before you go when you can.`,
     noMeal: 'No meal we know of for the rest of today.',
     noSleep: 'No place to sleep we know of for tonight.',
     more: 'Everything open today',
@@ -256,6 +259,8 @@ export const en = {
     notFoundDetail: 'It may have ended or been removed.',
   },
   feed: {
+    textOnly: 'Text-only version (uses less data)',
+    fullVersion: 'Full version, with pictures',
     asOf: 'Listings as of',
     updateFailing: 'The latest update could not be loaded, so these listings may be out of date.',
     demonstration: 'This is demonstration data. Some listings are fictional.',

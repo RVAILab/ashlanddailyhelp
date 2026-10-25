@@ -101,4 +101,12 @@ describe('nextPlace', () => {
     )
     expect(chosen?.where).toBe('Pioneer Hall')
   })
+
+  it('looks at every window today, so daytime hours don’t hide the overnight one', () => {
+    const shelter = listing('shelter', 'housing', [
+      window('13:00', '15:00'),
+      window('19:00', '2026-10-26T07:30:00-07:00'),
+    ])
+    expect(pick([shelter], [], 'sleep')).toMatchObject({ id: 'shelter', startsAt: '2026-10-25T19:00:00-07:00' })
+  })
 })

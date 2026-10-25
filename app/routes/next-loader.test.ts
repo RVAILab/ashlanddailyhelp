@@ -35,7 +35,7 @@ describe('/next loader', () => {
 
   it('gives the next meal and the next place to sleep, ready to show', async () => {
     const page = await loader(loaderArgs('/next', { database: () => db }))
-    expect(page.workedOut).toBe('11:00 AM')
+    expect(page.workedOut).toContain('11:00 AM on Sun, Oct 25')
     expect(page.meal).toMatchObject({
       name: 'Groceries for the week ahead',
       when: 'Starts at 1:00 PM, until 3:00 PM',

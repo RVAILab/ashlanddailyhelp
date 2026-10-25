@@ -116,6 +116,9 @@ export const es = {
     tomorrow: (time: string) => `${time} tomorrow`,
     call: (phone: string) => `Call ${phone}`,
     details: 'Details',
+    about: (name: string) => `about ${name}`,
+    workedOut: (time: string, day: string) =>
+      `Worked out at ${time} on ${day}. Hours change; call before you go when you can.`,
     noMeal: 'No meal we know of for the rest of today.',
     noSleep: 'No place to sleep we know of for tonight.',
     more: 'Everything open today',
@@ -259,6 +262,8 @@ export const es = {
     notFoundDetail: 'Puede que ya haya terminado o que se haya quitado de la lista.',
   },
   feed: {
+    textOnly: 'Text-only version (uses less data)',
+    fullVersion: 'Full version, with pictures',
     asOf: 'Lista actualizada el',
     updateFailing: 'No se pudo cargar la última actualización, así que esta información podría no estar al día.',
     demonstration: 'Estos son datos de demostración. Algunos lugares de la lista son ficticios.',

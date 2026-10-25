@@ -8,7 +8,7 @@ import { type NextKind, type NextPlace, nextPlace } from '../../server/next/next
 import { groupEvents } from '../../server/today/events.ts'
 import { groupToday } from '../../server/today/group.ts'
 import { services } from '../context.ts'
-import { type Lang, langFromPath, messagesFor } from '../i18n/index.ts'
+import { type Lang, langFromPath, locales, messagesFor } from '../i18n/index.ts'
 import { useI18n } from '../i18n/provider.tsx'
 import { clock } from '../lib/format.ts'
 import { whereText } from '../lib/listing-detail.ts'
@@ -28,11 +28,11 @@ interface NextView {
 const pacificDay = (iso: string) =>
   new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Los_Angeles' }).format(new Date(iso))
 
-function toView(place: NextPlace | null, lang: Lang, known: Set<string>): NextView | null {
+function toView(place: NextPlace | null, lang: Lang, known: Set<string>, now: Date): NextView | null {
   if (!place) return null
   const t = messagesFor(lang).next
   const end = place.endsAt
-    ? pacificDay(place.endsAt) > pacificDay(place.startsAt)
+    ? pacificDay(place.endsAt) > pacificDay(now.toISOString())
       ? t.tomorrow(clock(lang, place.endsAt))
       : clock(lang, place.endsAt)
     : null
@@ -57,7 +57,14 @@ export async function loader({ url, context }: Route.LoaderArgs) {
   const lang = langFromPath(url.pathname)
   const now = new Date()
   const db = context.get(services).database()
-  const workedOut = clock(lang, now)
+  const day = new Intl.DateTimeFormat(locales[lang], {
+    timeZone: 'America/Los_Angeles',
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+  }).format(now)
+  // A copy saved for offline says which day it was worked out, so it isn't mistaken for today's.
+  const workedOut = messagesFor(lang).next.workedOut(clock(lang, now), day)
   if (!db) return { workedOut, meal: null, sleep: null, demonstration: false }
   const alerts = await pageAlerts(db, lang, now)
   const listings = await searchListings(db, {}, now, lang)
@@ -66,9 +73,11 @@ export async function loader({ url, context }: Route.LoaderArgs) {
     (await upcomingEvents(db, now)).filter(event => servesAshland(event.area)),
     now,
   ).today
-  const closed = new Set([...alerts.closedListings, ...alerts.closedEvents])
+  // An event run by a listing whose schedule is in doubt is as doubtful as the listing.
+  const doubtful = listings.filter(listing => listing.conflict || listing.mayBeCanceled).map(listing => listing.id)
+  const closed = new Set([...alerts.closedListings, ...alerts.closedEvents, ...doubtful])
   const known = new Set(listings.map(listing => listing.id))
-  const pick = (kind: NextKind) => toView(nextPlace(groups, events, now, kind, closed), lang, known)
+  const pick = (kind: NextKind) => toView(nextPlace(groups, events, now, kind, closed), lang, known, now)
   const feed = await listingsFeedStatus(db)
   return {
     workedOut,
@@ -89,12 +98,14 @@ export default function Next({ loaderData }: Route.ComponentProps) {
   return (
     <main className="next">
       <h1>{t.next.title}</h1>
-      <p>{t.today.workedOut(workedOut)}</p>
+      <p>{workedOut}</p>
       {demonstration && <p className="notice">{t.feed.demonstration}</p>}
       <Pick id="next-meal" heading={t.next.meal} place={meal} none={t.next.noMeal} />
       <Pick id="next-sleep" heading={t.next.sleep} place={sleep} none={t.next.noSleep} />
       <p>
-        <Link to={path('/today')}>{t.next.more}</Link>
+        <Link to={path('/today')} className="next-link">
+          {t.next.more}
+        </Link>
       </p>
     </main>
   )
@@ -111,14 +122,19 @@ function Pick({ id, heading, place, none }: { id: string; heading: string; place
           <p className="next-when">{place.when}</p>
           <p className="next-where">{place.where}</p>
           <p className="next-actions">
-            {place.phone && (
+            {place.phone ? (
               <a href={`tel:${place.phone.replace(/[^\d+]/g, '')}`} className="call-211">
                 {t.next.call(place.phone)}
+              </a>
+            ) : (
+              <a href="tel:211" className="call-211">
+                {t.next.call('211')}
               </a>
             )}
             {place.details && (
               <Link to={path(place.details)} className="action">
-                {t.next.details} <span aria-hidden="true">→</span>
+                {t.next.details}
+                <span className="visually-hidden"> {t.next.about(place.name)}</span> <span aria-hidden="true">→</span>
               </Link>
             )}
           </p>

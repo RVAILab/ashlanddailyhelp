@@ -4,7 +4,7 @@ metadata:
   activated_at:
   planned_at:
   finished_at:
-  updated_at:   2026-10-25T11:35:21-07:00
+  updated_at:   2026-10-25T12:17:53-07:00
 -->
 
 # Story: Move ashlanddailyhelp.com to the New App
@@ -28,6 +28,7 @@ SO THAT everyone gets the new app at the address they already know
 
 ## Notes
 
+- Removing `legacy/` waits for [RVAILab/daily-help-steward#42](https://github.com/RVAILab/daily-help-steward/issues/42) to close.
 - Today ashlanddailyhelp.com is served from Bluehost (Apache), and every push to `main` deploys to <https://ashlanddailyhelp.kitchenlab.workers.dev> (README, PR #2). Only the domain needs to move.
 - The steward README's "Upload to Bluehost" feed option no longer applies once the site leaves Bluehost.
 

@@ -4,7 +4,7 @@ metadata:
   activated_at: 2026-10-25T12:17:22-07:00
   planned_at:   2026-10-25T12:17:22-07:00
   finished_at:
-  updated_at:   2026-10-25T12:17:22-07:00
+  updated_at:   2026-10-25T12:17:53-07:00
 -->
 
 # Story: Decouple the Steward from the Old Site Files
@@ -25,6 +25,7 @@ SO THAT replacing the static site doesn't silently break the steward's seed data
 
 ## Notes
 
+- Filed as [RVAILab/daily-help-steward#42](https://github.com/RVAILab/daily-help-steward/issues/42) on 2026-10-25, with a workaround for the steward's demo meanwhile (`--site ../ashlanddailyhelp/legacy`).
 - The work happens in the steward repo; this story tracks the request.
 - The `SITE_UNITS` limit and the event-id character rule exist only for the old `core.js`; the new app can relax them later.
 

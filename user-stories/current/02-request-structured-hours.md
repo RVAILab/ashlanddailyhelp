@@ -4,7 +4,7 @@ metadata:
   activated_at: 2026-10-25T12:10:29-07:00
   planned_at:   2026-10-25T12:10:44-07:00
   finished_at:
-  updated_at:   2026-10-25T12:10:44-07:00
+  updated_at:   2026-10-25T12:11:01-07:00
 -->
 
 # Story: Request Structured Hours from the Steward
@@ -25,6 +25,7 @@ SO THAT /today can work out what is open now and next
 
 ## Notes
 
+- Filed as [RVAILab/daily-help-steward#39](https://github.com/RVAILab/daily-help-steward/issues/39) on 2026-10-25.
 - Blocks `12-today-open-now`.
 - The steward already harvests provider pages and ICS feeds. Steward owner: Thor.
 

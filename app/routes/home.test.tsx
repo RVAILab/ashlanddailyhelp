@@ -90,6 +90,12 @@ describe('homepage', () => {
     expect(screen.getByRole('searchbox', { name: 'Search for help' }).getAttribute('name')).toBe('q')
   })
 
+  it('offers to ask a question, posting to /ask', async () => {
+    renderHome()
+    const box = await screen.findByRole('textbox', { name: 'Your question' })
+    expect(box.closest('form')?.getAttribute('action')).toBe('/ask')
+  })
+
   it('ships no JavaScript, since it is only links and text', () => {
     expect(handle).toEqual({ hydrate: false })
   })

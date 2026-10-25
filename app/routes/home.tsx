@@ -1,6 +1,7 @@
 import { data, Link } from 'react-router'
 import { pageAlerts } from '../../server/feed/page-alerts.ts'
 import { AlertList } from '../components/alert-list.tsx'
+import { AskForm } from '../components/ask-form.tsx'
 import { services } from '../context.ts'
 import { langFromPath, messagesFor } from '../i18n/index.ts'
 import { useI18n } from '../i18n/provider.tsx'
@@ -113,6 +114,11 @@ export default function Home({ loaderData }: Route.ComponentProps) {
             </Link>
           </li>
         </ul>
+      </section>
+      <section aria-labelledby="ask-heading" className="ask-entry">
+        <h2 id="ask-heading">{t.ask.title}</h2>
+        <p>{t.ask.intro}</p>
+        <AskForm id="home-ask-q" />
       </section>
       <p className="belonging">
         {t.home.belonging.map((line, index) => (

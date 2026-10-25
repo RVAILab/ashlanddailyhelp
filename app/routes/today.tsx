@@ -10,6 +10,7 @@ import { searchListings } from '../../server/listings/search.ts'
 import { groupEvents } from '../../server/today/events.ts'
 import { groupToday, type TodayEntry } from '../../server/today/group.ts'
 import { AlertList } from '../components/alert-list.tsx'
+import { AskForm } from '../components/ask-form.tsx'
 import { type ListingCard, ListingCardView } from '../components/listing-card.tsx'
 import { ListingStatus } from '../components/listing-status.tsx'
 import { services } from '../context.ts'
@@ -237,6 +238,10 @@ export default function Today({ loaderData }: Route.ComponentProps) {
       <p>
         <Link to={path('/resources')}>{t.home.searchAll}</Link> · <a href={path('/print?view=today')}>{t.print.link}</a>
       </p>
+      <section aria-labelledby="ask-heading" className="ask-entry">
+        <h2 id="ask-heading">{t.ask.title}</h2>
+        <AskForm id="today-ask-q" />
+      </section>
     </main>
   )
 }

@@ -13,5 +13,7 @@
   "preview_urls": false,
   "observability": { "enabled": true },
   "triggers": { "crons": ["*/5 * * * *"] },
+  // Chat questions cost a model call each, so each connection may ask 10 a minute (Workers rate limiting).
+  "ratelimits": [{ "name": "ASK_LIMIT", "namespace_id": "1001", "simple": { "limit": 10, "period": 60 } }],
   "vars": { "FEED_BASE_URL": "https://steward.ashlanddailyhelp.com/feed/" }
 }

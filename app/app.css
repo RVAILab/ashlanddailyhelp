@@ -830,6 +830,72 @@ main h1[tabindex="-1"]:focus-visible {
   gap: 0.75rem;
 }
 
+/* Ask */
+
+.ask-form {
+  display: grid;
+  gap: 0.5rem;
+  max-width: 40rem;
+  margin: 1rem 0;
+}
+
+.ask-form label {
+  font-weight: 600;
+}
+
+.ask-form textarea {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--field);
+  border-radius: var(--radius-m);
+  background: var(--card);
+  color: var(--ink);
+  font: inherit;
+}
+
+.ask-form button {
+  justify-self: start;
+  min-height: 48px;
+  padding: 0 1.4rem;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font: 600 1rem / 1.2 var(--sans);
+  cursor: pointer;
+}
+
+.ask-note {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.ask-answer {
+  margin: 1.5rem 0;
+  padding: 1.1rem 1.25rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-m);
+  background: var(--card);
+}
+
+.ask-answer h2 {
+  margin-top: 0;
+  font-size: 1.2rem;
+}
+
+.ask-crisis {
+  padding: 0.75rem 1rem;
+  border-left: 4px solid var(--warning);
+  font-weight: 700;
+}
+
+.ask-answer a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-weight: 600;
+}
+
 /* Nearby */
 
 .nearby {

@@ -85,6 +85,7 @@ describe('/today', () => {
     expect(
       within(screen.getByRole('region', { name: 'Hours not confirmed (1)' })).getByText('Schedule needs checking'),
     ).toBeDefined()
+    expect(screen.getByRole('textbox', { name: 'Your question' }).closest('form')?.getAttribute('action')).toBe('/ask')
   })
 
   it('says there are no scheduled events today, never sample ones', async () => {

@@ -54,7 +54,7 @@ test('Clear this device forgets the saved pages', async ({ page }) => {
   await page.getByRole('link', { name: 'Clear this device' }).click()
   await expect(page).toHaveURL(/\/\?cleared$/)
   await expect.poll(() => page.evaluate(async () => (await navigator.serviceWorker.getRegistrations()).length)).toBe(0)
-  expect(await page.evaluate(async () => (await caches.keys()).length)).toBe(0)
+  expect(await page.evaluate(async () => await caches.keys())).toEqual([])
 })
 
 test('offline, a search shows every saved listing rather than another search’s results', async ({ page, context }) => {

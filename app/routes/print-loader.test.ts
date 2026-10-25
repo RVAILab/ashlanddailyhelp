@@ -1,12 +1,21 @@
+import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
+import { alertsFile } from '../../server/feed/alerts.ts'
+import { refreshFeedFile } from '../../server/feed/ingest.ts'
 import { testDatabase } from '../../test/db.ts'
+import { feedHost, json, sampleListingsFeed } from '../../test/feed.ts'
 import { storeListings } from '../../test/listings.ts'
 import { loaderArgs } from '../../test/route.ts'
 import { loader } from './print.tsx'
 
-async function load(path: string, cookie = '') {
+async function load(
+  path: string,
+  cookie = '',
+  setup?: (db: Awaited<ReturnType<typeof testDatabase>>) => Promise<void>,
+) {
   const db = await testDatabase()
   await storeListings(db)
+  await setup?.(db)
   const data = await loader(
     loaderArgs(`https://ashlanddailyhelp.com${path}`, { database: () => db }, { Cookie: cookie }),
   )
@@ -43,5 +52,41 @@ describe('/print loader', () => {
     expect(data.title).toBe('Open today')
     expect(data.backUrl).toBe('https://ashlanddailyhelp.com/today')
     expect(data.rows.length).toBeGreaterThan(0)
+  })
+
+  it('leaves off places an in-effect closure shuts, like the today page', async () => {
+    const data = await load('/print?view=today', '', async db => {
+      const feed = JSON.parse(readFileSync('test/fixtures/proposed/alerts.json', 'utf8'))
+      Object.assign(feed.alerts[1], {
+        kind: 'closure',
+        startsAt: '2000-01-01T08:00:00-07:00',
+        endsAt: '2100-01-01T08:00:00-07:00',
+      })
+      await refreshFeedFile(alertsFile, {
+        db,
+        baseUrl: 'https://feed.example.org/',
+        fetch: feedHost(json(feed)).fetch,
+        now: () => new Date(),
+      })
+    })
+    expect(data.rows.map(row => row.id)).not.toContain('ohra-shelter')
+  })
+
+  it('says when the listings are a fictional demonstration', async () => {
+    expect((await load('/print?ids=ohra-showers')).demonstration).toBe(true)
+  })
+
+  it('prints a schedule that needs checking as such, and unknown values as not confirmed', async () => {
+    const data = await load('/print?ids=uncle-foods')
+    expect(data.rows[0]?.warnings).toContain('Schedule needs checking')
+    const feed = sampleListingsFeed()
+    feed.listings[2].requirements = 'Unknown'
+    const db = await testDatabase()
+    await storeListings(db, feed)
+    const unknown = await loader(
+      loaderArgs('https://ashlanddailyhelp.com/print?ids=ohra-showers', { database: () => db }),
+    )
+    await db.close()
+    expect(unknown.rows[0]?.requirements).toBe('Not confirmed')
   })
 })

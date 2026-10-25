@@ -5,5 +5,5 @@ export function qrSvg(url: string): string {
   const code = qrcode(0, 'M')
   code.addData(url)
   code.make()
-  return code.createSvgTag({ cellSize: 3, margin: 2, scalable: true })
+  return code.createSvgTag({ cellSize: 3, margin: 4, scalable: true })
 }

@@ -1,19 +1,20 @@
 import type { StoredListing } from '../../server/feed/contract.ts'
 import { listingsFeedStatus } from '../../server/feed/listings.ts'
+import { pageAlerts } from '../../server/feed/page-alerts.ts'
 import { findListing } from '../../server/listings/listing.ts'
 import { searchListings } from '../../server/listings/search.ts'
+import { groupToday } from '../../server/today/group.ts'
 import { services } from '../context.ts'
 import { langFromPath, localePath, messagesFor } from '../i18n/index.ts'
 import { useI18n } from '../i18n/provider.tsx'
 import { categories } from '../lib/categories.ts'
 import { formatAsOf } from '../lib/format.ts'
+import { listingDetail } from '../lib/listing-detail.ts'
 import { qrSvg } from '../lib/qr.ts'
 import { parseIds, savedIds } from '../lib/saved-list.ts'
 import type { Route } from './+types/print'
 
 export const handle = { hydrate: false }
-
-const SENSITIVE = 'location not published. call the provider.'
 
 export async function loader({ request, url, context }: Route.LoaderArgs) {
   const lang = langFromPath(url.pathname)
@@ -28,7 +29,9 @@ export async function loader({ request, url, context }: Route.LoaderArgs) {
     if (url.searchParams.get('view') === 'today') {
       title = t.today.title
       back = '/today'
-      listings = await searchListings(db, {}, now, lang)
+      const closed = new Set((await pageAlerts(db, lang, now)).closedListings)
+      const groups = groupToday(await searchListings(db, {}, now, lang), now, closed)
+      listings = [...groups.openNow, ...groups.later, ...groups.notConfirmed].map(entry => entry.listing)
     } else if (category) {
       title = t.categories[category]
       back = `/resources?category=${category}`
@@ -48,14 +51,23 @@ export async function loader({ request, url, context }: Route.LoaderArgs) {
     backUrl,
     qr: qrSvg(backUrl),
     asOf: feed.state === 'stored' ? formatAsOf(feed.generatedAt, lang) : null,
-    rows: listings.map(listing => ({
-      id: listing.id,
-      name: listing.name,
-      address: listing.address.trim().toLowerCase() === SENSITIVE ? t.detail.locationNotPublished : listing.address,
-      phone: listing.phone,
-      hours: listing.schedule,
-      requirements: listing.requirements,
-    })),
+    demonstration: feed.state === 'stored' && feed.dataset === 'FICTIONAL_DEMONSTRATION',
+    rows: listings.map(listing => {
+      const detail = listingDetail(listing, lang)
+      const field = (key: 'schedule' | 'address' | 'requirements') =>
+        detail.fields.find(shown => shown.key === key)?.text ?? t.detail.notConfirmed
+      return {
+        id: listing.id,
+        name: listing.name,
+        address: field('address'),
+        phone: detail.phone,
+        hours: field('schedule'),
+        requirements: field('requirements'),
+        warnings: detail.labels
+          .filter(label => label.kind === 'warning' || label.kind === 'caution')
+          .map(label => label.text),
+      }
+    }),
   }
 }
 
@@ -65,7 +77,7 @@ export function meta({ location }: Route.MetaArgs) {
 }
 
 export default function Print({ loaderData }: Route.ComponentProps) {
-  const { title, backUrl, qr, asOf, rows } = loaderData
+  const { title, backUrl, qr, asOf, demonstration, rows } = loaderData
   const { t } = useI18n()
   return (
     <main className="print-sheet">
@@ -73,6 +85,7 @@ export default function Print({ loaderData }: Route.ComponentProps) {
         {t.siteName}: {title}
       </h1>
       <p className="print-note">{t.print.confirm}</p>
+      {demonstration && <p className="print-note">{t.feed.demonstration}</p>}
       {rows.length === 0 ? (
         <p>{t.print.empty}</p>
       ) : (
@@ -98,7 +111,15 @@ export default function Print({ loaderData }: Route.ComponentProps) {
                     </>
                   )}
                 </td>
-                <td>{row.hours}</td>
+                <td>
+                  {row.warnings.map(warning => (
+                    <strong key={warning} className="print-warning">
+                      {warning}
+                      <br />
+                    </strong>
+                  ))}
+                  {row.hours}
+                </td>
                 <td>{row.requirements}</td>
               </tr>
             ))}

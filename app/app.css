@@ -491,7 +491,19 @@ main h1:focus-visible {
   flex: none;
 }
 
+@page {
+  margin: 0.5in;
+}
+
 @media print {
+  .print-qr {
+    width: 1.5in;
+  }
+
+  .print-sheet tr {
+    break-inside: avoid;
+  }
+
   :root {
     --ink: #000;
     --muted: #000;

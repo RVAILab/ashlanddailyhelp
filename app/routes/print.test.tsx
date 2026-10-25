@@ -10,6 +10,7 @@ describe('/print', () => {
       backUrl: 'https://ashlanddailyhelp.com/list?ids=ohra-showers',
       qr: '<svg viewBox="0 0 10 10"></svg>',
       asOf: 'Sun, Oct 25, 2026, 12:00 PM PDT',
+      demonstration: true,
       rows: [
         {
           id: 'ohra-showers',
@@ -18,6 +19,7 @@ describe('/print', () => {
           phone: '541-631-2235',
           hours: 'Tue and Thu',
           requirements: 'Not confirmed',
+          warnings: ['Schedule needs checking'],
         },
       ],
     }
@@ -26,6 +28,8 @@ describe('/print', () => {
     expect(await screen.findByRole('heading', { level: 1, name: 'Ashland Daily Help: My list' })).toBeDefined()
     expect(screen.getByRole('row', { name: /A shower and a fresh start/ })).toBeDefined()
     expect(screen.getByText('Hours and rules change. Call before you go when you can.')).toBeDefined()
+    expect(screen.getByText('Schedule needs checking')).toBeDefined()
+    expect(screen.getByText(/fictional/i)).toBeDefined()
     expect(screen.getByRole('img', { name: 'QR code for this page on Ashland Daily Help' })).toBeDefined()
     expect(screen.getByText(data.backUrl)).toBeDefined()
     expect(handle).toEqual({ hydrate: false })

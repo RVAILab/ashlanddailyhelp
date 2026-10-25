@@ -41,6 +41,7 @@ describe.each([
     expect(contrast(theme['on-accent'], theme.accent)).toBeGreaterThanOrEqual(4.5)
     expect(contrast(theme['footer-ink'], theme.footer)).toBeGreaterThanOrEqual(4.5)
     expect(contrast(theme['footer-link'], theme.footer)).toBeGreaterThanOrEqual(4.5)
+    expect(contrast(theme['footer-focus'], theme.footer)).toBeGreaterThanOrEqual(3)
   })
 
   it('field borders and focus rings stand out at 3:1', () => {

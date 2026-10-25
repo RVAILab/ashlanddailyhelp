@@ -1,6 +1,6 @@
 // Keeps Daily Help usable without a connection. Pages come from the network first and from the last saved copy when
-// offline or when the server fails; hashed build assets are saved once (a new build has new names, and old ones are
-// trimmed). Only pages without a search are saved, so the saved set stays bounded by the number of pages.
+// offline or when the server fails; hashed build assets, fonts and art are saved once (a new build has new names, and
+// old ones are trimmed). Only pages without a search are saved, so the saved set stays bounded by the number of pages.
 const PAGES = 'daily-help-pages-v2'
 const ASSETS = 'daily-help-assets-v2'
 const MAX_ASSETS = 80
@@ -64,7 +64,7 @@ self.addEventListener('fetch', event => {
   const url = new URL(request.url)
   if (request.method !== 'GET' || url.origin !== self.location.origin || NEVER.some(path => path.test(url.pathname)))
     return
-  if (url.pathname.startsWith('/assets/')) event.respondWith(savedFirst(request))
+  if (/^\/(assets|fonts|art)\//.test(url.pathname)) event.respondWith(savedFirst(request))
   else event.respondWith(networkFirst(request, url))
 })
 

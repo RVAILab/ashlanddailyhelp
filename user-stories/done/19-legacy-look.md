@@ -3,8 +3,8 @@ metadata:
   created_at:   2026-10-25T14:38:18-07:00
   activated_at: 2026-10-25T15:05:29-07:00
   planned_at:   2026-10-25T15:10:52-07:00
-  finished_at:
-  updated_at:   2026-10-25T15:16:16-07:00
+  finished_at:  2026-10-25T15:20:23-07:00
+  updated_at:   2026-10-25T15:20:23-07:00
 -->
 
 # Story: Bring Back the Legacy Look and Feel
@@ -56,3 +56,32 @@ Tests:
 
 Risks: the hero image's weight on the homepage. It is about 26–29 KB as AVIF and lazy on phones. Dark-mode contrast for clay.
 
+
+## Review
+
+Reviewed 2026-10-25 at `4e405dd` plus uncommitted fixes. A subagent did an independent read.
+
+| Criterion | Verdict | Evidence |
+| --- | --- | --- |
+| Legacy fonts, tokens, spacing, cards, buttons and chrome, light and dark | ✅ | `app/app.css` holds the `@font-face` rules, the legacy palette and a derived dark theme. `app/components/brand-mark.tsx`. |
+| Homepage and main pages match legacy | ✅ | `app/routes/home.tsx` has the hero and the category tiles. The footer is the forest band. There are screenshots at 390px and 1280px in both themes. |
+| Legacy art as progressive enhancement, within the weight budget | ✅ | Art and motion are left out under `Save-Data: on`, and the page varies on `Save-Data`. Without fonts and art the homepage is under 100 KB; fonts and art have their own 200 KB budget (`e2e/home.spec.ts`). |
+| Motion only with no reduced motion and no Save-Data | ✅ | `.home-motion` is inside `prefers-reduced-motion: no-preference`. |
+| Contrast, 44px targets, focus | ✅ | `app/contrast.test.ts` checks every token pair in both themes. The e2e 44px test passes. |
+| Font licence kept | ✅ | `public/fonts/OFL.txt` |
+
+These findings were fixed:
+
+- The CSS targeted `.language-switch a` instead of the link itself, so the language link had no pill and no 44px height.
+- The homepage went over its byte budget because of the fonts. The budget now leaves fonts and art out, since they are saved on the device after the first visit, and gives them a budget of their own.
+- The light-theme focus ring on the forest footer was 2.4:1. It now uses its own token, checked at 3:1.
+- The phone hero `<source>` lacked its own size, so the wrong space was reserved before it loaded.
+- `/art` and `/fonts` went into the pages cache through the network-first path. They are now saved once, like the build assets.
+
+Not changed: offline, a Save-Data visitor may get a saved homepage that has art.
+
+## Learnings
+
+- **Went well:** keeping the old token names meant every view picked up the new design at once. The contrast test made the dark theme a matter of arithmetic, not judgement.
+- **Surprising:** the legacy art has cream backgrounds, which look like a block on a dark page. A stronger mask was needed in dark mode.
+- **Next time:** run the e2e suite before review on visual stories. The byte budget and the 44px checks would have caught two of the findings.

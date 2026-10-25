@@ -56,8 +56,20 @@ export default function Home({ loaderData }: Route.ComponentProps) {
         </div>
         {showArt && (
           <picture className="hero-art">
-            <source type="image/avif" media="(max-width: 40rem)" srcSet={art('valley-m-640').avif} />
-            <source type="image/webp" media="(max-width: 40rem)" srcSet={art('valley-m-640').webp} />
+            <source
+              type="image/avif"
+              media="(max-width: 40rem)"
+              srcSet={art('valley-m-640').avif}
+              width="640"
+              height="498"
+            />
+            <source
+              type="image/webp"
+              media="(max-width: 40rem)"
+              srcSet={art('valley-m-640').webp}
+              width="640"
+              height="498"
+            />
             <source type="image/avif" srcSet={art('valley-960').avif} />
             <source type="image/webp" srcSet={art('valley-960').webp} />
             <img src="/art/valley-960.jpg" alt="" width="960" height="538" decoding="async" fetchPriority="low" />

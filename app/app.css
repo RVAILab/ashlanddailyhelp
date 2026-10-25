@@ -46,6 +46,7 @@
   --footer: #1b3127;
   --footer-ink: #f4f0e6;
   --footer-link: #d9e2ba;
+  --footer-focus: #f1a65e;
   --serif: "Fraunces", "Iowan Old Style", Georgia, serif;
   --sans: "Instrument Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   --radius-s: 6px;
@@ -82,6 +83,7 @@
     --footer: #0d1611;
     --footer-ink: #f1ece0;
     --footer-link: #d9e2ba;
+    --footer-focus: #f1a65e;
     --shadow-soft: none;
     --shadow-lift: none;
   }
@@ -233,7 +235,7 @@ main h1[tabindex="-1"]:focus-visible {
 }
 
 .list-link,
-.language-switch a {
+.language-switch {
   display: inline-flex;
   align-items: center;
   min-height: 44px;
@@ -267,13 +269,13 @@ main h1[tabindex="-1"]:focus-visible {
   }
 
   .list-link,
-  .language-switch a {
+  .language-switch {
     padding: 0 0.6rem;
   }
 }
 
 .list-link:hover,
-.language-switch a:hover {
+.language-switch:hover {
   background: var(--paper-2);
   color: var(--heading);
 }
@@ -792,6 +794,10 @@ main h1[tabindex="-1"]:focus-visible {
   align-items: center;
   min-height: 44px;
   color: var(--footer-link);
+}
+
+.site-footer a:focus-visible {
+  outline-color: var(--footer-focus);
 }
 
 .site-footer a:hover {

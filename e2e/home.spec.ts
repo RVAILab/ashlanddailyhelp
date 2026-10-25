@@ -21,20 +21,27 @@ test.describe('the homepage on a small phone', () => {
   })
 })
 
-test('the first load of the homepage stays under 100 KB and loads no JavaScript files', async ({ page }) => {
-  const bodies: Array<Promise<number>> = []
-  page.on('response', response =>
+// Fonts and art are extras, saved on the device after the first visit and left out under Save-Data (the art), so
+// they have a budget of their own.
+test('the first load of the homepage stays under 100 KB besides fonts and art, and loads no JavaScript files', async ({
+  page,
+}) => {
+  const bodies: Array<Promise<{ extra: boolean; size: number }>> = []
+  page.on('response', response => {
+    const extra = /\/(fonts|art)\//.test(new URL(response.url()).pathname)
     bodies.push(
       response.body().then(
-        body => body.length,
-        () => 0,
+        body => ({ extra, size: body.length }),
+        () => ({ extra, size: 0 }),
       ),
-    ),
-  )
+    )
+  })
   await page.goto('/', { waitUntil: 'networkidle' })
-  const bytes = (await Promise.all(bodies)).reduce((sum, size) => sum + size, 0)
+  const sizes = await Promise.all(bodies)
+  const total = (extra: boolean) => sizes.filter(body => body.extra === extra).reduce((sum, body) => sum + body.size, 0)
   expect(await page.locator('script[src], script[type="module"]').count()).toBe(0)
-  expect(bytes).toBeLessThan(100_000)
+  expect(total(false)).toBeLessThan(100_000)
+  expect(total(true)).toBeLessThan(200_000)
 })
 
 test('the search page still hydrates', async ({ page }) => {

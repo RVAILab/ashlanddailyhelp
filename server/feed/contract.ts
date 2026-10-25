@@ -16,6 +16,20 @@ export const Opening = z.object({
 
 export type Opening = z.infer<typeof Opening>
 
+// Proposed in steward #62 and not yet in its contract: the listing's map location.
+export const Geo = z.object({
+  lat: z.number().min(-90).max(90),
+  lng: z.number().min(-180).max(180),
+  source: z.enum(['geocoded', 'provider']),
+  matchedAddress: z.string().optional(),
+  by: z.string().optional(),
+  observedAt: Instant.optional(),
+})
+
+// The steward's wording for a location that must not be published (FEED.md), matched loosely.
+const sensitive = (address: string) =>
+  address.trim().replace(/\s+/g, ' ').toLowerCase() === 'location not published. call the provider.'
+
 // The steward writes with strict schemas, but a minor version may add fields at any depth. Reading, we drop fields we
 // don't know (keeping the proposed `openings`), then apply the steward's own schema, refinements included, to the rest.
 const KnownListingsFields = z.object({
@@ -25,15 +39,25 @@ const KnownListingsFields = z.object({
       ...FeedListing.shape,
       provenance: z.record(z.string(), z.array(z.object(FeedProvenance.shape))).optional(),
       openings: z.array(Opening).optional(),
+      geo: Geo.optional(),
     }),
   ),
 })
 
 export const ListingsFile = KnownListingsFields.superRefine((file, ctx) => {
-  const steward = ListingsFeed.safeParse({ ...file, listings: file.listings.map(({ openings: _, ...rest }) => rest) })
+  const steward = ListingsFeed.safeParse({
+    ...file,
+    listings: file.listings.map(({ openings: _, geo: __, ...rest }) => rest),
+  })
   if (!steward.success)
     for (const issue of steward.error.issues) ctx.addIssue({ code: 'custom', message: issue.message, path: issue.path })
-})
+}).transform(file => ({
+  ...file,
+  // A sensitive location is never placed on a map, even if a feed ever sends its coordinates.
+  listings: file.listings.map(
+    ({ geo, ...listing }): StoredListing => (geo && !sensitive(listing.address) ? { ...listing, geo } : listing),
+  ),
+}))
 
 export type ListingsFile = z.infer<typeof KnownListingsFields>
 export type StoredListing = ListingsFile['listings'][number]

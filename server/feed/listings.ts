@@ -1,9 +1,8 @@
 import { asc, gt, isNull, or } from 'drizzle-orm'
-import type { FeedListing } from '../../contract/steward/feed.ts'
 import { Dataset } from '../../contract/steward/values.ts'
 import { listings } from '../../db/schema.ts'
 import type { Database } from '../db.ts'
-import { ListingsFile } from './contract.ts'
+import { ListingsFile, type StoredListing } from './contract.ts'
 import { type FeedFileSpec, feedFileStatus } from './ingest.ts'
 
 export const listingsFile: FeedFileSpec<ListingsFile> = {
@@ -26,7 +25,7 @@ export const listingsFile: FeedFileSpec<ListingsFile> = {
 // A time-bound listing (a shelter open tonight) stops being current at its endsAt, even before the next refresh.
 export const isCurrent = (now: Date) => or(isNull(listings.endsAt), gt(listings.endsAt, now))
 
-export async function currentListings(db: Database, now: Date): Promise<FeedListing[]> {
+export async function currentListings(db: Database, now: Date): Promise<StoredListing[]> {
   const rows = await db
     .select({ data: listings.data })
     .from(listings)

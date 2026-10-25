@@ -11,6 +11,19 @@ describe('currentListings', () => {
   })
   afterEach(() => db.close())
 
+  it('keeps a listing’s map location when it stores the feed', async () => {
+    const feed = sampleListingsFeed()
+    const geo = { lat: 42.19406, lng: -122.70948, source: 'geocoded' }
+    const fetch = feedHost(json({ ...feed, listings: [{ ...feed.listings[0], geo }] })).fetch
+    await refreshFeedFile(listingsFile, {
+      db,
+      baseUrl: 'https://feed.example.org/',
+      fetch,
+      now: () => new Date('2026-10-25T18:00:00Z'),
+    })
+    expect((await currentListings(db, new Date('2026-10-25T18:00:00Z')))[0]?.geo).toEqual(geo)
+  })
+
   it('leaves out a listing once its endsAt has passed, even before the next refresh', async () => {
     const feed = sampleListingsFeed()
     const shelter = { ...feed.listings[0], id: 'shelter-tonight', endsAt: '2026-10-26T14:30:00.000Z' }

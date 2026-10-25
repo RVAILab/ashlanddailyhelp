@@ -26,4 +26,24 @@ describe('ListingsFile', () => {
         .success,
     ).toBe(false)
   })
+
+  const geo = { lat: 42.19406, lng: -122.70948, source: 'geocoded', by: 'census:Public_AR_Current' }
+
+  it('keeps proposed map coordinates (steward #62)', () => {
+    const feed = sampleListingsFeed()
+    const parsed = ListingsFile.parse({ ...feed, listings: [{ ...feed.listings[0], geo }] })
+    expect(parsed.listings[0]?.geo).toEqual(geo)
+  })
+
+  it('refuses coordinates off the globe', () => {
+    const feed = sampleListingsFeed()
+    const off = { ...feed, listings: [{ ...feed.listings[0], geo: { ...geo, lat: 142 } }] }
+    expect(ListingsFile.safeParse(off).success).toBe(false)
+  })
+
+  it('never keeps coordinates for a sensitive location, whatever the feed sends', () => {
+    const feed = sampleListingsFeed()
+    const hidden = { ...feed.listings[0], address: 'Location not published. Call the provider.', geo }
+    expect(ListingsFile.parse({ ...feed, listings: [hidden] }).listings[0]).not.toHaveProperty('geo')
+  })
 })

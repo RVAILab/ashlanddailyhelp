@@ -86,7 +86,7 @@ The app deploys to the `ashlanddailyhelp-app` Worker on every push to `main` onc
 
 ## Deploys
 
-GitHub Actions (`.github/workflows/deploy.yml`) runs lint, type checks, tests, the build and the end-to-end journeys on every push and pull request. On a push to `main` it then deploys:
+GitHub Actions (`.github/workflows/deploy.yml`) runs lint, type checks, tests and the build on every push and pull request. The end-to-end journeys run locally (`npm run e2e`) for now, not in CI. On a push to `main` it then deploys:
 
 - the static site from `legacy/` to <https://ashlanddailyhelp.kitchenlab.workers.dev> (the `ashlanddailyhelp` Worker), and
 - the new app to the `ashlanddailyhelp-app` Worker, once `DATABASE_URL` is set.

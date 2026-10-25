@@ -58,7 +58,7 @@ We work in the eXtreme Programming tradition of Pivotal Labs.
 - Don't mock what we don't own. Stand in for the steward with its sample feed (`../daily-help-steward/fixtures/feed-sample/`).
 - Small steps and small commits. Commit to `main` whenever the tests pass. `main` deploys on every push, so it must always be releasable.
 - Trunk-based: everything happens on `main`, with no feature or story branches. This overrides the `/stories` skill: `activate` moves the story to `current/` on `main` without creating a `story/<name>` branch, and `review` diffs from the commit that activated the story.
-- Run the whole suite before every push. CI runs type checks, lint and tests on every push and pull request.
+- Run the whole suite before every push. CI runs type checks, lint and tests on every push and pull request; the Playwright journeys are not in CI for now, so run `npm run e2e` locally before pushing a change to pages.
 - Do the simplest thing that could possibly work (YAGNI): no speculative abstractions, flags or configuration. Remove duplication when it appears, not before.
 - Names say what code does. Comment only to explain why something non-obvious is the way it is (a constraint, a workaround, a decision). No comments that restate the code, and no commented-out code.
 - Keep refactoring and behaviour changes in separate commits.

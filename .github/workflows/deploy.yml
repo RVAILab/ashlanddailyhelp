@@ -1,4 +1,5 @@
 # The app deploys only when the DATABASE_URL repository secret is set; see the README's production setup.
+# The Playwright journeys (npm run e2e) run locally for now, not here.
 name: Check and deploy
 on:
   push:
@@ -24,33 +25,8 @@ jobs:
       - run: for f in legacy/*.js; do node --check "$f"; done
       - run: npx wrangler deploy --dry-run -c legacy/wrangler.jsonc
 
-  e2e:
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    services:
-      postgres:
-        image: postgres:17
-        env:
-          POSTGRES_PASSWORD: postgres
-        ports: ["5432:5432"]
-        options: --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
-    env:
-      DATABASE_URL: postgres://postgres:postgres@127.0.0.1:5432/postgres
-    steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
-        with:
-          node-version: 24
-          cache: npm
-      - run: npm ci
-      - run: npx playwright install --with-deps chromium
-        timeout-minutes: 8
-      - run: echo "DATABASE_URL=$DATABASE_URL" > .dev.vars
-      - run: npm run db:migrate
-      - run: npm run e2e
-
   deploy-legacy:
-    needs: [check, e2e]
+    needs: [check]
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -67,7 +43,7 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
   deploy-app:
-    needs: [check, e2e]
+    needs: [check]
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 15

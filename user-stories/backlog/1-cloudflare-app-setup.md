@@ -4,7 +4,7 @@ metadata:
   activated_at:
   planned_at:
   finished_at:
-  updated_at:   2026-10-25T11:12:24-07:00
+  updated_at:   2026-10-25T11:22:22-07:00
 -->
 
 # Story: Set Up the Cloudflare App
@@ -31,7 +31,8 @@ SO THAT every other story has somewhere to run, in the same platform the steward
 
 - The steward chose Cloudflare on Oct 25 (steward `docs/CONTEXT.md`, decision 7).
 - PR #2 (`a8845c3`) deployed the old static site to Cloudflare; this story turns that project into the new app's.
-- Open: the framework (it should render on the server in Workers and ship little JavaScript, for weak connections and offline use) and the Postgres host (Neon, Supabase or other).
+- Decided Oct 25: a TypeScript server on Workers, a React and TypeScript client, and Postgres (CLAUDE.md, "The new app").
+- Open: the framework (it should render React on the server in Workers and ship little JavaScript, for weak connections and offline use), the Postgres host (Neon, Supabase or other), the migration tool, and the test tools. Record the choices in CLAUDE.md.
 - The old static site stays live until `3-domain-cutover`.
 
 ## Implementation Plan

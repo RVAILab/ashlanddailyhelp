@@ -191,11 +191,27 @@ export const es = {
   },
   chat: {
     crisis:
-      'If you or someone else is in danger, call 911. To talk to someone now: 988, or the Mental Health Crisis Line at 541-774-8201.',
+      'Si usted u otra persona está en peligro, llame al 911. Para hablar con alguien ahora: 988, o la Línea de Crisis de Salud Mental al 541-774-8201.',
     unknown:
-      'I couldn’t find that in the Daily Help directory, and I won’t guess. For help finding services, call 211.',
-    confirm: 'Hours and rules change. Confirm before you go.',
+      'No encontré eso en el directorio de Daily Help, y no voy a adivinar. Para ayuda para encontrar servicios, llame al 211.',
+    confirm: 'Los horarios y las reglas cambian. Confirme antes de ir.',
     asOf: (time: string) => `From listings as of ${time}.`,
+  },
+  ask: {
+    title: 'Ask a question',
+    intro: 'Ask in your own words. Answers come only from the Daily Help listings, with where each fact comes from.',
+    label: 'Your question',
+    placeholder: 'For example: where can I take a shower today?',
+    submit: 'Ask',
+    private: 'Your question isn’t saved. Don’t include your name or other personal details.',
+    empty: 'Type a question first.',
+    unavailable: 'Asking isn’t available right now. For help finding services, call 211.',
+    limited: 'That’s a lot of questions in a short time. Please wait a minute and try again, or call 211.',
+    youAsked: 'You asked',
+    sources: 'Listings this answer uses',
+    from: (site: string) => `source: ${site}`,
+    offline: 'Asking needs a connection. Without one, call 211.',
+    again: 'Ask another question',
   },
   today: {
     title: 'Open today',

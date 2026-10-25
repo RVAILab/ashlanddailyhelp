@@ -12,9 +12,15 @@ const MAX_LISTINGS = 8
 const WEEK = 7 * 24 * 60 * 60 * 1000
 // Words that say nothing about the kind of help, so searching for them alone would match everything or nothing.
 const FILLER = new Set(
-  'a an and any are can do does get go have how i in is it me my near need of on or place places some somewhere the there this to today tomorrow want week what when where which who with you your free help'.split(
-    ' ',
-  ),
+  [
+    'a an and any are can do does get go have how i in is it me my near need of on or place places some somewhere',
+    'the there this to today tomorrow tonight want week what when where which who with you your free help open',
+    'hours time times day days monday tuesday wednesday thursday friday saturday sunday',
+    'dónde donde puedo hay para que una uno unos unas los las del con por hoy mañana necesito quiero conseguir',
+    'algún alguna lugar cuándo cuando qué abierto horario',
+  ]
+    .join(' ')
+    .split(' '),
 )
 
 // What a model may see of a listing: the published fields, never provenance quotes or coordinates.
@@ -47,16 +53,46 @@ export interface ChatContext {
   asOf: string | null
   now: string
   listings: ContextListing[]
-  alerts: Array<{ id: string; title: string; message: string; startsAt: string; endsAt: string; listingIds: string[] }>
-  events: Array<{ id: string; title: string; provider: string; date: string; startsAt: string | null; address: string }>
+  alerts: Array<{
+    id: string
+    kind: string
+    title: string
+    message: string
+    startsAt: string
+    endsAt: string
+    listingIds: string[]
+    status: string | null
+    note: string | null
+    notConfirmed: boolean
+    source: string | null
+  }>
+  events: Array<{
+    id: string
+    title: string
+    provider: string
+    description: string
+    date: string
+    startsAt: string | null
+    endsAt: string | null
+    address: string
+    cost: string
+    requirements: string
+    listingId: string | null
+    status: string | null
+    note: string | null
+    notConfirmed: boolean
+    scheduleNeedsChecking: boolean
+    source: string | null
+  }>
 }
 
 // Everyday words for each kind of help, in English and Spanish, so "nowhere to sleep" finds shelters.
 const KINDS: Record<Category, RegExp> = {
-  food: /\b(hungry|eat|eating|meal|meals|lunch|dinner|breakfast|groceries|hambre|comer|comida|despensa)\b/i,
-  housing: /\b(sleep|sleeping|bed|beds|tent|camp|camping|housing|homeless|rent|dormir|cama|albergue|vivienda)\b/i,
-  hygiene: /\b(shower|showers|wash|bathe|laundry|toilet|bathroom|ducha|regadera|bañarme|lavar)\b/i,
-  health: /\b(sick|doctor|clinic|medicine|dentist|pain|mental|enfermo|médico|clínica|medicina)\b/i,
+  food: /\b(hungry|eat|eating|meal|meals|lunch|dinner|breakfast|groceries|hambre|comer|comida|comedor|alimentos|despensa)\b/i,
+  housing:
+    /\b(sleep|sleeping|bed|beds|tent|camp|camping|housing|homeless|rent|dormir|cama|albergue|refugio|vivienda)\b/i,
+  hygiene: /\b(shower|showers|wash|bathe|laundry|toilet|bathroom|ducha|duchar|regadera|bañarme|baño|lavar)\b/i,
+  health: /\b(sick|doctor|clinic|medicine|dentist|pain|mental|enfermo|médico|clínica|medicina|dentista)\b/i,
   essentials: /\b(clothes|clothing|coat|shoes|phone|id|blanket|ropa|teléfono|identificación|cobija)\b/i,
 }
 
@@ -64,12 +100,12 @@ const KINDS: Record<Category, RegExp> = {
 async function findListings(db: Database, question: string, now: Date, lang: Lang): Promise<StoredListing[]> {
   const whole = await searchListings(db, { query: question.slice(0, 100) }, now, lang)
   if (whole.length >= 3) return whole.slice(0, MAX_LISTINGS)
-  const words = [...new Set(question.toLowerCase().match(/[\p{L}\p{N}]{3,}/gu) ?? [])].filter(word => !FILLER.has(word))
+  const meaningful = words(question)
   const hits = new Map<string, { listing: StoredListing; score: number; first: number }>()
   whole.forEach((listing, index) => {
-    hits.set(listing.id, { listing, score: words.length + 1, first: index })
+    hits.set(listing.id, { listing, score: meaningful.length + 1, first: index })
   })
-  for (const word of words.slice(0, 8))
+  for (const word of meaningful.slice(0, 8))
     (await searchListings(db, { query: word }, now, lang)).forEach((listing, index) => {
       const hit = hits.get(listing.id)
       if (hit) hit.score++
@@ -88,11 +124,26 @@ async function findListings(db: Database, question: string, now: Date, lang: Lan
     .map(hit => hit.listing)
 }
 
+const words = (text: string) =>
+  [...new Set(text.toLowerCase().match(/[\p{L}\p{N}]{3,}/gu) ?? [])].filter(word => !FILLER.has(word))
+
+// An alert is shown from a day before it starts, as on the pages.
+const ALERT_LEAD = 24 * 60 * 60 * 1000
+
 export async function gatherContext(db: Database, question: string, now: Date, lang: Lang): Promise<ChatContext> {
   const listings = await findListings(db, question, now, lang)
-  const alerts = (await currentAlerts(db, now)).filter(alert => servesAshland(alert.area, alert.coverage))
+  const alerts = (await currentAlerts(db, now)).filter(
+    alert => servesAshland(alert.area, alert.coverage) && Date.parse(alert.startsAt) - ALERT_LEAD <= now.getTime(),
+  )
+  // Only the events the question is about: by kind of help, or a word in the title or provider.
+  const asked = words(question)
+  const kinds = (Object.keys(KINDS) as Category[]).filter(category => KINDS[category].test(question))
   const events = (await upcomingEvents(db, now)).filter(
-    event => servesAshland(event.area) && Date.parse(`${event.date}T00:00:00Z`) <= now.getTime() + WEEK,
+    event =>
+      servesAshland(event.area) &&
+      Date.parse(`${event.date}T00:00:00Z`) <= now.getTime() + WEEK &&
+      (event.categories.some(category => kinds.includes(category)) ||
+        asked.some(word => `${event.title} ${event.provider}`.toLowerCase().includes(word))),
   )
   const file = await feedFileStatus(db, 'listings.json')
   return {
@@ -101,19 +152,34 @@ export async function gatherContext(db: Database, question: string, now: Date, l
     listings: listings.map(forModel),
     alerts: alerts.map(alert => ({
       id: alert.id,
+      kind: alert.kind,
       title: alert.title,
       message: alert.message,
       startsAt: alert.startsAt,
       endsAt: alert.endsAt,
       listingIds: alert.listingIds ?? [],
+      status: alert.status ?? null,
+      note: alert.note ?? null,
+      notConfirmed: alert.unconfirmed === true,
+      source: alert.source ?? null,
     })),
-    events: events.slice(0, 20).map(event => ({
+    events: events.slice(0, 10).map(event => ({
       id: event.id,
       title: event.title,
       provider: event.provider,
+      description: event.description,
       date: event.date,
       startsAt: event.startsAt ?? null,
+      endsAt: event.endsAt ?? null,
       address: event.address,
+      cost: event.cost,
+      requirements: event.requirements,
+      listingId: event.listingId ?? null,
+      status: event.status ?? null,
+      note: event.note ?? null,
+      notConfirmed: event.unconfirmed === true,
+      scheduleNeedsChecking: event.conflict === true,
+      source: event.source ?? null,
     })),
   }
 }

@@ -1,6 +1,11 @@
+import { readFileSync } from 'node:fs'
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 import { testDatabase } from '../../test/db.ts'
+import { feedHost, json } from '../../test/feed.ts'
 import { storeListings } from '../../test/listings.ts'
+import { alertsFile } from '../feed/alerts.ts'
+import { eventsFile } from '../feed/events.ts'
+import { refreshFeedFile } from '../feed/ingest.ts'
 import { answerQuestion } from './answer.ts'
 import type { Answerer, ModelAnswer } from './claude.ts'
 import { gatherContext } from './context.ts'
@@ -25,6 +30,16 @@ describe('answerQuestion', () => {
   beforeAll(async () => {
     db = await testDatabase()
     await storeListings(db)
+    for (const [spec, file] of [
+      [eventsFile, 'events.json'],
+      [alertsFile, 'alerts.json'],
+    ] as const)
+      await refreshFeedFile(spec as typeof eventsFile, {
+        db,
+        baseUrl: 'https://feed.example.org/',
+        fetch: feedHost(json(JSON.parse(readFileSync(`test/fixtures/proposed/${file}`, 'utf8')))).fetch,
+        now: () => now,
+      })
   })
   afterAll(() => db.close())
 
@@ -35,7 +50,7 @@ describe('answerQuestion', () => {
     const answerer = fake({
       known: true,
       answer: 'Their website lists showers on Tuesdays.',
-      cited: ['ohra-showers', 'made-up'],
+      cited: ['ohra-showers'],
     })
     const reply = await ask('Where can I take a shower?', answerer)
     expect(answerer.asked[0]?.listings.map(listing => listing.id)).toContain('ohra-showers')
@@ -52,6 +67,33 @@ describe('answerQuestion', () => {
     expect(answerer.asked).toHaveLength(0)
     expect(reply).toMatchObject({ known: false, citations: [] })
     expect(reply.text).toContain('211')
+  })
+
+  it('treats an answer citing anything it wasn’t given as not known', async () => {
+    const reply = await ask(
+      'shower',
+      fake({ known: true, answer: 'Also try the river.', cited: ['ohra-showers', 'made-up'] }),
+    )
+    expect(reply.known).toBe(false)
+    expect(reply.text).not.toContain('river')
+  })
+
+  it('gives events only when the question is about them, with their status, and cites them', async () => {
+    const answerer = fake({ known: true, answer: 'The coat giveaway was canceled.', cited: ['giveaway-1'] })
+    const reply = await ask('is there a coat giveaway?', answerer)
+    const events = answerer.asked[0]?.events ?? []
+    expect(events.map(event => event.id)).toEqual(['giveaway-1'])
+    expect(events[0]).toMatchObject({ status: 'canceled', note: 'Canceled. Posted by Ashland Rotary.' })
+    expect(reply.citations).toEqual([{ id: 'giveaway-1', name: 'Coat giveaway', source: null, listingId: null }])
+    const bike = fake({ known: true, answer: 'Guessing.', cited: [] })
+    await ask('Where can I get my bicycle repaired?', bike)
+    expect(bike.asked).toHaveLength(0)
+  })
+
+  it('gives only alerts in effect or starting within a day', async () => {
+    const answerer = fake({ known: false, answer: '', cited: [] })
+    await answerQuestion({ db, answerer, question: 'shelter', lang: 'en', now: new Date('2026-10-20T18:00:00Z') })
+    expect(answerer.asked[0]?.alerts).toEqual([])
   })
 
   it('treats an answer that cites nothing as not known', async () => {
@@ -112,6 +154,8 @@ describe('gatherContext, everyday words', () => {
     expect(await ids('I have nowhere to sleep tonight')).toContain('ohra-shelter')
     expect(await ids('I’m hungry')).toContain('access-pantries')
     expect(await ids('dónde puedo dormir')).toContain('ohra-shelter')
+    expect(await ids('¿hay un refugio?')).toContain('ohra-shelter')
+    expect(await ids('necesito bañarme')).toContain('ohra-showers')
     await db.close()
   })
 })

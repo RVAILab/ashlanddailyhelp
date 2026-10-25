@@ -13,6 +13,7 @@ const showers: ListingCard = {
   area: 'Ashland',
   schedule: { text: 'Website lists Tuesdays and Thursdays, 9 am to noon.', fromFeed: true },
   translated: false,
+  saved: false,
   address: '2350 Ashland St, Ashland',
   phone: '541-708-6100',
   labels: [

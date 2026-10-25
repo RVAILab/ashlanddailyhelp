@@ -1,4 +1,4 @@
-import { Link } from 'react-router'
+import { data, Link } from 'react-router'
 import { findListing } from '../../server/listings/listing.ts'
 import { services } from '../context.ts'
 import { langFromPath, messagesFor } from '../i18n/index.ts'
@@ -15,18 +15,18 @@ export async function loader({ url, context }: Route.LoaderArgs) {
   const db = database()
   const id = url.searchParams.get('listing') ?? ''
   const listing = db && /^[a-z0-9][a-z0-9-]*$/.test(id) ? await findListing(db, id, new Date()) : null
-  if (!listing) return { listing: null, mailto: null }
+  if (!listing) return data({ listing: null, mailto: null }, { status: 404 })
   const page = `${url.origin}/resources/${listing.id}`
   const translation = url.searchParams.get('about') === 'translation'
   const mailto = correctionsEmail
     ? `mailto:${correctionsEmail}?subject=${encodeURIComponent(t.providers.subject(listing.name))}&body=${encodeURIComponent(t.providers.body(listing.id, page, translation))}`
     : null
-  return { listing: listingDetail(listing, lang), mailto }
+  return data({ listing: listingDetail(listing, lang), mailto })
 }
 
 export function meta({ location }: Route.MetaArgs) {
   const t = messagesFor(langFromPath(location.pathname))
-  return [{ title: `${t.providers.reportTitle} · ${t.siteName}`, robots: 'noindex' }]
+  return [{ title: `${t.providers.reportTitle} · ${t.siteName}` }, { name: 'robots', content: 'noindex' }]
 }
 
 export default function Report({ loaderData }: Route.ComponentProps) {

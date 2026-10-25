@@ -57,9 +57,13 @@ describe('FeedFooter', () => {
         .getAllByRole('link')
         .map(link => [link.textContent?.replace(/\s+/g, ' ').trim(), link.getAttribute('href')]),
     ).toEqual([
-      ['Call 911 Emergency', 'tel:911'],
-      ['Call 988 Suicide and crisis line, call or text', 'tel:988'],
-      ['Call 211 Help finding services', 'tel:211'],
+      ['Call 911', 'tel:911'],
+      ['Call 988', 'tel:988'],
+      ['Call 541-774-8201', 'tel:5417748201'],
+      ['Call 211', 'tel:211'],
     ])
+    expect(numbers.textContent?.replace(/\s+/g, ' ')).toContain(
+      'Call 988 • Call 541-774-8201 Mental Health Crisis Line',
+    )
   })
 })

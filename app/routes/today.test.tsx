@@ -12,6 +12,7 @@ const card = (id: string, name: string): ListingCard => ({
   area: 'Ashland',
   schedule: { text: 'Website lists weekdays.', fromFeed: true },
   translated: false,
+  saved: false,
   address: '2350 Ashland St',
   phone: null,
   labels: [{ kind: 'warning', text: 'Schedule needs checking' }],

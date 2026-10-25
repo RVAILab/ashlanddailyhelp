@@ -17,7 +17,8 @@ import type { Messages } from '../i18n/en.ts'
 import { type Lang, langFromPath, locales, messagesFor } from '../i18n/index.ts'
 import { useI18n } from '../i18n/provider.tsx'
 import { areaName } from '../lib/areas.ts'
-import { listingLabels } from '../lib/listing-labels.ts'
+import { toCard } from '../lib/card-data.ts'
+import { savedIds } from '../lib/saved-list.ts'
 import type { Route } from './+types/today'
 
 const clock = (lang: Lang, iso: string | Date) =>
@@ -38,6 +39,7 @@ function toEntry(
   t: Messages,
   group: 'openNow' | 'later' | 'closed' | 'notConfirmed',
   alert?: string,
+  saved = false,
 ): TodayCard {
   const listing: StoredListing = entry.listing
   const window = entry.window
@@ -60,19 +62,8 @@ function toEntry(
   return {
     when,
     hours: entry.today.length > 1 ? t.today.hours(entry.today.map(span).join(', ')) : null,
-    card: {
-      id: listing.id,
-      name: listing.name,
-      provider: listing.provider,
-      categories: listing.categories.map(category => t.categories[category]),
-      area: areaName(listing.area, t),
-      schedule: { text: listing.schedule, fromFeed: true },
-      translated: false,
-      // A window can be somewhere other than the listing's usual address.
-      address: window?.location ?? listing.address,
-      phone: listing.phone,
-      labels: [...(alert ? [{ kind: 'warning' as const, text: alert }] : []), ...listingLabels(listing, lang)],
-    },
+    // A window can be somewhere other than the listing's usual address.
+    card: { ...toCard(listing, lang, { alert, saved }), address: window?.location ?? listing.address },
   }
 }
 
@@ -122,7 +113,8 @@ const dayName = (lang: Lang, date: string) =>
 const soonest = (...times: Array<string | null>) =>
   times.filter((time): time is string => time !== null).sort((a, b) => Date.parse(a) - Date.parse(b))[0] ?? null
 
-export async function loader({ url, context }: Route.LoaderArgs) {
+export async function loader({ request, url, context }: Route.LoaderArgs) {
+  const saved = savedIds(request.headers.get('Cookie'))
   const db = context.get(services).database()
   if (!db) throw data('The listings database is not configured.', { status: 503 })
   const lang = langFromPath(url.pathname)
@@ -153,11 +145,17 @@ export async function loader({ url, context }: Route.LoaderArgs) {
     eventsDemonstration: eventsFeed?.dataset === 'FICTIONAL_DEMONSTRATION',
     alerts,
     groups: {
-      openNow: groups.openNow.map(entry => toEntry(entry, lang, t, 'openNow', alerts.byListing[entry.listing.id])),
-      later: groups.later.map(entry => toEntry(entry, lang, t, 'later', alerts.byListing[entry.listing.id])),
-      closed: groups.closed.map(entry => toEntry(entry, lang, t, 'closed', alerts.byListing[entry.listing.id])),
+      openNow: groups.openNow.map(entry =>
+        toEntry(entry, lang, t, 'openNow', alerts.byListing[entry.listing.id], saved.includes(entry.listing.id)),
+      ),
+      later: groups.later.map(entry =>
+        toEntry(entry, lang, t, 'later', alerts.byListing[entry.listing.id], saved.includes(entry.listing.id)),
+      ),
+      closed: groups.closed.map(entry =>
+        toEntry(entry, lang, t, 'closed', alerts.byListing[entry.listing.id], saved.includes(entry.listing.id)),
+      ),
       notConfirmed: groups.notConfirmed.map(entry =>
-        toEntry(entry, lang, t, 'notConfirmed', alerts.byListing[entry.listing.id]),
+        toEntry(entry, lang, t, 'notConfirmed', alerts.byListing[entry.listing.id], saved.includes(entry.listing.id)),
       ),
     },
   }

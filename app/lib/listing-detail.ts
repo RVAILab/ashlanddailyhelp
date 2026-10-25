@@ -113,7 +113,8 @@ export function listingDetail(listing: FeedListing, lang: Lang, translated = new
         source: t.detail.sourceTypes[entry.sourceType],
         url: isWebUrl(entry.sourceRef) ? entry.sourceRef : null,
         ref: isWebUrl(entry.sourceRef) ? siteName(entry.sourceRef) : entry.sourceRef,
-        quote: entry.span,
+        // A quoted passage can name a sensitive place even under another field, so none are shown for such listings.
+        quote: sensitive ? null : entry.span,
         seen: t.detail.seen(day(entry.observedAt)),
       })),
     }))

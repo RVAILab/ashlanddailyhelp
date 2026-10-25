@@ -1,3 +1,4 @@
+import { Link } from 'react-router'
 import { langFromPath, messagesFor } from '../i18n/index.ts'
 import { useI18n } from '../i18n/provider.tsx'
 import type { Route } from './+types/about'
@@ -10,7 +11,7 @@ export function meta({ location }: Route.MetaArgs) {
 }
 
 export default function About() {
-  const { t } = useI18n()
+  const { t, path } = useI18n()
   return (
     <main className="about">
       <h1>{t.about.title}</h1>
@@ -31,6 +32,9 @@ export default function About() {
       <p>{t.about.privacy}</p>
       <h2 id="providers">{t.about.providersHeading}</h2>
       <p>{t.about.providers}</p>
+      <p>
+        <Link to={path('/providers')}>{t.providers.title}</Link>
+      </p>
     </main>
   )
 }

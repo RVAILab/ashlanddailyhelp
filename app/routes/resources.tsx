@@ -12,33 +12,14 @@ import type { Messages } from '../i18n/en.ts'
 import { type Lang, langFromPath, messagesFor } from '../i18n/index.ts'
 import { useI18n } from '../i18n/provider.tsx'
 import { areaName } from '../lib/areas.ts'
+import { toCard } from '../lib/card-data.ts'
 import { categories } from '../lib/categories.ts'
 import { readFilters } from '../lib/filters.ts'
-import { listingLabels } from '../lib/listing-labels.ts'
+import { savedIds } from '../lib/saved-list.ts'
 import type { Route } from './+types/resources'
 
-function toCard(listing: FeedListing, lang: Lang, translated: Map<string, string>, alert?: string): ListingCard {
-  const t = messagesFor(lang)
-  const schedule = translated.get(listing.schedule.trim())
-  const labels = [
-    ...(alert ? [{ kind: 'warning' as const, text: alert }] : []),
-    ...listingLabels(listing, lang, translated),
-  ]
-  return {
-    id: listing.id,
-    name: listing.name,
-    provider: listing.provider,
-    categories: listing.categories.map(category => t.categories[category]),
-    area: areaName(listing.area, t),
-    schedule: schedule ? { text: schedule, fromFeed: false } : { text: listing.schedule, fromFeed: true },
-    translated: Boolean(schedule) || labels.some(label => label.translated),
-    address: listing.address,
-    phone: listing.phone,
-    labels,
-  }
-}
-
-export async function loader({ url, context }: Route.LoaderArgs) {
+export async function loader({ request, url, context }: Route.LoaderArgs) {
+  const saved = savedIds(request.headers.get('Cookie'))
   const db = context.get(services).database()
   if (!db) throw data('The listings database is not configured.', { status: 503 })
   const lang = langFromPath(url.pathname)
@@ -57,7 +38,9 @@ export async function loader({ url, context }: Route.LoaderArgs) {
       : new Map<string, string>()
   return {
     filters,
-    results: found.map(listing => toCard(listing, lang, translated, alerts.byListing[listing.id])),
+    results: found.map(listing =>
+      toCard(listing, lang, { translated, alert: alerts.byListing[listing.id], saved: saved.includes(listing.id) }),
+    ),
     feedLoaded: feed.state !== 'none',
     demonstration: feed.state === 'stored' && feed.dataset === 'FICTIONAL_DEMONSTRATION',
   }

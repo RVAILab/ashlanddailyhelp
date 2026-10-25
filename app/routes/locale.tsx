@@ -94,6 +94,9 @@ export default function Locale({ loaderData }: Route.ComponentProps) {
         <Link to={lang === 'es' ? '/es' : '/'} className="site-name">
           {t.siteName}
         </Link>
+        <Link to={lang === 'es' ? '/es/list' : '/list'} className="list-link">
+          {t.list.link}
+        </Link>
         <LanguageSwitch lang={lang} />
       </header>
       <Outlet />

@@ -12,7 +12,7 @@ export const es = {
       label: 'Números de emergencia y de crisis',
       emergency: 'Emergencias',
       call: 'Llame al',
-      crisis: 'Línea de crisis y suicidio, llame o envíe texto',
+      crisis: 'Mental Health Crisis Line',
       services: 'Ayuda para encontrar servicios',
     },
     kinds: '¿Qué necesita?',
@@ -157,6 +157,25 @@ export const es = {
     subject: (name: string) => `Correction for Daily Help listing: ${name}`,
     body: (id: string, page: string, translation: boolean) =>
       `Listing: ${id}\nPage: ${page}\n${translation ? 'About: the automatic Spanish translation\n' : ''}\nWhat is wrong:\n\nWhere the right information is published:\n`,
+  },
+  list: {
+    title: 'My list',
+    sharedTitle: 'A shared list',
+    link: 'My list',
+    add: 'Add to my list',
+    remove: 'Remove from my list',
+    saved: 'On my list',
+    empty: 'Nothing saved yet. Use “Add to my list” on any listing to keep it here.',
+    intro: 'Saved on this device only. Nothing about it is stored on the Daily Help website.',
+    sharedIntro: 'Someone shared these listings with you. The details are current.',
+    missing: (count: number) =>
+      count === 1
+        ? '1 listing on this list is no longer available.'
+        : `${count} listings on this list are no longer available.`,
+    share: 'Share this list',
+    text: 'Text this list',
+    textBody: (url: string) => `Places from Ashland Daily Help: ${url}`,
+    save: 'Save this list on my device',
   },
   detail: {
     backToSearch: 'Volver a la búsqueda',

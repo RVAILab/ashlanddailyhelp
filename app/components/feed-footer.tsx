@@ -10,22 +10,27 @@ export type FooterFeed = FeedStatus extends infer Status
 
 export function FeedFooter({ feed }: { feed: FooterFeed }) {
   const { t } = useI18n()
-  const numbers = [
-    ['911', t.home.emergency.emergency],
-    ['988', t.home.emergency.crisis],
-    ['211', t.home.emergency.services],
-  ] as const
+  const lines = [
+    { numbers: ['911'], what: t.home.emergency.emergency },
+    { numbers: ['988', '541-774-8201'], what: t.home.emergency.crisis },
+    { numbers: ['211'], what: t.home.emergency.services },
+  ]
   return (
     <footer className="site-footer">
       <nav aria-label={t.home.emergency.label} className="emergency">
-        {numbers.map(([number, what]) => (
-          <a key={number} href={`tel:${number}`}>
-            <strong>
-              <span className="visually-hidden">{t.home.emergency.call} </span>
-              {number}
-            </strong>{' '}
-            <span>{what}</span>
-          </a>
+        {lines.map(line => (
+          <p key={line.what}>
+            {line.numbers.map((number, index) => (
+              <span key={number}>
+                {index > 0 && <span aria-hidden="true"> • </span>}
+                <a href={`tel:${number.replace(/\D/g, '')}`}>
+                  <span className="visually-hidden">{t.home.emergency.call} </span>
+                  {number}
+                </a>
+              </span>
+            ))}{' '}
+            <span className="emergency-what">{line.what}</span>
+          </p>
         ))}
       </nav>
       {content(feed, t)}

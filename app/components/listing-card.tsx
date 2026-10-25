@@ -13,6 +13,8 @@ export interface ListingCard {
   schedule: { text: string; fromFeed: boolean }
   // Some text on the card is a machine translation; the card says so and links to the English.
   translated: boolean
+  // On the list saved on this device.
+  saved: boolean
   address: string
   phone: string | null
   labels: ListingLabel[]
@@ -23,7 +25,8 @@ const dialable = (phone: string) => phone.replace(/[^\d+]/g, '')
 export function ListingCardView({ listing }: { listing: ListingCard }) {
   const heading = useId()
   const { t, lang, path } = useI18n()
-  const { search } = useLocation()
+  const { pathname, search } = useLocation()
+  const back = encodeURIComponent(`${pathname}${search}`)
   // Listing text comes from the steward in English; on other pages, mark it so screen readers use an English voice.
   const feedLang = lang === 'en' ? undefined : 'en'
   return (
@@ -49,6 +52,12 @@ export function ListingCardView({ listing }: { listing: ListingCard }) {
         <dt>{t.card.phone}</dt>
         <dd>{listing.phone ? <a href={`tel:${dialable(listing.phone)}`}>{listing.phone}</a> : t.card.noPhone}</dd>
       </dl>
+      <p className="save-toggle">
+        <a href={`/list/toggle?id=${listing.id}&return=${back}`} rel="nofollow">
+          {listing.saved ? t.list.remove : t.list.add}
+        </a>
+        {listing.saved && <span> · {t.list.saved}</span>}
+      </p>
       {listing.translated && (
         <p className="machine-translated">
           {t.labels.machineTranslated} ·{' '}

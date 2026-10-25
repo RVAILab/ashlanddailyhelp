@@ -4,6 +4,8 @@ export default [
   route('health', 'routes/health.ts'),
   route('language', 'routes/language.ts'),
   route('forget', 'routes/forget.ts'),
+  route('list/toggle', 'routes/list-toggle.ts'),
+  route('list/save', 'routes/list-save.ts'),
   route('offline-pages.json', 'routes/offline-pages.ts'),
   route('es?', 'routes/locale.tsx', [
     index('routes/home.tsx'),
@@ -13,6 +15,7 @@ export default [
     route('today', 'routes/today.tsx'),
     route('providers', 'routes/providers.tsx'),
     route('report', 'routes/report.tsx'),
+    route('list', 'routes/list.tsx'),
     route('*', 'routes/not-found.tsx'),
   ]),
 ] satisfies RouteConfig

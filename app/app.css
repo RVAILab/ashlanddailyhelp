@@ -282,16 +282,17 @@ main h1:focus-visible {
   margin: 0.75rem 0;
 }
 
+.site-footer .emergency p {
+  margin: 0;
+}
+
 .site-footer .emergency a {
-  display: grid;
-  align-content: center;
+  display: inline-flex;
+  align-items: center;
   min-height: 44px;
-  padding: 0.5rem;
-  border: 2px solid var(--warning);
-  border-radius: 8px;
+  font-size: 1.25rem;
+  font-weight: 700;
   color: var(--ink);
-  text-decoration: none;
-  line-height: 1.2;
 }
 
 .emergency strong {

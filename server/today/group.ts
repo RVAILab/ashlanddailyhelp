@@ -2,8 +2,12 @@ import type { Opening, StoredListing } from '../feed/contract.ts'
 
 export interface TodayEntry {
   listing: StoredListing
+  // The window that decides the group: the open one, or the next one today.
   window?: Opening
+  // All of today's windows, in time order.
+  today: Opening[]
   canceled?: string
+  mayBeCanceled?: string
 }
 
 export interface TodayGroups {
@@ -15,46 +19,59 @@ export interface TodayGroups {
 }
 
 const pacificDate = (at: Date) => new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Los_Angeles' }).format(at)
-const at = (iso: string) => new Date(iso)
+const time = (iso: string) => Date.parse(iso)
 
 // Which of today's groups each listing belongs in, worked out in Pacific time from its opening windows. A listing is
-// never "open" without windows, when its schedule needs checking or may be canceled, or when today's window is canceled.
+// never "open" without windows, when its schedule needs checking or may be canceled, when today's window may be or is
+// canceled, or when its windows don't reach today (a stale copy says nothing about today).
 export function groupToday(listings: StoredListing[], now: Date): TodayGroups {
   const today = pacificDate(now)
   const groups: TodayGroups = { openNow: [], later: [], closed: [], notConfirmed: [], nextChange: null }
   const changes: number[] = []
+  const nowMs = now.getTime()
   for (const listing of listings) {
-    const openings = listing.openings ?? []
-    if (openings.length === 0 || listing.conflict || listing.mayBeCanceled) {
-      groups.notConfirmed.push({ listing })
+    const openings = [...(listing.openings ?? [])].sort((a, b) => time(a.startsAt) - time(b.startsAt))
+    const coversToday = openings.some(
+      window =>
+        pacificDate(new Date(window.startsAt)) >= today || (window.endsAt !== undefined && time(window.endsAt) > nowMs),
+    )
+    if (openings.length === 0 || !coversToday || listing.conflict || listing.mayBeCanceled) {
+      groups.notConfirmed.push({ listing, today: [] })
       continue
     }
     const todays = openings.filter(
       window =>
-        pacificDate(at(window.startsAt)) === today ||
-        (at(window.startsAt) <= now && window.endsAt !== undefined && at(window.endsAt) > now),
+        pacificDate(new Date(window.startsAt)) === today ||
+        (time(window.startsAt) <= nowMs && window.endsAt !== undefined && time(window.endsAt) > nowMs),
     )
     for (const window of todays) {
-      if (at(window.startsAt) > now) changes.push(at(window.startsAt).getTime())
-      if (window.endsAt && at(window.endsAt) > now) changes.push(at(window.endsAt).getTime())
+      if (time(window.startsAt) > nowMs) changes.push(time(window.startsAt))
+      if (window.endsAt && time(window.endsAt) > nowMs) changes.push(time(window.endsAt))
+    }
+    const doubtful = todays.find(
+      window => window.status === 'may_be_canceled' && (!window.endsAt || time(window.endsAt) > nowMs),
+    )
+    if (doubtful) {
+      groups.notConfirmed.push({ listing, today: todays, mayBeCanceled: doubtful.note ?? '' })
+      continue
     }
     const usable = todays.filter(window => window.status !== 'canceled')
-    const open = usable.find(window => at(window.startsAt) <= now && window.endsAt && at(window.endsAt) > now)
-    const next = usable
-      .filter(window => at(window.startsAt) > now)
-      .sort((a, b) => a.startsAt.localeCompare(b.startsAt))[0]
-    const startedWithoutEnd = usable.some(window => at(window.startsAt) <= now && !window.endsAt)
-    if (open) groups.openNow.push({ listing, window: open })
-    else if (next) groups.later.push({ listing, window: next })
-    else if (startedWithoutEnd) groups.notConfirmed.push({ listing })
+    const open = usable.find(window => time(window.startsAt) <= nowMs && window.endsAt && time(window.endsAt) > nowMs)
+    const next = usable.find(window => time(window.startsAt) > nowMs)
+    const startedWithoutEnd = usable.some(window => time(window.startsAt) <= nowMs && !window.endsAt)
+    if (open) groups.openNow.push({ listing, window: open, today: todays })
+    else if (next) groups.later.push({ listing, window: next, today: todays })
+    else if (startedWithoutEnd) groups.notConfirmed.push({ listing, today: todays })
     else {
       const canceled = todays.find(window => window.status === 'canceled')
-      groups.closed.push(canceled ? { listing, canceled: canceled.note ?? '' } : { listing })
+      groups.closed.push(
+        canceled ? { listing, today: todays, canceled: canceled.note ?? '' } : { listing, today: todays },
+      )
     }
   }
-  const time = (entry: TodayEntry, key: 'startsAt' | 'endsAt') => at(entry.window?.[key] ?? '').getTime()
-  groups.openNow.sort((a, b) => time(a, 'endsAt') - time(b, 'endsAt'))
-  groups.later.sort((a, b) => time(a, 'startsAt') - time(b, 'startsAt'))
+  const at = (entry: TodayEntry, key: 'startsAt' | 'endsAt') => time(entry.window?.[key] ?? '')
+  groups.openNow.sort((a, b) => at(a, 'endsAt') - at(b, 'endsAt'))
+  groups.later.sort((a, b) => at(a, 'startsAt') - at(b, 'startsAt'))
   groups.nextChange = changes.length ? new Date(Math.min(...changes)) : null
   return groups
 }

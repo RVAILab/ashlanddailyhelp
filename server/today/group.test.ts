@@ -110,3 +110,63 @@ describe('groupToday', () => {
     expect(grouped.nextChange?.toISOString()).toBe('2026-10-25T19:00:00.000Z')
   })
 })
+
+describe('groupToday, from the review', () => {
+  const ids = (group: Array<{ listing: { id: string } }>) => group.map(entry => entry.listing.id)
+
+  it('never shows a window that may be canceled as open, and carries its note', () => {
+    const grouped = groupToday(
+      [
+        listing('maybe', {
+          openings: [
+            window('2026-10-25T09:00:00-07:00', '2026-10-25T12:00:00-07:00', {
+              status: 'may_be_canceled',
+              note: 'May be canceled if it rains.',
+            }),
+          ],
+        }),
+      ],
+      now,
+    )
+    expect(ids(grouped.openNow)).toEqual([])
+    expect(grouped.notConfirmed[0]?.mayBeCanceled).toBe('May be canceled if it rains.')
+  })
+
+  it('says hours are not confirmed, not closed, when the windows stop before today', () => {
+    const grouped = groupToday(
+      [listing('stale', { openings: [window('2026-10-20T09:00:00-07:00', '2026-10-20T12:00:00-07:00')] })],
+      now,
+    )
+    expect(ids(grouped.notConfirmed)).toEqual(['stale'])
+  })
+
+  it('gives all of today’s windows, in order', () => {
+    const grouped = groupToday(
+      [
+        listing('split', {
+          openings: [
+            window('2026-10-25T13:00:00-07:00', '2026-10-25T15:00:00-07:00'),
+            window('2026-10-25T09:00:00-07:00', '2026-10-25T12:00:00-07:00'),
+          ],
+        }),
+      ],
+      now,
+    )
+    expect(grouped.openNow[0]?.today.map(entry => entry.startsAt)).toEqual([
+      '2026-10-25T09:00:00-07:00',
+      '2026-10-25T13:00:00-07:00',
+    ])
+  })
+
+  it('sorts by the instant, not the text, across a change of offset', () => {
+    const fallBack = new Date('2026-11-01T08:30:00Z') // 1:30 AM PDT, before the clocks go back
+    const grouped = groupToday(
+      [
+        listing('pst', { openings: [window('2026-11-01T01:15:00-08:00', '2026-11-01T03:00:00-08:00')] }),
+        listing('pdt', { openings: [window('2026-11-01T01:45:00-07:00', '2026-11-01T03:00:00-07:00')] }),
+      ],
+      fallBack,
+    )
+    expect(ids(grouped.later)).toEqual(['pdt', 'pst'])
+  })
+})

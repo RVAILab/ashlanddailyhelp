@@ -18,7 +18,16 @@ describe('/today loader', () => {
       ...sample,
       listings: [
         { ...showers, openings: [{ startsAt: '2026-10-25T10:00:00-07:00', endsAt: '2026-10-25T14:00:00-07:00' }] },
-        { ...pantry, openings: [{ startsAt: '2026-10-25T13:00:00-07:00', endsAt: '2026-10-25T15:00:00-07:00' }] },
+        {
+          ...pantry,
+          openings: [
+            {
+              startsAt: '2026-10-25T13:00:00-07:00',
+              endsAt: '2026-10-25T15:00:00-07:00',
+              location: 'Teresa McCormick Center',
+            },
+          ],
+        },
         sample.listings.find((listing: { id: string }) => listing.id === 'uncle-foods'),
       ],
     })
@@ -36,6 +45,7 @@ describe('/today loader', () => {
     expect(page.groups.later.map(entry => [entry.card.id, entry.when])).toEqual([
       ['access-pantries', 'Opens at 1:00 PM, until 3:00 PM'],
     ])
+    expect(page.groups.later[0]?.card.address).toBe('Teresa McCormick Center')
     expect(page.groups.notConfirmed.map(entry => entry.card.id)).toEqual(['uncle-foods'])
     expect(page.workedOut).toBe('11:00 AM')
     expect(page.nextChange).toBe('2026-10-25T20:00:00.000Z')

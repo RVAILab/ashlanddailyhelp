@@ -23,12 +23,15 @@ describe('/today', () => {
       filters: {},
       areas: ['Ashland'],
       workedOut: '11:00 AM',
+      now: '2026-10-25T18:00:00.000Z',
       nextChange: null,
       groups: {
-        openNow: [{ card: card('a', 'Showers'), when: 'Open until 2:00 PM' }],
+        openNow: [
+          { card: card('a', 'Showers'), when: 'Open until 2:00 PM', hours: 'Today: 9:00 AM–12:00 PM, 1:00 PM–2:00 PM' },
+        ],
         later: [],
         closed: [],
-        notConfirmed: [{ card: card('b', 'Community meal'), when: 'Hours not confirmed' }],
+        notConfirmed: [{ card: card('b', 'Community meal'), when: 'Hours not confirmed', hours: null }],
       },
     }
     const Stub = createRoutesStub([{ path: '/today', Component: Today, loader: () => loaderData }])
@@ -37,6 +40,7 @@ describe('/today', () => {
     expect(screen.getByText(/Worked out at 11:00 AM/)).toBeDefined()
     const open = screen.getByRole('region', { name: 'Open now (1)' })
     expect(within(open).getByText('Open until 2:00 PM')).toBeDefined()
+    expect(within(open).getByText('Today: 9:00 AM–12:00 PM, 1:00 PM–2:00 PM')).toBeDefined()
     expect(within(open).getByRole('article', { name: 'Showers' })).toBeDefined()
     expect(
       within(screen.getByRole('region', { name: 'Later today (0)' })).getByText('Nothing here right now.'),

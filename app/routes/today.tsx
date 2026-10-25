@@ -22,6 +22,8 @@ const clock = (lang: Lang, iso: string | Date) =>
 interface TodayCard {
   card: ListingCard
   when: string
+  // Every window today, when there is more than one ("9:00 AM–12:00 PM, 1:00 PM–3:00 PM").
+  hours: string | null
 }
 
 function toEntry(
@@ -43,9 +45,14 @@ function toEntry(
           ? entry.canceled !== undefined
             ? t.today.canceled(entry.canceled)
             : t.today.closed
-          : t.today.notConfirmed
+          : entry.mayBeCanceled !== undefined
+            ? entry.mayBeCanceled || t.today.notConfirmed
+            : t.today.notConfirmed
+  const span = (window: TodayEntry['today'][number]) =>
+    window.endsAt ? `${clock(lang, window.startsAt)}–${clock(lang, window.endsAt)}` : clock(lang, window.startsAt)
   return {
     when,
+    hours: entry.today.length > 1 ? t.today.hours(entry.today.map(span).join(', ')) : null,
     card: {
       id: listing.id,
       name: listing.name,
@@ -54,7 +61,8 @@ function toEntry(
       area: areaName(listing.area, t),
       schedule: { text: listing.schedule, fromFeed: true },
       translated: false,
-      address: listing.address,
+      // A window can be somewhere other than the listing's usual address.
+      address: window?.location ?? listing.address,
       phone: listing.phone,
       labels: listingLabels(listing, lang),
     },
@@ -77,6 +85,7 @@ export async function loader({ url, context }: Route.LoaderArgs) {
     filters,
     areas,
     workedOut: clock(lang, now),
+    now: now.toISOString(),
     nextChange: groups.nextChange?.toISOString() ?? null,
     groups: {
       openNow: groups.openNow.map(entry => toEntry(entry, lang, t, 'openNow')),
@@ -95,22 +104,24 @@ export function meta({ location }: Route.MetaArgs) {
 const HOUR = 60 * 60 * 1000
 
 // Regroup when the next window opens or closes, and at least every hour, without a reload.
-function useRegroup(nextChange: string | null) {
+// Times come from the server's clock, so a phone whose clock is off can't make this reload in a loop.
+function useRegroup(serverNow: string, nextChange: string | null) {
   const { revalidate } = useRevalidator()
   useEffect(() => {
-    const untilChange = nextChange ? Date.parse(nextChange) - Date.now() : Number.POSITIVE_INFINITY
-    const untilHour = HOUR - (Date.now() % HOUR)
+    const base = Date.parse(serverNow)
+    const untilChange = nextChange ? Date.parse(nextChange) - base : Number.POSITIVE_INFINITY
+    const untilHour = HOUR - (base % HOUR)
     const timer = setTimeout(() => revalidate(), Math.max(1_000, Math.min(untilChange, untilHour) + 1_000))
     return () => clearTimeout(timer)
-  }, [nextChange, revalidate])
+  }, [serverNow, nextChange, revalidate])
 }
 
 const GROUPS = ['openNow', 'later', 'closed', 'notConfirmed'] as const
 
 export default function Today({ loaderData }: Route.ComponentProps) {
-  const { filters, areas, workedOut, nextChange, groups } = loaderData
+  const { filters, areas, workedOut, now, nextChange, groups } = loaderData
   const { t, path } = useI18n()
-  useRegroup(nextChange)
+  useRegroup(now, nextChange)
   return (
     <main>
       <h1>{t.today.title}</h1>
@@ -152,6 +163,7 @@ export default function Today({ loaderData }: Route.ComponentProps) {
             groups[group].map(entry => (
               <div key={entry.card.id} className="today-entry">
                 <p className={`today-when today-when-${group}`}>{entry.when}</p>
+                {entry.hours && <p className="today-hours">{entry.hours}</p>}
                 <ListingCardView listing={entry.card} />
               </div>
             ))

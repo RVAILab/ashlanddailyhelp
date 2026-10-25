@@ -114,6 +114,7 @@ export const es = {
     opensFromTo: (start: string, end: string) => `Opens at ${start}, until ${end}`,
     canceled: (note: string) => (note ? `Canceled today: ${note}` : 'Canceled today'),
     none: 'Nothing here right now.',
+    hours: (spans: string) => `Today: ${spans}`,
   },
   detail: {
     backToSearch: 'Volver a la búsqueda',

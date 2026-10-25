@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { data, Form, Link } from 'react-router'
 import type { FeedListing } from '../../contract/steward/feed.ts'
 import { listingsFeedStatus } from '../../server/feed/listings.ts'
@@ -80,14 +80,15 @@ function Call211({ t }: { t: Messages }) {
 export default function Resources({ loaderData }: Route.ComponentProps) {
   const { filters, areas, results, feedLoaded, demonstration } = loaderData
   const { t, path } = useI18n()
-  // The fields follow the URL (back, forward, a shared link) without remounting, so focus stays where it was.
-  const [query, setQuery] = useState(filters.query ?? '')
-  const [category, setCategory] = useState<string>(filters.category ?? '')
-  const [area, setArea] = useState(filters.area ?? '')
+  // Uncontrolled fields keep whatever someone typed before the page finished loading. When the URL changes (back,
+  // forward, a shared link) they are set to match it, without remounting, so focus stays where it was.
+  const query = useRef<HTMLInputElement>(null)
+  const category = useRef<HTMLSelectElement>(null)
+  const area = useRef<HTMLSelectElement>(null)
   useEffect(() => {
-    setQuery(filters.query ?? '')
-    setCategory(filters.category ?? '')
-    setArea(filters.area ?? '')
+    if (query.current) query.current.value = filters.query ?? ''
+    if (category.current) category.current.value = filters.category ?? ''
+    if (area.current) area.current.value = filters.area ?? ''
   }, [filters.query, filters.category, filters.area])
   const filtered = Boolean(filters.query || filters.category || filters.area)
 
@@ -97,17 +98,11 @@ export default function Resources({ loaderData }: Route.ComponentProps) {
       <Form method="get" role="search" className="search-form">
         <label>
           {t.search.words}
-          <input
-            type="search"
-            name="q"
-            value={query}
-            onChange={event => setQuery(event.target.value)}
-            maxLength={100}
-          />
+          <input type="search" name="q" ref={query} defaultValue={filters.query ?? ''} maxLength={100} />
         </label>
         <label>
           {t.search.kind}
-          <select name="category" value={category} onChange={event => setCategory(event.target.value)}>
+          <select ref={category} name="category" defaultValue={filters.category ?? ''}>
             <option value="">{t.search.anyKind}</option>
             {categories.map(id => (
               <option key={id} value={id}>
@@ -118,7 +113,7 @@ export default function Resources({ loaderData }: Route.ComponentProps) {
         </label>
         <label>
           {t.search.area}
-          <select name="area" value={area} onChange={event => setArea(event.target.value)}>
+          <select ref={area} name="area" defaultValue={filters.area ?? ''}>
             <option value="">{t.search.anyArea}</option>
             {areas.map(name => (
               <option key={name} value={name}>

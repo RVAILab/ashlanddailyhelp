@@ -97,6 +97,22 @@ export const en = {
     machineTranslated: 'Automatic translation',
     viewEnglish: 'View in English',
   },
+  today: {
+    title: 'Open today',
+    link: 'Open now and later today',
+    workedOut: (time: string) => `Worked out at ${time}. Hours change; call before you go when you can.`,
+    openNow: 'Open now',
+    later: 'Later today',
+    closed: 'Closed for the rest of today',
+    notConfirmed: 'Hours not confirmed',
+    notConfirmedHint:
+      'These listings don’t publish hours Daily Help can read, or their schedule needs checking. See each one’s schedule.',
+    until: (time: string) => `Open until ${time}`,
+    opensAt: (time: string) => `Opens at ${time}`,
+    opensFromTo: (start: string, end: string) => `Opens at ${start}, until ${end}`,
+    canceled: (note: string) => (note ? `Canceled today: ${note}` : 'Canceled today'),
+    none: 'Nothing here right now.',
+  },
   detail: {
     backToSearch: 'Back to search',
     details: 'Details',

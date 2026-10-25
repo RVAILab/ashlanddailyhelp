@@ -360,6 +360,39 @@ main h1:focus-visible {
   color: var(--muted);
 }
 
+.today-link {
+  display: flex;
+  align-items: center;
+  min-height: 56px;
+  padding: 0 1rem;
+  border-radius: 8px;
+  background: var(--accent);
+  color: var(--paper);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.today-when {
+  margin: 0.75rem 0 0.25rem;
+  font-weight: 600;
+}
+
+.today-when-openNow::before {
+  content: "● ";
+}
+
+.today-when-later::before {
+  content: "◷ ";
+}
+
+.today-when-closed::before {
+  content: "○ ";
+}
+
+.today-when-notConfirmed::before {
+  content: "? ";
+}
+
 .site-footer {
   margin-top: 3rem;
   padding: 1rem 0 2rem;

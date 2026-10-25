@@ -16,6 +16,11 @@ export default function Home() {
     <main className="home">
       <h1>{t.home.title}</h1>
       <p>{t.home.tagline}</p>
+      <p>
+        <Link to={path('/today')} className="today-link">
+          {t.today.link}
+        </Link>
+      </p>
       <section aria-labelledby="kinds-heading">
         <h2 id="kinds-heading">{t.home.kinds}</h2>
         <ul className="kinds">

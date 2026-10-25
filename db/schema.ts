@@ -1,6 +1,6 @@
 import { sql } from 'drizzle-orm'
 import { customType, index, integer, jsonb, pgTable, text, timestamp } from 'drizzle-orm/pg-core'
-import type { FeedListing } from '../contract/steward/feed.ts'
+import type { StoredListing } from '../server/feed/contract.ts'
 
 const instant = (name: string) => timestamp(name, { withTimezone: true })
 
@@ -25,7 +25,7 @@ export const listings = pgTable(
     id: text().primaryKey(),
     position: integer().notNull(),
     endsAt: instant('ends_at'),
-    data: jsonb().$type<FeedListing>().notNull(),
+    data: jsonb().$type<StoredListing>().notNull(),
     // Kept in step with data by Postgres, weighted so a match in the name ranks above one in the description or tags.
     // `search` is stemmed English; `words` is unstemmed, so part-words ("navigat") and common words still match.
     search: tsvector()

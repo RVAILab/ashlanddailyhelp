@@ -22,7 +22,7 @@ export default {
 
   scheduled(_controller, env, ctx) {
     const translator = env.ANTHROPIC_API_KEY
-      ? claudeTranslator(new Anthropic({ apiKey: env.ANTHROPIC_API_KEY }).beta.messages)
+      ? claudeTranslator(new Anthropic({ apiKey: env.ANTHROPIC_API_KEY, timeout: 60_000, maxRetries: 1 }).beta.messages)
       : null
     ctx.waitUntil(runIngest(env, { translator }))
   },

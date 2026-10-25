@@ -64,3 +64,10 @@ export const translations = pgTable('translations', {
   model: text().notNull(),
   translatedAt: instant('translated_at').notNull(),
 })
+
+// Text whose translation batch failed, so the next attempt waits instead of being paid for on every run.
+export const translationFailures = pgTable('translation_failures', {
+  hash: text().primaryKey(),
+  attempts: integer().notNull(),
+  failedAt: instant('failed_at').notNull(),
+})

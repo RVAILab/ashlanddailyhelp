@@ -73,3 +73,58 @@ describe('translatePending', () => {
     )
   })
 })
+
+describe('translatePending, over time', () => {
+  let db: Awaited<ReturnType<typeof testDatabase>>
+  beforeEach(async () => {
+    db = await testDatabase()
+    vi.spyOn(console, 'log').mockImplementation(() => {})
+    vi.spyOn(console, 'error').mockImplementation(() => {})
+  })
+  afterEach(async () => {
+    vi.restoreAllMocks()
+    await db.close()
+  })
+
+  it('rebuilds Spanish search after a refresh even when nothing new needs translating', async () => {
+    const { searchListings } = await import('../listings/search.ts')
+    const sample = sampleListingsFeed()
+    const feed = {
+      ...sample,
+      listings: sample.listings.filter((listing: { id: string }) => listing.id === 'ohra-showers'),
+    }
+    await storeListings(db, feed)
+    const translator: Translator = {
+      translate: async texts => ({
+        translations: new Map(texts.map(text => [text.id, 'Servicio de lavandería.'])),
+        usage: { inputTokens: 0, outputTokens: 0, cacheReadTokens: 0 },
+      }),
+    }
+    const now = new Date('2026-10-25T18:00:00Z')
+    await translatePending(db, translator, { lang: 'es', now })
+    await storeListings(db, { ...feed, generatedAt: '2026-10-25T19:00:00.000Z' })
+    const run = await translatePending(db, translator, { lang: 'es', now })
+    expect(run.translated).toBe(0)
+    expect((await searchListings(db, { query: 'lavanderia' }, now, 'es')).map(listing => listing.id)).toEqual([
+      'ohra-showers',
+    ])
+  })
+
+  it('waits before retrying text whose batch failed, instead of paying for it every run', async () => {
+    const sample = sampleListingsFeed()
+    await storeListings(db, { ...sample, listings: sample.listings.slice(0, 1) })
+    const calls: number[] = []
+    const failing: Translator = {
+      translate: async texts => {
+        calls.push(texts.length)
+        throw new Error('refusal')
+      },
+    }
+    const at = (minutes: number) => new Date(Date.parse('2026-10-25T18:00:00Z') + minutes * 60_000)
+    await translatePending(db, failing, { lang: 'es', now: at(0) })
+    await translatePending(db, failing, { lang: 'es', now: at(5) })
+    expect(calls).toHaveLength(1)
+    await translatePending(db, failing, { lang: 'es', now: at(61) })
+    expect(calls).toHaveLength(2)
+  })
+})

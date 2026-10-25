@@ -3,8 +3,8 @@ metadata:
   created_at:   2026-10-25T11:06:46-07:00
   activated_at: 2026-10-25T15:43:44-07:00
   planned_at:   2026-10-25T15:47:20-07:00
-  finished_at:
-  updated_at:   2026-10-25T15:47:20-07:00
+  finished_at:  2026-10-25T15:54:37-07:00
+  updated_at:   2026-10-25T15:54:37-07:00
 -->
 
 # Story: Find Help Nearby
@@ -46,3 +46,31 @@ Tests:
 - `nearby.test.ts`.
 - `resources.test.tsx`: with a stubbed `navigator.geolocation`, the button sorts and shows distances, and makes no `fetch`; when location is denied, the message appears and the order is kept; with no geo, cards say "Distance not known".
 
+
+## Review
+
+Reviewed 2026-10-25 at `cafd02f` plus fixes. A subagent did an independent read.
+
+| Criterion | Verdict | Evidence |
+| --- | --- | --- |
+| With permission, sort by distance; the location stays on the device | ✅ | `NearbyResults` in `app/routes/resources.tsx` keeps the position in component state. The test checks no `fetch` is made. |
+| Without permission, the usual order | ✅ | Location is asked for only on a press. When it's denied, the order stays and a message says so (tested). |
+| Miles and walking time where it makes sense | ✅ | `app/lib/nearby.ts`: walking time up to 2 miles. "Under 0.1 mi" for very close places. |
+| Sensitive locations never placed or measured | ✅ | The contract drops `geo` (story 22). Such places sort last as "Distance not known". |
+
+These findings were fixed:
+
+- `disabled` while asking dropped keyboard focus from the button. It now uses `aria-disabled` and ignores repeat presses.
+- Going back to the usual order wasn't announced. The live region now says "Back in the usual order."
+- There was no test that `toCard` carries `geo`. One is added.
+
+Not changed:
+
+- A new search while sorted keeps the earlier position.
+- Real distances wait on the steward publishing `geo` (#62).
+
+## Learnings
+
+- **Went well:** doing it on the device kept the privacy promise simple to state and to test: no request carries the location.
+- **Surprising:** `disabled` on a focused button drops focus in Chrome and Safari.
+- **Next time:** use `aria-disabled` for buttons that are briefly busy.

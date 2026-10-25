@@ -102,6 +102,7 @@ export const es = {
     failed: 'Couldn’t get your location. Results stay in their usual order.',
     sorted: 'Sorted by distance from you. Your location stays on this phone.',
     usual: 'Back to the usual order',
+    unsorted: 'Back in the usual order.',
     unknown: 'Distance not known',
     miles: (miles: number) => (miles < 0.1 ? 'Under 0.1 mi' : `${miles.toFixed(1)} mi`),
     walk: (minutes: number) => `about ${minutes} min walk`,

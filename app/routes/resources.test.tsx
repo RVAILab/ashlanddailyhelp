@@ -176,6 +176,7 @@ describe('/resources', () => {
       expect(within(screen.getByRole('article', { name: 'No map location' })).getByText('Distance not known'))
       expect(fetch).not.toHaveBeenCalled()
       fireEvent.click(screen.getByRole('button', { name: 'Back to the usual order' }))
+      expect(screen.getByText('Back in the usual order.')).toBeDefined()
       expect(screen.getAllByRole('article').map(card => card.getAttribute('id'))).toEqual(['unknown', 'far', 'near'])
     })
 

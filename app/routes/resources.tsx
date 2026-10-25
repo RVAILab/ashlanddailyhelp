@@ -132,7 +132,7 @@ export default function Resources({ loaderData }: Route.ComponentProps) {
   )
 }
 
-type Nearby = { state: 'usual' | 'asking' | 'failed' } | { state: 'sorted'; from: Point }
+type Nearby = { state: 'usual' | 'asking' | 'failed' | 'unsorted' } | { state: 'sorted'; from: Point }
 
 // Sorting by distance happens on this device: the location goes to the sort and nowhere else.
 function NearbyResults({ results }: { results: ListingCard[] }) {
@@ -141,6 +141,8 @@ function NearbyResults({ results }: { results: ListingCard[] }) {
   const [nearby, setNearby] = useState<Nearby>({ state: 'usual' })
   useEffect(() => setHydrated(true), [])
   const locate = () => {
+    // aria-disabled rather than disabled while asking, so the button keeps keyboard focus.
+    if (nearby.state === 'asking') return
     if (!navigator.geolocation) return setNearby({ state: 'failed' })
     setNearby({ state: 'asking' })
     navigator.geolocation.getCurrentPosition(
@@ -159,11 +161,11 @@ function NearbyResults({ results }: { results: ListingCard[] }) {
       {hydrated && (
         <div className="nearby">
           {nearby.state === 'sorted' ? (
-            <button type="button" onClick={() => setNearby({ state: 'usual' })}>
+            <button type="button" onClick={() => setNearby({ state: 'unsorted' })}>
               {t.nearby.usual}
             </button>
           ) : (
-            <button type="button" onClick={locate} disabled={nearby.state === 'asking'}>
+            <button type="button" onClick={locate} aria-disabled={nearby.state === 'asking'}>
               {t.nearby.sort}
             </button>
           )}
@@ -171,6 +173,7 @@ function NearbyResults({ results }: { results: ListingCard[] }) {
             {nearby.state === 'asking' && t.nearby.asking}
             {nearby.state === 'failed' && t.nearby.failed}
             {nearby.state === 'sorted' && t.nearby.sorted}
+            {nearby.state === 'unsorted' && t.nearby.unsorted}
           </p>
         </div>
       )}

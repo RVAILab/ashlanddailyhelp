@@ -5,11 +5,12 @@ import { services } from '../context.ts'
 import { langFromPath, messagesFor } from '../i18n/index.ts'
 import { useI18n } from '../i18n/provider.tsx'
 import { categories } from '../lib/categories.ts'
+import { textOnly } from '../lib/text-mode.ts'
 import type { Route } from './+types/home'
 
 export const handle = { hydrate: false }
 
-// Art and motion are extras: a browser asking to save data gets neither.
+// Art and motion are extras, left out in text-only mode.
 export async function loader({ request, url, context }: Route.LoaderArgs) {
   let db = null
   try {
@@ -17,14 +18,8 @@ export async function loader({ request, url, context }: Route.LoaderArgs) {
   } catch (error) {
     console.error('home: could not open the database', error)
   }
-  const art = request.headers.get('Save-Data')?.toLowerCase() !== 'on'
+  const art = !textOnly(request.headers)
   return data({ ...(await pageAlerts(db, langFromPath(url.pathname), new Date())), art })
-}
-
-export function headers({ parentHeaders }: Route.HeadersArgs) {
-  const headers = new Headers(parentHeaders)
-  headers.set('Vary', [parentHeaders.get('Vary'), 'Save-Data'].filter(Boolean).join(', '))
-  return headers
 }
 
 const art = (name: string) => ({

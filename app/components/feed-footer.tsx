@@ -1,3 +1,4 @@
+import { useLocation } from 'react-router'
 import type { FeedStatus } from '../../server/feed/listings.ts'
 import type { Messages } from '../i18n/en.ts'
 import { useI18n } from '../i18n/provider.tsx'
@@ -8,8 +9,10 @@ export type FooterFeed = FeedStatus extends infer Status
     : Status
   : never
 
-export function FeedFooter({ feed }: { feed: FooterFeed }) {
+export function FeedFooter({ feed, text = false }: { feed: FooterFeed; text?: boolean }) {
   const { t } = useI18n()
+  const { pathname, search } = useLocation()
+  const back = encodeURIComponent(`${pathname}${search}`)
   const lines = [
     { numbers: ['911'], what: t.home.emergency.emergency },
     { numbers: ['988', '541-774-8201'], what: t.home.emergency.crisis },
@@ -34,6 +37,11 @@ export function FeedFooter({ feed }: { feed: FooterFeed }) {
         ))}
       </nav>
       {content(feed, t)}
+      <p>
+        <a href={`/text?to=${text ? 'off' : 'on'}&return=${back}`} rel="nofollow">
+          {text ? t.feed.fullVersion : t.feed.textOnly}
+        </a>
+      </p>
       <p>
         <a href="/forget" rel="nofollow">
           {t.feed.clearDevice}

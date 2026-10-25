@@ -8,6 +8,7 @@ const MAX_ASSETS = 80
 const NEVER = [
   /^\/health/,
   /^\/language/,
+  /^\/text/,
   /^\/forget/,
   /^\/list\/(toggle|save)/,
   /^\/report/,

@@ -40,11 +40,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
     () => true,
   )
   const { pathname, search } = useLocation()
-  const origin = useRouteLoaderData<typeof localeLoader>('routes/locale')?.origin
+  const locale = useRouteLoaderData<typeof localeLoader>('routes/locale')
+  const origin = locale?.origin
   const page = `${pathname}${search}`
   const hydrate = shipsJavaScript(useMatches().map(match => match.handle))
   return (
-    <html lang={langFromPath(pathname)}>
+    <html lang={langFromPath(pathname)} className={locale?.text ? 'text-only' : undefined}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />

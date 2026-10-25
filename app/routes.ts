@@ -3,6 +3,7 @@ import { index, type RouteConfig, route } from '@react-router/dev/routes'
 export default [
   route('health', 'routes/health.ts'),
   route('language', 'routes/language.ts'),
+  route('text', 'routes/text.ts'),
   route('forget', 'routes/forget.ts'),
   route('list/toggle', 'routes/list-toggle.ts'),
   route('list/save', 'routes/list-save.ts'),

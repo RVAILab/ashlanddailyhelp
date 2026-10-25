@@ -1,6 +1,11 @@
-import { render, screen, within } from '@testing-library/react'
+import { render as renderInPage, screen, within } from '@testing-library/react'
+import type { ReactElement } from 'react'
+import { MemoryRouter } from 'react-router'
 import { describe, expect, it } from 'vitest'
 import { FeedFooter } from './feed-footer.tsx'
+
+const render = (footer: ReactElement, at = '/') =>
+  renderInPage(<MemoryRouter initialEntries={[at]}>{footer}</MemoryRouter>)
 
 const stored = {
   state: 'stored',
@@ -64,6 +69,20 @@ describe('FeedFooter', () => {
     ])
     expect(numbers.textContent?.replace(/\s+/g, ' ')).toContain(
       'Call 988 • Call 541-774-8201 Mental Health Crisis Line',
+    )
+  })
+
+  it('offers text-only mode, or the full version, coming back to the same page', () => {
+    render(<FeedFooter feed={stored} />, '/resources?q=meal')
+    expect(screen.getByRole('link', { name: 'Text-only version (uses less data)' }).getAttribute('href')).toBe(
+      '/text?to=on&return=%2Fresources%3Fq%3Dmeal',
+    )
+  })
+
+  it('offers the full version back in text-only mode', () => {
+    render(<FeedFooter feed={stored} text />)
+    expect(screen.getByRole('link', { name: 'Full version, with pictures' }).getAttribute('href')).toBe(
+      '/text?to=off&return=%2F',
     )
   })
 })

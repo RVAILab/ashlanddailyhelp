@@ -31,10 +31,10 @@ describe('the language layout', () => {
   it('takes the language from the URL, and varies only English pages on the visitor’s preferences', async () => {
     const english = await loader(loaderArgs('/', {}, { Cookie: 'lang=en' }))
     expect(english.data.lang).toBe('en')
-    expect(new Headers(english.init?.headers).get('Vary')).toBe('Accept-Language, Cookie')
+    expect(new Headers(english.init?.headers).get('Vary')).toBe('Accept-Language, Cookie, Save-Data')
     const spanish = await loader(loaderArgs('/es/resources', {}, { Cookie: 'lang=en' }))
     expect(spanish.data.lang).toBe('es')
-    expect(new Headers(spanish.init?.headers).get('Vary')).toBeNull()
+    expect(new Headers(spanish.init?.headers).get('Vary')).toBe('Cookie, Save-Data')
   })
 
   it('gives the footer the feed status, with the date in the page’s language', async () => {

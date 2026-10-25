@@ -8,6 +8,7 @@ import { type Lang, langFromPath, messagesFor } from '../i18n/index.ts'
 import { I18nProvider } from '../i18n/provider.tsx'
 import { languageRedirect } from '../i18n/redirect.ts'
 import { formatAsOf } from '../lib/format.ts'
+import { textOnly } from '../lib/text-mode.ts'
 import type { Route } from './+types/locale'
 
 // Runs before any page's loader, so a page that is about to redirect does no database work.
@@ -22,7 +23,7 @@ function forFooter(status: FeedStatus, lang: Lang): FooterFeed {
   return status.state === 'stored' ? { ...status, asOf: formatAsOf(status.generatedAt, lang) } : status
 }
 
-export async function loader({ url, context }: Route.LoaderArgs) {
+export async function loader({ request, url, context }: Route.LoaderArgs) {
   const lang = langFromPath(url.pathname)
   let status: FeedStatus
   try {
@@ -31,9 +32,10 @@ export async function loader({ url, context }: Route.LoaderArgs) {
     console.error('locale: could not open the database', error)
     status = { state: 'unavailable' }
   }
-  // Only English pages depend on the visitor's language preferences; a /es page is the same for everyone.
-  const headers = lang === 'en' ? { Vary: 'Accept-Language, Cookie' } : undefined
-  return data({ lang, origin: url.origin, feed: forFooter(status, lang) }, { headers })
+  // Only English pages depend on the visitor's language preferences; every page depends on text-only mode.
+  const headers = { Vary: lang === 'en' ? 'Accept-Language, Cookie, Save-Data' : 'Cookie, Save-Data' }
+  const text = textOnly(request.headers)
+  return data({ lang, origin: url.origin, feed: forFooter(status, lang), text }, { headers })
 }
 
 export function headers({ loaderHeaders }: Route.HeadersArgs) {
@@ -105,7 +107,7 @@ export default function Locale({ loaderData }: Route.ComponentProps) {
         <LanguageSwitch lang={lang} />
       </header>
       <Outlet />
-      <FeedFooter feed={feed} />
+      <FeedFooter feed={feed} text={loaderData.text} />
     </I18nProvider>
   )
 }

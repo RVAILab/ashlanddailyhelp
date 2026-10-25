@@ -1,4 +1,6 @@
 import type { FeedStatus } from '../../server/feed/listings.ts'
+import type { Messages } from '../i18n/en.ts'
+import { useI18n } from '../i18n/provider.tsx'
 
 export type FooterFeed = FeedStatus extends infer Status
   ? Status extends { state: 'stored' }
@@ -7,29 +9,28 @@ export type FooterFeed = FeedStatus extends infer Status
   : never
 
 export function FeedFooter({ feed }: { feed: FooterFeed }) {
-  return <footer className="site-footer">{content(feed)}</footer>
+  const { t } = useI18n()
+  return <footer className="site-footer">{content(feed, t)}</footer>
 }
 
-function content(feed: FooterFeed) {
+function content(feed: FooterFeed, t: Messages) {
   switch (feed.state) {
     case 'stored':
       return (
         <>
           <p>
-            Listings as of <time dateTime={feed.generatedAt}>{feed.asOf}</time>.
+            {t.feed.asOf} <time dateTime={feed.generatedAt}>{feed.asOf}</time>.
           </p>
-          {feed.updateFailing && <p>The latest update could not be loaded, so these listings may be out of date.</p>}
-          {feed.dataset === 'FICTIONAL_DEMONSTRATION' && (
-            <p>This is demonstration data. Some listings are fictional.</p>
-          )}
+          {feed.updateFailing && <p>{t.feed.updateFailing}</p>}
+          {feed.dataset === 'FICTIONAL_DEMONSTRATION' && <p>{t.feed.demonstration}</p>}
         </>
       )
     case 'none':
-      return <p>Listings have not loaded yet.</p>
+      return <p>{t.feed.none}</p>
     case 'unavailable':
       return (
         <p>
-          Listings are unavailable right now. For help finding services, call <a href="tel:211">211</a>.
+          {t.feed.unavailable} <a href="tel:211">211</a>.
         </p>
       )
   }

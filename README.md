@@ -51,6 +51,12 @@ The steward's contract (`contract/steward/`) and sample feed (`test/fixtures/fee
 
 `.dev.vars` holds local secrets and is not committed. To use another Postgres (Docker, Postgres.app), point `DATABASE_URL` in `.dev.vars` at it. Postgres.app asks for permission each time a new program connects, which shows up as connection timeouts from the Workers runtime, so the private cluster is easier.
 
+### Languages
+
+Every page is in English and Spanish: English at the plain URLs (`/resources`), Spanish under `/es` (`/es/resources`). A browser that ranks Spanish above English is sent to the Spanish page on its first visit; the language link on every page switches, and the choice is remembered in a `lang` cookie. Listing text from the feed stays in English until story `11-translate-listings`.
+
+Interface text lives in `app/i18n/en.ts` and `app/i18n/es.ts`. To add a string, add it to both (the type checker fails if Spanish lacks a key) and read it with `useI18n()` in components, or `messagesFor(lang)` in loaders and `meta`. The Spanish catalog was written carefully but has not yet been reviewed by a Spanish speaker; please do before launch.
+
 ### Tests and checks
 
 ```sh

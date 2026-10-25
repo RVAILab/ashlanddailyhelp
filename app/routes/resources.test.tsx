@@ -2,6 +2,7 @@ import { render, screen, within } from '@testing-library/react'
 import { createRoutesStub } from 'react-router'
 import { describe, expect, it } from 'vitest'
 import type { ListingCard } from '../components/listing-card.tsx'
+import { I18nProvider } from '../i18n/provider.tsx'
 import Resources from './resources.tsx'
 
 const showers: ListingCard = {
@@ -21,7 +22,7 @@ const showers: ListingCard = {
 
 type Data = Awaited<ReturnType<typeof import('./resources.tsx').loader>>
 
-function renderPage(data: Partial<Data>, url = '/resources') {
+function renderPage(data: Partial<Data>, url = '/resources', lang: 'en' | 'es' = 'en') {
   const loaderData: Data = {
     filters: {},
     areas: ['Ashland', 'Jackson County', 'Medford'],
@@ -30,8 +31,14 @@ function renderPage(data: Partial<Data>, url = '/resources') {
     demonstration: false,
     ...data,
   }
-  const Stub = createRoutesStub([{ path: '/resources', Component: Resources, loader: () => loaderData }])
-  render(<Stub initialEntries={[url]} />)
+  const Stub = createRoutesStub([
+    { path: lang === 'es' ? '/es/resources' : '/resources', Component: Resources, loader: () => loaderData },
+  ])
+  render(
+    <I18nProvider lang={lang}>
+      <Stub initialEntries={[url]} />
+    </I18nProvider>,
+  )
 }
 
 describe('/resources', () => {
@@ -100,5 +107,15 @@ describe('/resources', () => {
   it('labels demonstration data next to the results', async () => {
     renderPage({ demonstration: true })
     expect(await screen.findByText('This is demonstration data. Some listings are fictional.')).toBeDefined()
+  })
+
+  it('is all in Spanish on a Spanish page, links included', async () => {
+    renderPage({ results: [], filters: { query: 'zzyzx' } }, '/es/resources?q=zzyzx', 'es')
+    expect(await screen.findByRole('heading', { level: 1, name: 'Buscar ayuda' })).toBeDefined()
+    expect(screen.getByRole('searchbox', { name: 'Palabras para buscar' })).toBeDefined()
+    expect(screen.getByRole('option', { name: 'Condado de Jackson (todo el condado)' })).toBeDefined()
+    expect(screen.getByRole('status').textContent).toBe('Ningún lugar coincide')
+    expect(screen.getByRole('link', { name: 'borrar la búsqueda' }).getAttribute('href')).toBe('/es/resources')
+    expect(screen.getByRole('link', { name: 'Llamar al 211' }).getAttribute('href')).toBe('tel:211')
   })
 })

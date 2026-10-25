@@ -1,6 +1,7 @@
-const qualified: Record<string, string> = {
-  'Jackson County': 'Jackson County (county-wide)',
-  Oregon: 'Oregon (statewide)',
-}
+import type { Messages } from '../i18n/en.ts'
 
-export const areaName = (area: string) => qualified[area] ?? area
+export function areaName(area: string, t: Messages): string {
+  if (area === 'Jackson County') return t.areas.countyWide(area)
+  if (area === 'Oregon') return t.areas.statewide(area)
+  return area
+}

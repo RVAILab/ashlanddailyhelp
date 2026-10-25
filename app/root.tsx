@@ -1,45 +1,19 @@
-import {
-  isRouteErrorResponse,
-  Links,
-  Meta,
-  Outlet,
-  Scripts,
-  ScrollRestoration,
-  type ShouldRevalidateFunctionArgs,
-} from 'react-router'
-import { type FeedStatus, listingsFeedStatus } from '../server/feed/listings.ts'
+import { isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration, useLocation } from 'react-router'
 import type { Route } from './+types/root'
 import './app.css'
-import { FeedFooter, type FooterFeed } from './components/feed-footer.tsx'
-import { services } from './context.ts'
-import { formatAsOf } from './lib/format.ts'
-
-function forFooter(status: FeedStatus): FooterFeed {
-  return status.state === 'stored' ? { ...status, asOf: formatAsOf(status.generatedAt) } : status
-}
-
-export async function loader({ context }: Route.LoaderArgs) {
-  let status: FeedStatus
-  try {
-    status = await listingsFeedStatus(context.get(services).database())
-  } catch (error) {
-    console.error('root: could not open the database', error)
-    status = { state: 'unavailable' }
-  }
-  return { feed: forFooter(status) }
-}
-
-export function shouldRevalidate({ formMethod, defaultShouldRevalidate }: ShouldRevalidateFunctionArgs) {
-  return formMethod !== undefined && formMethod !== 'GET' ? defaultShouldRevalidate : false
-}
+import { langFromPath, langs, localePath, messagesFor } from './i18n/index.ts'
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  const { pathname, search } = useLocation()
   return (
-    <html lang="en">
+    <html lang={langFromPath(pathname)}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
+        {langs.map(lang => (
+          <link key={lang} rel="alternate" hrefLang={lang} href={localePath(`${pathname}${search}`, lang)} />
+        ))}
         <Links />
       </head>
       <body>
@@ -51,23 +25,20 @@ export function Layout({ children }: { children: React.ReactNode }) {
   )
 }
 
-export default function App({ loaderData }: Route.ComponentProps) {
-  return (
-    <>
-      <Outlet />
-      <FeedFooter feed={loaderData.feed} />
-    </>
-  )
+export default function App() {
+  return <Outlet />
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
+  const lang = langFromPath(useLocation().pathname)
+  const t = messagesFor(lang).errors
   const notFound = isRouteErrorResponse(error) && error.status === 404
   return (
     <main>
-      <h1>{notFound ? 'Page not found' : 'Something went wrong'}</h1>
+      <h1>{notFound ? t.notFound : t.failed}</h1>
       <p>
-        {notFound ? 'There is no page at this address.' : 'Please try again.'} <a href="/">Go to the homepage</a>. For
-        help finding services, call <a href="tel:211">211</a>.
+        {notFound ? t.notFoundDetail : t.failedDetail} <a href={localePath('/', lang)}>{t.home}</a>. {t.call211}{' '}
+        <a href="tel:211">211</a>.
       </p>
     </main>
   )

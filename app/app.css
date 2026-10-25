@@ -345,6 +345,12 @@ main h1:focus-visible {
   min-height: 44px;
 }
 
+.machine-translated {
+  margin: 0.5rem 0 0;
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
 .site-footer {
   margin-top: 3rem;
   padding: 1rem 0 2rem;

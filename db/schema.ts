@@ -36,6 +36,8 @@ export const listings = pgTable(
           || setweight(to_tsvector('english', coalesce(data->>'description', '')), 'C')
           || setweight(jsonb_to_tsvector('english', coalesce(data->'tags', '[]'::jsonb), '["string"]'), 'C')`,
       ),
+    // Spanish words for searching, rebuilt by the translation run from stored translations (not generated: another table).
+    searchEs: tsvector('search_es'),
     words: tsvector()
       .notNull()
       .generatedAlwaysAs(
@@ -45,5 +47,20 @@ export const listings = pgTable(
           || setweight(jsonb_to_tsvector('simple', coalesce(data->'tags', '[]'::jsonb), '["string"]'), 'C')`,
       ),
   },
-  table => [index('listings_search').using('gin', table.search), index('listings_words').using('gin', table.words)],
+  table => [
+    index('listings_search').using('gin', table.search),
+    index('listings_words').using('gin', table.words),
+    index('listings_search_es').using('gin', table.searchEs),
+  ],
 )
+
+// A machine translation of one piece of listing text, keyed by a hash of the language and the English, so the same
+// text is translated once however many listings use it, and changed text gets a new key.
+export const translations = pgTable('translations', {
+  hash: text().primaryKey(),
+  lang: text().notNull(),
+  english: text().notNull(),
+  text: text().notNull(),
+  model: text().notNull(),
+  translatedAt: instant('translated_at').notNull(),
+})

@@ -11,7 +11,8 @@ const showers: ListingCard = {
   provider: 'OHRA',
   categories: ['Showers and hygiene'],
   area: 'Ashland',
-  schedule: 'Website lists Tuesdays and Thursdays, 9 am to noon.',
+  schedule: { text: 'Website lists Tuesdays and Thursdays, 9 am to noon.', fromFeed: true },
+  translated: false,
   address: '2350 Ashland St, Ashland',
   phone: '541-708-6100',
   labels: [
@@ -131,10 +132,28 @@ describe('/resources', () => {
     )
     const card = await screen.findByRole('article')
     expect(within(card).getByRole('heading', { level: 3 }).getAttribute('lang')).toBe('en')
-    expect(within(card).getByText(showers.schedule).getAttribute('lang')).toBe('en')
+    expect(within(card).getByText(showers.schedule.text).getAttribute('lang')).toBe('en')
     expect(within(card).getByText('Added by Daily Help from ohrahelps.org').closest('li')?.getAttribute('lang')).toBe(
       'en',
     )
     expect(within(card).getByText('Showers and hygiene').getAttribute('lang')).toBeNull()
+  })
+
+  it('labels machine-translated text on a Spanish card and links to the English listing', async () => {
+    renderPage(
+      {
+        results: [
+          { ...showers, schedule: { text: 'El sitio web indica martes y jueves.', fromFeed: false }, translated: true },
+        ],
+      },
+      '/es/resources',
+      'es',
+    )
+    const card = await screen.findByRole('article')
+    expect(within(card).getByText('El sitio web indica martes y jueves.').getAttribute('lang')).toBeNull()
+    expect(within(card).getByText(/Traducción automática/)).toBeDefined()
+    const english = within(card).getByRole('link', { name: 'Ver en inglés' })
+    expect(english.getAttribute('href')).toBe('/resources/ohra-showers')
+    expect(english.getAttribute('hreflang')).toBe('en')
   })
 })

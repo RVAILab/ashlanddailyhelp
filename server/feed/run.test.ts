@@ -67,4 +67,39 @@ describe('runIngest', () => {
     expect(close).toHaveBeenCalledOnce()
     await db.close()
   })
+
+  it('translates new listing text after refreshing, when given a translator', async () => {
+    const db = await testDatabase()
+    vi.spyOn(console, 'log').mockImplementation(() => {})
+    const sent: string[] = []
+    const translator = {
+      translate: async (texts: Array<{ id: string; text: string }>) => {
+        sent.push(...texts.map(text => text.text))
+        return {
+          translations: new Map(texts.map(text => [text.id, 'ES'])),
+          usage: { inputTokens: 1, outputTokens: 1, cacheReadTokens: 0 },
+        }
+      },
+    }
+    await runIngest(
+      { FEED_BASE_URL: 'https://feed.example.org/', DATABASE_URL: 'postgres://db' },
+      { open: () => ({ db, close: async () => {} }), fetch: feedHost(json(sampleListingsFeed())).fetch, translator },
+    )
+    expect(sent.length).toBeGreaterThan(0)
+    await db.close()
+  })
+
+  it('still reports the refresh when translation fails', async () => {
+    const db = await testDatabase()
+    vi.spyOn(console, 'log').mockImplementation(() => {})
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {})
+    const translator = { translate: async () => Promise.reject(new Error('API down')) }
+    const outcome = await runIngest(
+      { FEED_BASE_URL: 'https://feed.example.org/', DATABASE_URL: 'postgres://db' },
+      { open: () => ({ db, close: async () => {} }), fetch: feedHost(json(sampleListingsFeed())).fetch, translator },
+    )
+    expect(outcome).toEqual({ result: 'stored' })
+    expect(error).toHaveBeenCalled()
+    await db.close()
+  })
 })

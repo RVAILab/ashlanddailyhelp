@@ -9,3 +9,4 @@ worker-configuration.d.ts
 test-results/
 playwright-report/
 .postgres/
+.playwright-mcp/

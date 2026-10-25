@@ -10,7 +10,9 @@ export interface ListingCard {
   provider: string
   categories: string[]
   area: string
-  schedule: string
+  schedule: { text: string; fromFeed: boolean }
+  // Some text on the card is a machine translation; the card says so and links to the English.
+  translated: boolean
   address: string
   phone: string | null
   labels: ListingLabel[]
@@ -41,12 +43,20 @@ export function ListingCardView({ listing }: { listing: ListingCard }) {
         <dt>{t.card.area}</dt>
         <dd>{listing.area}</dd>
         <dt>{t.card.when}</dt>
-        <dd lang={feedLang}>{listing.schedule}</dd>
+        <dd lang={listing.schedule.fromFeed ? feedLang : undefined}>{listing.schedule.text}</dd>
         <dt>{t.card.where}</dt>
         <dd lang={feedLang}>{listing.address}</dd>
         <dt>{t.card.phone}</dt>
         <dd>{listing.phone ? <a href={`tel:${dialable(listing.phone)}`}>{listing.phone}</a> : t.card.noPhone}</dd>
       </dl>
+      {listing.translated && (
+        <p className="machine-translated">
+          {t.labels.machineTranslated} ·{' '}
+          <a href={`/resources/${listing.id}`} hrefLang="en">
+            {t.labels.viewEnglish}
+          </a>
+        </p>
+      )}
     </article>
   )
 }

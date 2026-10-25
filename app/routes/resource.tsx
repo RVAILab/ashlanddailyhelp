@@ -1,5 +1,7 @@
 import { data, Link, useLocation } from 'react-router'
 import { findListing } from '../../server/listings/listing.ts'
+import { translationsFor } from '../../server/translate/lookup.ts'
+import { translatableTexts } from '../../server/translate/texts.ts'
 import { ListingStatus } from '../components/listing-status.tsx'
 import { services } from '../context.ts'
 import { langFromPath, messagesFor } from '../i18n/index.ts'
@@ -12,7 +14,16 @@ export async function loader({ url, params, context }: Route.LoaderArgs) {
   if (!db) throw data('The listings database is not configured.', { status: 503 })
   const lang = langFromPath(url.pathname)
   const listing = await findListing(db, params.id, new Date())
-  return listing ? data({ listing: listingDetail(listing, lang) }) : data({ listing: null }, { status: 404 })
+  if (!listing) return data({ listing: null }, { status: 404 })
+  const translated =
+    lang === 'es'
+      ? await translationsFor(
+          db,
+          translatableTexts(listing).map(text => text.english),
+          'es',
+        )
+      : new Map<string, string>()
+  return data({ listing: listingDetail(listing, lang, translated) })
 }
 
 export function meta({ loaderData, location }: Route.MetaArgs) {
@@ -55,6 +66,14 @@ export default function Resource({ loaderData }: Route.ComponentProps) {
         {listing.provider}
       </p>
       <ListingStatus labels={listing.labels} />
+      {listing.translated && (
+        <p className="machine-translated">
+          {t.labels.machineTranslated} ·{' '}
+          <a href={`/resources/${listing.id}`} hrefLang="en">
+            {t.labels.viewEnglish}
+          </a>
+        </p>
+      )}
       <p lang={listing.description.fromFeed ? feedLang : undefined}>{listing.description.text}</p>
       <p className="actions">
         {listing.phone && (

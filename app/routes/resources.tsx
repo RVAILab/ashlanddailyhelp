@@ -3,6 +3,8 @@ import { data, Form, Link } from 'react-router'
 import type { FeedListing } from '../../contract/steward/feed.ts'
 import { listingsFeedStatus } from '../../server/feed/listings.ts'
 import { listingAreas, searchListings } from '../../server/listings/search.ts'
+import { translationsFor } from '../../server/translate/lookup.ts'
+import { translatableTexts } from '../../server/translate/texts.ts'
 import { type ListingCard, ListingCardView } from '../components/listing-card.tsx'
 import { services } from '../context.ts'
 import type { Messages } from '../i18n/en.ts'
@@ -14,18 +16,21 @@ import { readFilters } from '../lib/filters.ts'
 import { listingLabels } from '../lib/listing-labels.ts'
 import type { Route } from './+types/resources'
 
-function toCard(listing: FeedListing, lang: Lang): ListingCard {
+function toCard(listing: FeedListing, lang: Lang, translated: Map<string, string>): ListingCard {
   const t = messagesFor(lang)
+  const schedule = translated.get(listing.schedule.trim())
+  const labels = listingLabels(listing, lang, translated)
   return {
     id: listing.id,
     name: listing.name,
     provider: listing.provider,
     categories: listing.categories.map(category => t.categories[category]),
     area: areaName(listing.area, t),
-    schedule: listing.schedule,
+    schedule: schedule ? { text: schedule, fromFeed: false } : { text: listing.schedule, fromFeed: true },
+    translated: Boolean(schedule) || labels.some(label => label.translated),
     address: listing.address,
     phone: listing.phone,
-    labels: listingLabels(listing, lang),
+    labels,
   }
 }
 
@@ -40,11 +45,19 @@ export async function loader({ url, context }: Route.LoaderArgs) {
   const area = areas.find(known => known.toLowerCase() === filters.area?.toLowerCase())
   if (area) filters.area = area
   else delete filters.area
-  const found = await searchListings(db, filters, now)
+  const found = await searchListings(db, filters, now, lang)
+  const translated =
+    lang === 'es'
+      ? await translationsFor(
+          db,
+          found.flatMap(listing => translatableTexts(listing).map(text => text.english)),
+          'es',
+        )
+      : new Map<string, string>()
   return {
     filters,
     areas,
-    results: found.map(listing => toCard(listing, lang)),
+    results: found.map(listing => toCard(listing, lang, translated)),
     feedLoaded: feed.state !== 'none',
     demonstration: feed.state === 'stored' && feed.dataset === 'FICTIONAL_DEMONSTRATION',
   }

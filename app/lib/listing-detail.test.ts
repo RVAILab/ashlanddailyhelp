@@ -243,3 +243,29 @@ describe('listingDetail, wording', () => {
     expect(listingDetail({ ...base, provenanceLabel: 'Posted by OHRA' }, 'en').reviewed).toBe('Source reviewed Oct 23')
   })
 })
+
+describe('listingDetail with stored translations', () => {
+  it('shows the Spanish where a translation exists, marks it translated, and keeps the rest English', () => {
+    const translated = new Map([
+      [base.schedule.trim(), 'El sitio web indica martes y jueves.'],
+      [base.description.trim(), 'Servicios de regadera y lavandería.'],
+    ])
+    const detail = listingDetail(base, 'es', translated)
+    expect(detail.translated).toBe(true)
+    expect(detail.description).toEqual({
+      text: 'Servicios de regadera y lavandería.',
+      fromFeed: false,
+      translated: true,
+    })
+    expect(detail.fields.find(field => field.key === 'schedule')).toMatchObject({
+      text: 'El sitio web indica martes y jueves.',
+      fromFeed: false,
+      translated: true,
+    })
+    expect(detail.fields.find(field => field.key === 'access')).toMatchObject({ text: base.access, fromFeed: true })
+  })
+
+  it('is not translated without translations', () => {
+    expect(listingDetail(base, 'es').translated).toBe(false)
+  })
+})

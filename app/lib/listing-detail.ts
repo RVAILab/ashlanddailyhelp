@@ -16,6 +16,7 @@ export interface DetailField {
   label: string
   text: string
   fromFeed: boolean
+  translated?: true
 }
 
 export interface ProvenanceEntry {
@@ -30,7 +31,9 @@ export interface ListingDetail {
   id: string
   name: string
   provider: string
-  description: { text: string; fromFeed: boolean }
+  description: { text: string; fromFeed: boolean; translated?: true }
+  // Whether any text on the page is a machine translation, so the page can say so and link to the English.
+  translated: boolean
   phone: string | null
   labels: ListingLabel[]
   reviewed: string | null
@@ -63,18 +66,20 @@ const pageName = (url: string) => {
 // A map search helps only for a street address: a number followed by a street name, from wherever it starts.
 const streetAddress = (address: string) => address.match(/\b\d+\s+[A-Za-z][\s\S]*$/)?.[0] ?? null
 
-export function listingDetail(listing: FeedListing, lang: Lang): ListingDetail {
+export function listingDetail(listing: FeedListing, lang: Lang, translated = new Map<string, string>()): ListingDetail {
   const t = messagesFor(lang)
   const day = (iso: string, timeZone = 'America/Los_Angeles') =>
     new Intl.DateTimeFormat(locales[lang], { timeZone, month: lang === 'es' ? 'long' : 'short', day: 'numeric' })
       .format(new Date(iso))
       .replace(/\s/g, ' ')
   const sensitive = normalize(listing.address) === SENSITIVE_ADDRESS
-  const feedText = (text: string) =>
-    UNKNOWN.includes(normalize(text))
-      ? { text: t.detail.notConfirmed, fromFeed: false }
-      : { text: text.trim(), fromFeed: true }
-  const value = (key: (typeof ORDER)[number]): { text: string; fromFeed: boolean } => {
+  type Shown = { text: string; fromFeed: boolean; translated?: true }
+  const feedText = (text: string): Shown => {
+    if (UNKNOWN.includes(normalize(text))) return { text: t.detail.notConfirmed, fromFeed: false }
+    const spanish = translated.get(text.trim())
+    return spanish ? { text: spanish, fromFeed: false, translated: true } : { text: text.trim(), fromFeed: true }
+  }
+  const value = (key: (typeof ORDER)[number]): Shown => {
     if (key === 'categories')
       return { text: listing.categories.map(id => t.categories[id]).join(', '), fromFeed: false }
     if (key === 'area') return { text: areaName(listing.area, t), fromFeed: false }
@@ -113,13 +118,19 @@ export function listingDetail(listing: FeedListing, lang: Lang): ListingDetail {
       })),
     }))
 
+  const description = feedText(listing.description)
+  const labels = listingLabels(listing, lang, translated)
   return {
     id: listing.id,
     name: listing.name,
     provider: listing.provider,
-    description: feedText(listing.description),
+    description,
+    translated:
+      Boolean(description.translated) ||
+      fields.some(field => field.translated) ||
+      labels.some(label => label.translated),
     phone: listing.phone,
-    labels: listingLabels(listing, lang),
+    labels,
     // The labels already give the review date unless a provenance label takes its place.
     reviewed: listing.provenanceLabel ? t.detail.reviewed(day(`${listing.reviewedDate}T00:00:00Z`, 'UTC')) : null,
     fields,

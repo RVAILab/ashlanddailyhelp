@@ -96,4 +96,11 @@ describe('/resources/:id', () => {
     render(<Stub initialEntries={[{ pathname: '/resources/ohra-showers', state: { search: '?q=show' } }]} />)
     expect((await screen.findByRole('link', { name: 'Back to search' })).getAttribute('href')).toBe('/resources?q=show')
   })
+
+  it('labels machine-translated text in Spanish and links to the English page', async () => {
+    const translated = new Map([[base.description.trim(), 'Servicio de regaderas y lavandería.']])
+    renderPage(listingDetail(base, 'es', translated), 'es')
+    expect(await screen.findByText('Servicio de regaderas y lavandería.')).toBeDefined()
+    expect(screen.getByRole('link', { name: 'Ver en inglés' }).getAttribute('href')).toBe('/resources/ohra-showers')
+  })
 })

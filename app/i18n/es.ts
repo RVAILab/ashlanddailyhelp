@@ -95,6 +95,8 @@ export const es = {
     ends: when => `Termina el ${when}`,
     sourceReviewed: day => `Información revisada el ${day}`,
     lastConfirmed: day => `Confirmado por última vez el ${day}`,
+    machineTranslated: 'Traducción automática',
+    viewEnglish: 'Ver en inglés',
   },
   detail: {
     backToSearch: 'Volver a la búsqueda',

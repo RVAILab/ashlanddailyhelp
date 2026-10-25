@@ -66,3 +66,19 @@ describe('listingLabels', () => {
     expect(listingLabels({ ...base, conflict: false }, 'en')).toHaveLength(1)
   })
 })
+
+describe('listingLabels with stored translations', () => {
+  it('shows a translated cancellation note in Spanish, marked translated', () => {
+    const note = 'May be canceled tonight. Call before traveling.'
+    const labels = listingLabels(
+      { ...base, mayBeCanceled: note },
+      'es',
+      new Map([[note, 'Podría cancelarse esta noche. Llame antes de ir.']]),
+    )
+    expect(labels).toContainEqual({
+      kind: 'warning',
+      text: 'Podría cancelarse esta noche. Llame antes de ir.',
+      translated: true,
+    })
+  })
+})

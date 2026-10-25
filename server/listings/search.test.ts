@@ -1,4 +1,4 @@
-import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 import { testDatabase } from '../../test/db.ts'
 import { sampleListingsFeed } from '../../test/feed.ts'
 import { storeListings } from '../../test/listings.ts'
@@ -110,6 +110,45 @@ describe('listingAreas', () => {
     const db = await testDatabase()
     await storeListings(db)
     expect(await listingAreas(db, now)).toEqual(['Ashland', 'Jackson County', 'Medford', 'Oregon'])
+    await db.close()
+  })
+})
+
+describe('searchListings in Spanish', () => {
+  it('finds a listing by a word in its stored translation, ignoring accents', async () => {
+    const { translatePending } = await import('../translate/run.ts')
+    const db = await testDatabase()
+    const sample = sampleListingsFeed()
+    await storeListings(db, {
+      ...sample,
+      listings: sample.listings.filter(
+        (listing: Listing) => listing.id === 'ohra-showers' || listing.id === 'uncle-foods',
+      ),
+    })
+    const quiet = vi.spyOn(console, 'log').mockImplementation(() => {})
+    await translatePending(
+      db,
+      {
+        translate: async texts => ({
+          translations: new Map(
+            texts.map(text => [
+              text.id,
+              text.text.includes('Shower')
+                ? 'Servicio de regaderas y lavandería en el Centro OHRA.'
+                : 'Comida comunitaria.',
+            ]),
+          ),
+          usage: { inputTokens: 0, outputTokens: 0, cacheReadTokens: 0 },
+        }),
+      },
+      { lang: 'es', now },
+    )
+    quiet.mockRestore()
+    const ids = async (query: string, lang: 'en' | 'es') =>
+      (await searchListings(db, { query }, now, lang)).map(listing => listing.id)
+    expect(await ids('lavanderia', 'es')).toEqual(['ohra-showers'])
+    expect(await ids('regadera', 'es')).toEqual(['ohra-showers'])
+    expect(await ids('lavanderia', 'en')).toEqual([])
     await db.close()
   })
 })

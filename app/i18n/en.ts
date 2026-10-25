@@ -93,6 +93,8 @@ export const en = {
     ends: (when: string) => `Ends ${when}`,
     sourceReviewed: (day: string) => `Source reviewed · ${day}`,
     lastConfirmed: (day: string) => `Last confirmed ${day}`,
+    machineTranslated: 'Automatic translation',
+    viewEnglish: 'View in English',
   },
   detail: {
     backToSearch: 'Back to search',

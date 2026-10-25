@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "1.3",
+  "schemaVersion": "1.4",
   "generatedAt": "2026-10-25T19:00:00.000Z",
   "dataset": "FICTIONAL_DEMONSTRATION",
   "listings": [
@@ -289,7 +289,78 @@
       "capacity": "Unknown",
       "accessibility": "Not confirmed. Ask the provider about your access needs.",
       "provenanceLabel": "Added by Daily Help from the Jackson County resource packet, page 5",
-      "unconfirmed": true
+      "unconfirmed": true,
+      "provenance": {
+        "hours": [
+          {
+            "sourceType": "scanned_packet",
+            "sourceRef": "sample-packet#page=5",
+            "span": "Mon, Thu and Fri 1p-3p; Thu 9a-12p; Fri 10/30 at the church hall 10a-12p only",
+            "observedAt": "2026-10-25T19:00:00.000Z"
+          }
+        ],
+        "openings": [
+          {
+            "sourceType": "scanned_packet",
+            "sourceRef": "sample-packet#page=5",
+            "span": "Mon, Thu and Fri 1p-3p; Thu 9a-12p; Fri 10/30 at the church hall 10a-12p only",
+            "observedAt": "2026-10-25T19:00:00.000Z"
+          }
+        ]
+      },
+      "hours": {
+        "timeZone": "America/Los_Angeles",
+        "textAsPrinted": "Mon, Thu and Fri 1p-3p; Thu 9a-12p; Fri 10/30 at the church hall 10a-12p only",
+        "rules": [
+          {
+            "days": [
+              "mon",
+              "thu",
+              "fri"
+            ],
+            "weeks": "every",
+            "start": "13:00",
+            "end": "15:00"
+          },
+          {
+            "days": [
+              "thu"
+            ],
+            "weeks": "every",
+            "start": "09:00",
+            "end": "12:00"
+          }
+        ],
+        "include": [
+          {
+            "date": "2026-10-30",
+            "start": "10:00",
+            "end": "12:00",
+            "location": "Sample church hall"
+          }
+        ],
+        "exclude": [],
+        "conditions": []
+      },
+      "openings": [
+        {
+          "startsAt": "2026-10-26T13:00:00-07:00",
+          "endsAt": "2026-10-26T15:00:00-07:00"
+        },
+        {
+          "startsAt": "2026-10-29T09:00:00-07:00",
+          "endsAt": "2026-10-29T12:00:00-07:00"
+        },
+        {
+          "startsAt": "2026-10-29T13:00:00-07:00",
+          "endsAt": "2026-10-29T15:00:00-07:00"
+        },
+        {
+          "startsAt": "2026-10-30T10:00:00-07:00",
+          "endsAt": "2026-10-30T12:00:00-07:00",
+          "location": "Sample church hall"
+        }
+      ]
     },
     {
       "id": "sample-may-be-canceled",
@@ -351,7 +422,45 @@
       "capacity": "Unknown",
       "accessibility": "Not confirmed. Ask the provider about your access needs.",
       "provenanceLabel": "Added by Daily Help from a City of Ashland alert",
-      "endsAt": "2026-10-26T14:30:00.000Z"
+      "endsAt": "2026-10-26T14:30:00.000Z",
+      "provenance": {
+        "hours": [
+          {
+            "sourceType": "city_alert",
+            "sourceRef": "https://ashlandoregon.gov/CivicAlerts.aspx",
+            "span": "Open tonight 7 pm to 7:30 am",
+            "observedAt": "2026-10-25T19:00:00.000Z"
+          }
+        ],
+        "openings": [
+          {
+            "sourceType": "city_alert",
+            "sourceRef": "https://ashlandoregon.gov/CivicAlerts.aspx",
+            "span": "Open tonight 7 pm to 7:30 am",
+            "observedAt": "2026-10-25T19:00:00.000Z"
+          }
+        ]
+      },
+      "hours": {
+        "timeZone": "America/Los_Angeles",
+        "textAsPrinted": "Open tonight 7 pm to 7:30 am",
+        "rules": [],
+        "include": [
+          {
+            "date": "2026-10-25",
+            "start": "19:00",
+            "end": "07:30"
+          }
+        ],
+        "exclude": [],
+        "conditions": []
+      },
+      "openings": [
+        {
+          "startsAt": "2026-10-25T19:00:00-07:00",
+          "endsAt": "2026-10-26T07:30:00-07:00"
+        }
+      ]
     }
   ]
 }

@@ -2,13 +2,14 @@
 // listings[] items use the site's data.js `resources` field names; events[] and reports[]
 // are exactly the arrays core.js aggregateReports and reportSeries consume.
 import { z } from 'zod'
+import { Condition, Weekday } from '../schedule/index.ts'
 import { Category, Dataset, Method, Outcome, SiteUnit, SourceType, Unmet, UnmetReason } from './values.ts'
 
 // The site puts event ids into HTML attributes, so they are limited to these characters.
 export const EventId = z.string().regex(/^[A-Za-z0-9_-]+$/, 'event ids use letters, digits, _ and - only')
 
 // Major.minor. A new optional field is a minor bump; a breaking change is a new major.
-export const FEED_SCHEMA_VERSION = '1.3'
+export const FEED_SCHEMA_VERSION = '1.4'
 
 const Day = z.iso.date()
 const Iso = z.iso.datetime({ offset: true })
@@ -20,6 +21,38 @@ export const FeedProvenance = z.strictObject({
   sourceRef: z.string().min(1), // usually a URL
   span: z.string().nullable(),
   observedAt: Iso,
+})
+
+const Time = z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/, 'time is HH:MM, 24-hour')
+const Place = z.string().min(1).optional() // left out for a sensitive location
+
+// The steward's Schedule (src/schedule) plus its time zone (1.4). Places and the printed text are
+// left out for a provider whose location is sensitive.
+export const FeedHours = z.strictObject({
+  timeZone: z.string().min(1),
+  textAsPrinted: Place,
+  rules: z.array(z.strictObject({
+    days: z.array(Weekday).min(1),
+    weeks: z.union([z.literal('every'), z.array(z.union([z.int().min(1).max(5), z.literal('last')])).min(1)]),
+    start: Time,
+    end: Time.optional(), // at or before start means it ends the next day
+    location: Place,
+    stops: z.array(z.strictObject({ name: Place, time: Time })).min(1).optional(),
+  })),
+  include: z.array(z.strictObject({ date: Day, start: Time.optional(), end: Time.optional(), location: Place })), // replaces that date's rule windows
+  exclude: z.array(Day),
+  conditions: z.array(Condition),
+  countOnly: z.string().min(1).optional(), // dates vary: hours but no openings
+})
+
+// One dated window, from the steward's generateOccurrences (1.4). Belongs to the day it starts.
+export const FeedOpening = z.strictObject({
+  startsAt: Iso,
+  endsAt: Iso.optional(), // absent when only a start time is known
+  location: Place, // only when it differs from the listing's address
+  stop: z.strictObject({ index: z.int().min(1), name: Place }).optional(), // route stops, 1-based
+  status: z.enum(['may_be_canceled', 'canceled']).optional(), // absent means scheduled
+  note: z.string().min(1).optional(),
 })
 
 export const FeedListing = z.strictObject({
@@ -53,6 +86,9 @@ export const FeedListing = z.strictObject({
   sourceUrls: z.array(z.url()).optional(), // every source behind the listing, `source` first
   provenance: z.record(z.string(), z.array(FeedProvenance)).optional(), // field name -> its sources (1.1)
   lastConfirmed: Iso.optional(), // when a source last confirmed it; set once stale or every source is failing (1.2)
+  hours: FeedHours.optional(), // structured hours, for display (1.4)
+  // Every window from the start of today through the 7th local day, in time order. Absent: hours not known (1.4).
+  openings: z.array(FeedOpening).optional(),
 })
 
 export const ListingsFeed = z
@@ -177,6 +213,8 @@ export const WeekSnapshot = z
   })
 
 export type FeedListing = z.infer<typeof FeedListing>
+export type FeedHours = z.infer<typeof FeedHours>
+export type FeedOpening = z.infer<typeof FeedOpening>
 export type FeedProvenance = z.infer<typeof FeedProvenance>
 export type ListingsFeed = z.infer<typeof ListingsFeed>
 export type PulseEvent = z.infer<typeof PulseEvent>

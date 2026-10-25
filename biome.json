@@ -14,6 +14,8 @@
       "!db/migrations",
       "!**/*.md",
       "!contract/steward",
+      "!contract/schedule",
+      "!contract/feed",
       "!test/fixtures"
     ]
   },

@@ -11,16 +11,14 @@ export const listingsFile: FeedFileSpec<ListingsFile> = {
   store: async (tx, file) => {
     await tx.delete(listings)
     if (file.listings.length === 0) return
-    await tx
-      .insert(listings)
-      .values(
-        file.listings.map((data, position) => ({
-          id: data.id,
-          position,
-          endsAt: data.endsAt ? new Date(data.endsAt) : null,
-          data,
-        })),
-      )
+    await tx.insert(listings).values(
+      file.listings.map((data, position) => ({
+        id: data.id,
+        position,
+        endsAt: data.endsAt ? new Date(data.endsAt) : null,
+        data,
+      })),
+    )
   },
 }
 

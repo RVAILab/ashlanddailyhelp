@@ -89,9 +89,9 @@ The app deploys to the `ashlanddailyhelp-app` Worker on every push to `main` onc
 GitHub Actions (`.github/workflows/deploy.yml`) runs lint, type checks, tests and the build on every push and pull request. The end-to-end journeys run locally (`npm run e2e`) for now, not in CI. On a push to `main` it then deploys:
 
 - the static site from `legacy/` to <https://ashlanddailyhelp.kitchenlab.workers.dev> (the `ashlanddailyhelp` Worker), and
-- the new app to the `ashlanddailyhelp-app` Worker, once `DATABASE_URL` is set.
+- the new app to the `ashlanddailyhelp-app` Worker, once `DATABASE_URL` is set. The app serves the live domain, ashlanddailyhelp.com and www (custom domains in `wrangler.jsonc`), and also <https://ashlanddailyhelp-app.kitchenlab.workers.dev>.
 
-The live domain, ashlanddailyhelp.com, is still served from Bluehost and is not touched by either. The workflow needs the repository secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`, and `DATABASE_URL` for the app's migrations. Only `main` deploys, including manual runs.
+ The workflow needs the repository secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`, and `DATABASE_URL` for the app's migrations. Only `main` deploys, including manual runs.
 
 ## The static site
 

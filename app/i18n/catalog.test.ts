@@ -15,6 +15,29 @@ describe('the message catalogs', () => {
     expect(leaves(es).map(([key]) => key)).toEqual(leaves(en).map(([key]) => key))
   })
 
+  // Names and words that are the same in both languages; everything else must be real Spanish.
+  const SAME = new Set([
+    'siteName',
+    'brand.name',
+    'brand.place',
+    'pulse.title',
+    'pulse.bar',
+    'pulse.totalOnly',
+    'next.endAt',
+    'sms.help',
+    'detail.fields.accessibility',
+  ])
+
+  it('leave no English placeholders in Spanish', () => {
+    const english = new Map(leaves(en))
+    const shown = (message: unknown) =>
+      typeof message === 'function' ? String(message(2, 'Ashland', 'Ashland', 3)) : JSON.stringify(message)
+    const untranslated = leaves(es)
+      .filter(([key, message]) => !SAME.has(key) && shown(message) === shown(english.get(key)))
+      .map(([key]) => key)
+    expect(untranslated).toEqual([])
+  })
+
   it.each([
     ['English', en],
     ['Spanish', es],

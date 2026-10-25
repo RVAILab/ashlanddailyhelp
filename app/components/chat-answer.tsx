@@ -26,7 +26,21 @@ export function ChatAnswerView({ result }: { result: Extract<AskResult, { state:
                 ) : (
                   citation.name
                 )}
-                {citation.site && <> ({t.ask.from(citation.site)})</>}
+                {citation.site && (
+                  <>
+                    {' '}
+                    ({t.ask.source}:{' '}
+                    {citation.sourceUrl ? (
+                      <a href={citation.sourceUrl} rel="noopener noreferrer" target="_blank">
+                        {citation.site}
+                        <span className="visually-hidden"> {t.ask.newTab}</span>
+                      </a>
+                    ) : (
+                      citation.site
+                    )}
+                    )
+                  </>
+                )}
               </li>
             ))}
           </ul>

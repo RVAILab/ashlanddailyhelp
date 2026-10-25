@@ -17,4 +17,15 @@ describe('/list/save', () => {
     )
     expect(response.headers.get('Set-Cookie')).toBeNull()
   })
+
+  it('keeps the newly saved listings when the list is full, dropping the oldest', () => {
+    const full = Array.from({ length: 30 }, (_, index) => `old-${index}`).join('.')
+    const response = loader(
+      loaderArgs('https://ashlanddailyhelp.com/list/save?ids=new-1.new-2', {}, { Cookie: `saved=${full}` }),
+    )
+    const saved = (response.headers.get('Set-Cookie') ?? '').match(/saved=([^;]*)/)?.[1]?.split('.') ?? []
+    expect(saved).toHaveLength(30)
+    expect(saved.slice(-2)).toEqual(['new-1', 'new-2'])
+    expect(saved).not.toContain('old-0')
+  })
 })

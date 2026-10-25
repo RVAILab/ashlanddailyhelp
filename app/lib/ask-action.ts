@@ -17,7 +17,13 @@ export type AskResult =
         crisis: boolean
         known: boolean
         asOf: string | null
-        citations: Array<{ id: string; name: string; site: string | null; listingId: string | null }>
+        citations: Array<{
+          id: string
+          name: string
+          site: string | null
+          sourceUrl: string | null
+          listingId: string | null
+        }>
       }
     }
 
@@ -50,6 +56,10 @@ export async function askAction(
         id: citation.id,
         name: citation.name,
         site: siteName(citation.source),
+        sourceUrl:
+          citation.source && /^https?:\/\//i.test(citation.source) && URL.canParse(citation.source)
+            ? citation.source
+            : null,
         listingId: citation.listingId,
       })),
     },

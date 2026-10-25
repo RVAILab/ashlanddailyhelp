@@ -43,9 +43,10 @@ describe('/ask', () => {
             id: 'ohra-shelter',
             name: 'Talk through shelter options',
             site: 'ohrahelps.org',
+            sourceUrl: 'https://ohrahelps.org/',
             listingId: 'ohra-shelter',
           },
-          { id: 'shelter-sunday', name: 'Severe weather shelter', site: null, listingId: null },
+          { id: 'shelter-sunday', name: 'Severe weather shelter', site: null, sourceUrl: null, listingId: null },
         ],
       },
     })

@@ -19,6 +19,10 @@ export function savedIds(cookie: string | null | undefined): string[] {
 export const toggled = (ids: string[], id: string) =>
   ids.includes(id) ? ids.filter(other => other !== id) : [...ids, id].slice(-MAX)
 
+// Listings saved together, added to the list; when it is full, the oldest give way, as with one at a time.
+export const merged = (ids: string[], adding: string[]) =>
+  [...ids, ...adding.filter(id => !ids.includes(id))].slice(-MAX)
+
 export function listCookie(ids: string[], secure: boolean): string {
   const attributes = `Path=/; Max-Age=${ids.length ? YEAR : 0}; SameSite=Lax; HttpOnly${secure ? '; Secure' : ''}`
   return `saved=${ids.join('.')}; ${attributes}`

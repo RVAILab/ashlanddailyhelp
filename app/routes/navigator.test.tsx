@@ -39,15 +39,17 @@ describe('/navigator', () => {
             id: 'access-pantries',
             name: 'Groceries for the week ahead',
             site: 'accesshelps.org',
+            sourceUrl: 'https://accesshelps.org/',
             listingId: 'access-pantries',
           },
           {
             id: 'uncle-foods',
             name: 'A seat at the community table',
             site: 'unclefoods.org',
+            sourceUrl: 'https://unclefoods.org/',
             listingId: 'uncle-foods',
           },
-          { id: 'breakfast-1', name: 'Pancake breakfast', site: null, listingId: null },
+          { id: 'breakfast-1', name: 'Pancake breakfast', site: null, sourceUrl: null, listingId: null },
         ],
       },
     })
@@ -56,6 +58,8 @@ describe('/navigator', () => {
     expect(href('Open as a shareable list')).toBe('/list?ids=access-pantries.uncle-foods')
     expect(href('Print a handout')).toBe('/print?ids=access-pantries.uncle-foods')
     expect(href('Save these to my list')).toBe('/list/save?ids=access-pantries.uncle-foods')
-    expect(screen.getByText(/source: accesshelps\.org/)).toBeDefined()
+    expect(screen.getByRole('link', { name: /^accesshelps\.org/ }).getAttribute('href')).toBe(
+      'https://accesshelps.org/',
+    )
   })
 })

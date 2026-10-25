@@ -57,7 +57,7 @@ describe('searchListings', () => {
       ...sample,
       listings: [
         sample.listings[0],
-        { ...sample.listings[1], id: 'medford-only', area: 'Medford', coverage: ['Medford'] },
+        { ...sample.listings[1], id: 'grants-pass-only', area: 'Grants Pass', coverage: ['Grants Pass'] },
       ],
     })
     expect((await searchListings(other, {}, now)).map(listing => listing.id)).toEqual([sample.listings[0].id])

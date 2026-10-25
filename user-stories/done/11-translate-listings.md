@@ -3,8 +3,8 @@ metadata:
   created_at:   2026-10-25T11:06:46-07:00
   activated_at: 2026-10-25T14:01:03-07:00
   planned_at:   2026-10-25T14:01:03-07:00
-  finished_at:
-  updated_at:   2026-10-25T14:01:03-07:00
+  finished_at:  2026-10-25T14:14:35-07:00
+  updated_at:   2026-10-25T14:14:35-07:00
 -->
 
 # Story: Machine-Translate Listing Text
@@ -64,3 +64,24 @@ After each listings refresh, the scheduled Worker translates any English prose i
 
 - A mistranslated requirement misleads; the glossary, the "translate only, add nothing" instruction and the visible label and link to the English reduce that, and a Spanish speaker should spot-check before launch.
 - Cost: bounded per run by `maxTexts` (default 200) and paid once per distinct text; the log shows tokens per run.
+
+## Review
+
+Reviewed 2026-10-25 at `dfdd1fe` by an independent agent; findings fixed in the next commit unless noted.
+
+| Criterion | Verdict | Evidence |
+| --- | --- | --- |
+| Prose translated on ingest, keyed by a hash, never re-translated | ⚠️ | Listings ✅ (`server/translate/`); event and alert text waits for the events and alerts feeds |
+| Names, addresses, phones, URLs, times never translated | ✅ | Never collected (`texts.ts`); the prompt keeps any inside prose as written |
+| "Traducción automática" label and link to the English | ✅ | Cards and the listing page |
+| English shown, marked English, when pending or failed | ✅ | `lang="en"` |
+| Spend bounded and logged | ✅ | 200 texts a run, failed text backs off, tokens logged |
+| Spot-check and reports | ⚠️ | Spot-check is a launch task; reporting moved to `16-provider-listing-view` |
+
+Fixed: Spanish search went empty after every refresh (rows are replaced, and the Spanish column was rebuilt only after new translations); a failing batch was re-sent and paid for every five minutes; the API call had a 10-minute timeout with two retries. Left: accents are stripped before Spanish stemming (works, slightly rough), and no end-to-end Spanish search journey.
+
+## Learnings
+
+- Went well: keying translations by a hash of the English made "never re-translate" and "never show a stale translation" fall out of one decision.
+- Surprising: replacing listing rows on every refresh silently erased a column another job maintains.
+- Next time: anything derived from the listing rows must be rebuilt by the step that rewrites them, or kept elsewhere.

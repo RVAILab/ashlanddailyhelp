@@ -20,7 +20,7 @@ function renderAt(url: string, lang: 'en' | 'es') {
             listingNames: {},
             byListing: {},
             closedListings: [],
-            closedEvents: [],
+            closedUntil: {},
             demonstration: false,
             nextEnd: null,
           }),

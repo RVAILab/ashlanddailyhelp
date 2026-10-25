@@ -1,5 +1,4 @@
-import type { FeedEvent, Opening } from '../feed/contract.ts'
-import type { TodayEntry, TodayGroups } from '../today/group.ts'
+import type { FeedEvent, Opening, StoredListing } from '../feed/contract.ts'
 
 export type NextKind = 'meal' | 'sleep'
 
@@ -17,6 +16,7 @@ export interface NextPlace {
 }
 
 const STAY_OPEN = 30 * 60 * 1000
+const AHEAD = 7 * 24 * 60 * 60 * 1000
 const time = (iso: string) => Date.parse(iso)
 const pacific = (iso: string) =>
   new Intl.DateTimeFormat('en-CA', {
@@ -41,26 +41,22 @@ function overnight(startsAt: string, endsAt: string | null) {
 
 const category = { meal: 'food', sleep: 'housing' } as const
 
-// Every usable window today, not only the one that decides the listing's group on /today.
-function fromListing(entry: TodayEntry, now: number): NextPlace[] {
-  return entry.today
-    .filter(window => window.status !== 'canceled')
-    .map((window: Opening) => ({
-      source: 'listing' as const,
-      id: entry.listing.id,
-      name: entry.listing.name,
-      provider: entry.listing.provider,
-      where: window.location ?? entry.listing.address,
-      phone: entry.listing.phone,
-      listingId: entry.listing.id,
-      startsAt: window.startsAt,
-      endsAt: window.endsAt ?? null,
-      openNow: time(window.startsAt) <= now,
-    }))
+function fromListing(listing: StoredListing, window: Opening, now: number): NextPlace {
+  return {
+    source: 'listing',
+    id: listing.id,
+    name: listing.name,
+    provider: listing.provider,
+    where: window.location ?? listing.address,
+    phone: listing.phone,
+    listingId: listing.id,
+    startsAt: window.startsAt,
+    endsAt: window.endsAt ?? null,
+    openNow: time(window.startsAt) <= now,
+  }
 }
 
-function fromEvent(event: FeedEvent, now: number): NextPlace | null {
-  if (!event.startsAt) return null
+function fromEvent(event: FeedEvent & { startsAt: string }, now: number): NextPlace {
   return {
     source: 'event',
     id: event.id,
@@ -75,36 +71,48 @@ function fromEvent(event: FeedEvent, now: number): NextPlace | null {
   }
 }
 
-// The next meal or place to sleep: somewhere open now for at least half an hour more (open longest first), else the
-// soonest start later today, else somewhere open now but closing soon. Doubtful or closed places are never picked;
-// `closed` holds the events and listings that in-effect alerts close.
+// The next meal or place to sleep in the coming week: somewhere open now for at least half an hour more (open longest
+// first), else the soonest start, else somewhere open now but closing soon. A listing whose schedule needs checking or
+// may be canceled, a canceled or doubtful window or event, and anything an alert closes (`closedUntil`, by listing or
+// event id) before the alert ends, is never picked.
 export function nextPlace(
-  groups: TodayGroups,
+  listings: StoredListing[],
   events: FeedEvent[],
   now: Date,
   kind: NextKind,
-  closed: ReadonlySet<string>,
+  closedUntil: Readonly<Record<string, string>>,
 ): NextPlace | null {
   const nowMs = now.getTime()
   const wanted = (categories: readonly string[]) => categories.includes(category[kind])
+  const doubtful = new Set(listings.filter(listing => listing.conflict || listing.mayBeCanceled).map(({ id }) => id))
+  const closed = (id: string | undefined, startsAt: string) => {
+    const until = id ? closedUntil[id] : undefined
+    return until !== undefined && time(startsAt) < time(until)
+  }
   const candidates = [
-    ...[...groups.openNow, ...groups.later]
-      .filter(entry => wanted(entry.listing.categories))
-      .flatMap(entry => fromListing(entry, nowMs)),
+    ...listings
+      .filter(listing => wanted(listing.categories) && !doubtful.has(listing.id))
+      .flatMap(listing =>
+        (listing.openings ?? [])
+          .filter(window => !window.status && !closed(listing.id, window.startsAt))
+          .map(window => fromListing(listing, window, nowMs)),
+      ),
     ...events
       .filter(
-        event =>
+        (event): event is FeedEvent & { startsAt: string } =>
+          event.startsAt !== undefined &&
           wanted(event.categories) &&
           !event.status &&
           !event.conflict &&
-          !closed.has(event.id) &&
-          !(event.listingId && closed.has(event.listingId)),
+          !(event.listingId && doubtful.has(event.listingId)) &&
+          !closed(event.id, event.startsAt) &&
+          !closed(event.listingId, event.startsAt),
       )
       .map(event => fromEvent(event, nowMs)),
   ].filter(
-    (place): place is NextPlace =>
-      place !== null &&
+    place =>
       (place.endsAt ? time(place.endsAt) > nowMs : time(place.startsAt) > nowMs) &&
+      time(place.startsAt) <= nowMs + AHEAD &&
       (kind === 'meal' || overnight(place.startsAt, place.endsAt)),
   )
   const end = (place: NextPlace) => (place.endsAt ? time(place.endsAt) : Number.POSITIVE_INFINITY)

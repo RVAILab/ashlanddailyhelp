@@ -14,7 +14,7 @@ function renderHome(lang: 'en' | 'es' = 'en', art = true) {
         listingNames: {},
         byListing: {},
         closedListings: [],
-        closedEvents: [],
+        closedUntil: {},
         demonstration: false,
         nextEnd: null,
         art,

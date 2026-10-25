@@ -33,8 +33,18 @@ describe('pageAlerts', () => {
     const db = await testDatabase()
     await db.close()
     vi.spyOn(console, 'error').mockImplementation(() => {})
-    expect(await pageAlerts(db, 'en', new Date())).toMatchObject({ alerts: [], byListing: {}, closedListings: [] })
-    expect(await pageAlerts(null, 'en', new Date())).toMatchObject({ alerts: [], byListing: {}, closedListings: [] })
+    expect(await pageAlerts(db, 'en', new Date())).toMatchObject({
+      alerts: [],
+      byListing: {},
+      closedListings: [],
+      closedUntil: {},
+    })
+    expect(await pageAlerts(null, 'en', new Date())).toMatchObject({
+      alerts: [],
+      byListing: {},
+      closedListings: [],
+      closedUntil: {},
+    })
     vi.restoreAllMocks()
   })
 })
@@ -75,7 +85,8 @@ describe('pageAlerts, from the review', () => {
     )
     const page = await pageAlerts(db, 'en', new Date('2026-10-25T18:00:00Z'))
     expect(page.closedListings).toEqual(['ohra-shelter'])
-    expect(page.closedEvents).toEqual(['breakfast-1'])
+    expect(Object.keys(page.closedUntil)).toEqual(['ohra-shelter', 'breakfast-1'])
+    expect(page.closedUntil['breakfast-1']).toBe(page.closedUntil['ohra-shelter'])
     await db.close()
   })
 

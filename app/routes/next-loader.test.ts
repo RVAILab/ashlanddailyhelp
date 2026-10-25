@@ -18,7 +18,10 @@ describe('/next loader', () => {
       listings: [
         {
           ...find('access-pantries'),
-          openings: [{ startsAt: '2026-10-25T13:00:00-07:00', endsAt: '2026-10-25T15:00:00-07:00' }],
+          openings: [
+            { startsAt: '2026-10-25T13:00:00-07:00', endsAt: '2026-10-25T15:00:00-07:00' },
+            { startsAt: '2026-10-26T09:00:00-07:00', endsAt: '2026-10-26T11:00:00-07:00' },
+          ],
         },
         {
           ...find('ohra-shelter'),
@@ -46,6 +49,13 @@ describe('/next loader', () => {
       where: 'Location not published. Call the provider.',
       details: '/resources/ohra-shelter',
     })
+  })
+
+  it('looks past today when nothing more is open today', async () => {
+    vi.setSystemTime(new Date('2026-10-25T23:30:00Z'))
+    const page = await loader(loaderArgs('/next', { database: () => db }))
+    vi.setSystemTime(new Date('2026-10-25T18:00:00Z'))
+    expect(page.meal?.when).toBe('Starts tomorrow at 9:00 AM, until 11:00 AM')
   })
 
   it('says nothing is known, rather than guessing, when there is no database', async () => {

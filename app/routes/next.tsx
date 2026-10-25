@@ -5,8 +5,6 @@ import { pageAlerts } from '../../server/feed/page-alerts.ts'
 import { servesAshland } from '../../server/listings/scope.ts'
 import { searchListings } from '../../server/listings/search.ts'
 import { type NextKind, type NextPlace, nextPlace } from '../../server/next/next.ts'
-import { groupEvents } from '../../server/today/events.ts'
-import { groupToday } from '../../server/today/group.ts'
 import { services } from '../context.ts'
 import { type Lang, langFromPath, locales, messagesFor } from '../i18n/index.ts'
 import { useI18n } from '../i18n/provider.tsx'
@@ -28,21 +26,34 @@ interface NextView {
 const pacificDay = (iso: string) =>
   new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Los_Angeles' }).format(new Date(iso))
 
+const DAY = 86_400_000
+
 function toView(place: NextPlace | null, lang: Lang, known: Set<string>, now: Date): NextView | null {
   if (!place) return null
   const t = messagesFor(lang).next
+  // Today needs no day; tomorrow says so; later in the week names the weekday.
+  const dayWord = (iso: string) => {
+    const days = Math.round((Date.parse(pacificDay(iso)) - Date.parse(pacificDay(now.toISOString()))) / DAY)
+    if (days <= 0) return null
+    if (days === 1) return t.tomorrow
+    return new Intl.DateTimeFormat(locales[lang], { timeZone: 'America/Los_Angeles', weekday: 'long' }).format(
+      new Date(iso),
+    )
+  }
+  const start = t.startAt(clock(lang, place.startsAt), dayWord(place.startsAt))
   const end = place.endsAt
-    ? pacificDay(place.endsAt) > pacificDay(now.toISOString())
-      ? t.tomorrow(clock(lang, place.endsAt))
-      : clock(lang, place.endsAt)
+    ? t.endAt(
+        clock(lang, place.endsAt),
+        pacificDay(place.endsAt) === pacificDay(place.startsAt) && !place.openNow ? null : dayWord(place.endsAt),
+      )
     : null
   const when = place.openNow
     ? end
       ? t.openUntil(end)
-      : t.starts(clock(lang, place.startsAt))
+      : t.starts(start)
     : end
-      ? t.startsUntil(clock(lang, place.startsAt), end)
-      : t.starts(clock(lang, place.startsAt))
+      ? t.startsUntil(start, end)
+      : t.starts(start)
   return {
     name: place.name,
     provider: place.provider,
@@ -68,16 +79,9 @@ export async function loader({ url, context }: Route.LoaderArgs) {
   if (!db) return { workedOut, meal: null, sleep: null, demonstration: false }
   const alerts = await pageAlerts(db, lang, now)
   const listings = await searchListings(db, {}, now, lang)
-  const groups = groupToday(listings, now, new Set(alerts.closedListings))
-  const events = groupEvents(
-    (await upcomingEvents(db, now)).filter(event => servesAshland(event.area)),
-    now,
-  ).today
-  // An event run by a listing whose schedule is in doubt is as doubtful as the listing.
-  const doubtful = listings.filter(listing => listing.conflict || listing.mayBeCanceled).map(listing => listing.id)
-  const closed = new Set([...alerts.closedListings, ...alerts.closedEvents, ...doubtful])
+  const events = (await upcomingEvents(db, now)).filter(event => servesAshland(event.area))
   const known = new Set(listings.map(listing => listing.id))
-  const pick = (kind: NextKind) => toView(nextPlace(groups, events, now, kind, closed), lang, known, now)
+  const pick = (kind: NextKind) => toView(nextPlace(listings, events, now, kind, alerts.closedUntil), lang, known, now)
   const feed = await listingsFeedStatus(db)
   return {
     workedOut,

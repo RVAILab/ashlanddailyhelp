@@ -35,8 +35,8 @@ describe('/next', () => {
 
   it('says plainly when nothing is known, and points to today and 211', async () => {
     renderNext({ workedOut: '11:00 AM', meal: null, sleep: null, demonstration: false })
-    expect(await screen.findByText('No meal we know of for the rest of today.')).toBeDefined()
-    expect(screen.getByText('No place to sleep we know of for tonight.')).toBeDefined()
+    expect(await screen.findByText('No meal we know of in the coming week.')).toBeDefined()
+    expect(screen.getByText('No place to sleep we know of in the coming week.')).toBeDefined()
     expect(screen.getByRole('link', { name: 'Everything open today' }).getAttribute('href')).toBe('/today')
     expect(screen.getAllByRole('link', { name: /211/ }).length).toBeGreaterThan(0)
   })

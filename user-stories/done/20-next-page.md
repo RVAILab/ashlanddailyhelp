@@ -29,6 +29,8 @@ SO THAT I can get there without reading through a directory
 - Requested Oct 25.
 - "Meal" means the food category; "place to sleep" means housing listings and events (shelters, severe weather shelters, campsites). Until the steward publishes opening windows (#39) and events (#40), the page will usually say nothing is known.
 
+- Changed Oct 25 at the user's request: `/next` looks ahead a week rather than only the rest of today. A meal tomorrow shows as "Starts tomorrow at 9:00 AM, until 11:00 AM". An alert closure hides a place only until the alert ends.
+
 ## Implementation Plan
 
 A pure function picks the next meal and the next place to sleep from /today's grouping and today's events. A plain page shows the two picks in large type. Follow `/today`'s loader, with its alert closures, and `/print`'s no-JavaScript page.

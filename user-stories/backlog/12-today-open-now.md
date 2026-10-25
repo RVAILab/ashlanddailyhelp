@@ -28,6 +28,7 @@ SO THAT I know where I can go next
 
 ## Notes
 
+- From `10-homepage`: add a link to /today on the homepage, above the kinds of help.
 - Reuse `app/lib/listing-labels.ts` and `app/components/listing-status.tsx` from `07-browse-and-search`, so `/today` and `/resources` show the same evidence labels.
 - Blocked by `02-request-structured-hours`.
 

@@ -277,12 +277,12 @@ main h1:focus-visible {
 
 .emergency {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1fr;
   gap: 0.5rem;
   margin: 0.75rem 0;
 }
 
-.emergency a {
+.site-footer .emergency a {
   display: grid;
   align-content: center;
   min-height: 44px;

@@ -37,13 +37,29 @@ describe('FeedFooter', () => {
 
   it('says when no listings have loaded yet', () => {
     render(<FeedFooter feed={{ state: 'none' }} />)
-    expect(screen.getByRole('contentinfo').textContent).toBe('Listings have not loaded yet.')
+    expect(screen.getByRole('contentinfo').textContent).toContain('Listings have not loaded yet.')
   })
 
   it('says when listings are unavailable, and points to 211', () => {
     render(<FeedFooter feed={{ state: 'unavailable' }} />)
     const footer = screen.getByRole('contentinfo')
-    expect(footer.textContent).toBe('Listings are unavailable right now. For help finding services, call 211.')
+    expect(footer.textContent).toContain('Listings are unavailable right now. For help finding services, call 211.')
     expect(within(footer).getByRole('link', { name: '211' }).getAttribute('href')).toBe('tel:211')
+  })
+
+  it('ends every page with the emergency and crisis numbers, each one tap to call', () => {
+    render(<FeedFooter feed={{ state: 'none' }} />)
+    const numbers = within(screen.getByRole('contentinfo')).getByRole('navigation', {
+      name: 'Emergency and crisis numbers',
+    })
+    expect(
+      within(numbers)
+        .getAllByRole('link')
+        .map(link => [link.textContent?.replace(/\s+/g, ' ').trim(), link.getAttribute('href')]),
+    ).toEqual([
+      ['Call 911 Emergency', 'tel:911'],
+      ['Call 988 Suicide and crisis line, call or text', 'tel:988'],
+      ['Call 211 Help finding services', 'tel:211'],
+    ])
   })
 })

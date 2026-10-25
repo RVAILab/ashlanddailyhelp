@@ -10,7 +10,27 @@ export type FooterFeed = FeedStatus extends infer Status
 
 export function FeedFooter({ feed }: { feed: FooterFeed }) {
   const { t } = useI18n()
-  return <footer className="site-footer">{content(feed, t)}</footer>
+  const numbers = [
+    ['911', t.home.emergency.emergency],
+    ['988', t.home.emergency.crisis],
+    ['211', t.home.emergency.services],
+  ] as const
+  return (
+    <footer className="site-footer">
+      <nav aria-label={t.home.emergency.label} className="emergency">
+        {numbers.map(([number, what]) => (
+          <a key={number} href={`tel:${number}`}>
+            <strong>
+              <span className="visually-hidden">{t.home.emergency.call} </span>
+              {number}
+            </strong>{' '}
+            <span>{what}</span>
+          </a>
+        ))}
+      </nav>
+      {content(feed, t)}
+    </footer>
+  )
 }
 
 function content(feed: FooterFeed, t: Messages) {

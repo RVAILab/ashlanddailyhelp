@@ -12,24 +12,8 @@ export function meta({ location }: Route.MetaArgs) {
 
 export default function Home() {
   const { t, path } = useI18n()
-  const numbers = [
-    ['911', t.home.emergency.emergency],
-    ['988', t.home.emergency.crisis],
-    ['211', t.home.emergency.services],
-  ] as const
   return (
     <main className="home">
-      <nav aria-label={t.home.emergency.label} className="emergency">
-        {numbers.map(([number, what]) => (
-          <a key={number} href={`tel:${number}`}>
-            <strong>
-              <span className="visually-hidden">{t.home.emergency.call} </span>
-              {number}
-            </strong>{' '}
-            <span>{what}</span>
-          </a>
-        ))}
-      </nav>
       <h1>{t.home.title}</h1>
       <p>{t.home.tagline}</p>
       <section aria-labelledby="kinds-heading">

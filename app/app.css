@@ -266,6 +266,85 @@ main h1:focus-visible {
   outline: 3px solid var(--focus);
 }
 
+.emergency {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  margin: 0.75rem 0;
+}
+
+.emergency a {
+  display: grid;
+  align-content: center;
+  min-height: 44px;
+  padding: 0.5rem;
+  border: 2px solid var(--warning);
+  border-radius: 8px;
+  color: var(--ink);
+  text-decoration: none;
+  line-height: 1.2;
+}
+
+.emergency strong {
+  font-size: 1.25rem;
+}
+
+.emergency span {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.kinds,
+.others {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.kinds a {
+  display: grid;
+  gap: 0.125rem;
+  min-height: 64px;
+  align-content: center;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--field);
+  border-radius: 8px;
+  background: var(--card);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.kinds strong {
+  font-size: 1.125rem;
+}
+
+.kinds span {
+  color: var(--muted);
+}
+
+.kinds .search-all {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--paper);
+}
+
+@media (min-width: 40rem) {
+  .kinds {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.others a,
+.about a,
+.listing-page > p > a,
+.site-footer a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
 .site-footer {
   margin-top: 3rem;
   padding: 1rem 0 2rem;

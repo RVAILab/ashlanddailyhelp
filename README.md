@@ -42,6 +42,15 @@ How it behaves:
 - **Community Pulse** fetches `pulse.json` once at startup and every 30 seconds while Pulse is open and the tab is visible, with `If-None-Match` when the server sends an ETag. On errors it keeps what's on screen, marks it "Last updated", and backs off. `pulse.json` is never cached for offline use. Practice reports approved in the provider preview stay in this tab on top of the feed.
 - **Sample wording** follows `pulse.json`'s `dataset`: `FICTIONAL_DEMONSTRATION` keeps every "sample" and "fictional" label; `LIVE` removes them, and the CSV download carries the real label.
 
+## Deploys
+
+Every push to `main` deploys the site to Cloudflare at <https://ashlanddailyhelp.kitchenlab.workers.dev> (GitHub Actions, `.github/workflows/deploy.yml`). Pull requests run the same checks without deploying. The live domain, ashlanddailyhelp.com, is still served from Bluehost and is not touched by this.
+
+- Files are served as committed, with no build step. `.assetsignore` keeps `feed/`, `user-stories/`, Markdown, dotfiles and the deploy files out of the upload.
+- Cloudflare sends `Cache-Control: public, max-age=0, must-revalidate` with an ETag for every file, so browsers check for updates on each visit. Returning visitors still pick up new shell files only when the cache name in `sw.js` changes.
+- `worker.js` is a few lines that serve `/index.html` directly (Cloudflare would otherwise redirect it to `/`, which breaks the offline copy `sw.js` keeps). Every other path comes straight from the static files.
+- To deploy by hand: `npx wrangler deploy` (log in first with `npx wrangler login`). The workflow needs the repo secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`.
+
 ## Data and accuracy
 
 Listings say only what each provider's own website states, and none has been confirmed with the provider yet. Confirm hours and eligibility before visiting or referring anyone. The Community Pulse and provider-view numbers are fictional demonstration data, not real service statistics.

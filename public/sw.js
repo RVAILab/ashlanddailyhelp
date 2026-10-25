@@ -8,7 +8,6 @@ const MAX_ASSETS = 80
 const NEVER = [
   /^\/health/,
   /^\/language/,
-  /^\/text/,
   /^\/forget/,
   /^\/list\/(toggle|save)/,
   /^\/report/,
@@ -63,11 +62,27 @@ const plainPage = url => [...url.searchParams.keys()].every(key => ROUTER_PARAMS
 self.addEventListener('fetch', event => {
   const { request } = event
   const url = new URL(request.url)
+  if (url.origin === self.location.origin && url.pathname === '/text') {
+    event.respondWith(switchMode(request))
+    return
+  }
   if (request.method !== 'GET' || url.origin !== self.location.origin || NEVER.some(path => path.test(url.pathname)))
     return
   if (/^\/(assets|fonts|art)\//.test(url.pathname)) event.respondWith(savedFirst(request))
   else event.respondWith(networkFirst(request, url))
 })
+
+// Saved pages carry the mode they were saved in, so switching text-only mode forgets them; they are saved again in
+// the new mode as they are visited.
+async function switchMode(request) {
+  try {
+    const response = await fetch(request)
+    await caches.delete(PAGES)
+    return response
+  } catch {
+    return offlinePage()
+  }
+}
 
 async function savedFirst(request) {
   const cache = await caches.open(ASSETS)

@@ -3,8 +3,8 @@ metadata:
   created_at:   2026-10-25T11:06:46-07:00
   activated_at: 2026-10-25T15:28:18-07:00
   planned_at:   2026-10-25T15:28:44-07:00
-  finished_at:
-  updated_at:   2026-10-25T15:28:44-07:00
+  finished_at:  2026-10-25T15:38:14-07:00
+  updated_at:   2026-10-25T15:38:14-07:00
 -->
 
 # Story: Text-Only Mode
@@ -54,3 +54,26 @@ Tests:
   - with the cookie, the homepage loads no `/fonts/` or `/art/` requests;
   - search and the list still work.
 
+
+## Review
+
+Reviewed 2026-10-25 at `be8d473` plus uncommitted fixes. A subagent did an independent read.
+
+| Criterion | Verdict | Evidence |
+| --- | --- | --- |
+| A switch on every page turns off images, web fonts and decoration, remembered on the device | ✅ | The footer link (`app/components/feed-footer.tsx`) goes to `/text`, which sets a one-year cookie (`app/routes/text.ts`). `.text-only` in `app/app.css` swaps in system fonts and drops the decoration. The homepage leaves its art out. The e2e test sees no `/fonts/` or `/art/` requests. |
+| Save-Data turns it on by default | ✅ | `app/lib/text-mode.ts`, and the e2e test "with Save-Data" |
+| Every feature still works | ✅ | e2e: search and the saved list in text-only mode |
+
+These findings were fixed:
+
+- The service worker keeps saved pages whatever their mode, so after a switch an offline copy could come back in the old mode, and `/text` offline showed the browser's own error. The worker now forgets saved pages when the mode switches, and the page saves them again in the new mode. Offline, the switch shows the app's offline page. There is an e2e test for this.
+- There was no test that the saved list works in text-only mode. One is added.
+
+Not changed: going Back can show a page from the browser's back-forward cache in the old mode until it reloads.
+
+## Learnings
+
+- **Went well:** having every `font-family` go through `--serif`/`--sans` turned "no web fonts" into two token overrides, with nothing to hunt for.
+- **Surprising:** a cookie that changes how pages look interacts with the offline cache, which ignores Vary. Anything in a saved page that depends on a cookie needs the cache cleared when that cookie changes.
+- **Next time:** for any new cookie that shapes pages, ask what the service worker has already saved.

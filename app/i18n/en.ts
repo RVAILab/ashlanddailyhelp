@@ -187,6 +187,14 @@ export const en = {
     providers: (reported: number, scheduled: number) => `${reported} of ${scheduled} providers have reported.`,
     csv: 'Download this week as a spreadsheet (CSV)',
   },
+  chat: {
+    crisis:
+      'If you or someone else is in danger, call 911. To talk to someone now: 988, or the Mental Health Crisis Line at 541-774-8201.',
+    unknown:
+      'I couldn’t find that in the Daily Help directory, and I won’t guess. For help finding services, call 211.',
+    confirm: 'Hours and rules change. Confirm before you go.',
+    asOf: (time: string) => `From listings as of ${time}.`,
+  },
   today: {
     title: 'Open today',
     link: 'Open now and later today',

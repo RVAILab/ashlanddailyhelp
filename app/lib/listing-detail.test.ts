@@ -67,8 +67,8 @@ describe('listingDetail', () => {
       'en',
     )
     expect(detail.sources).toEqual([
-      { url: 'https://ohrahelps.org/a', host: 'ohrahelps.org' },
-      { url: 'https://www.facebook.com/ohra', host: 'facebook.com' },
+      { url: 'https://ohrahelps.org/a', name: 'ohrahelps.org/a' },
+      { url: 'https://www.facebook.com/ohra', name: 'facebook.com/ohra' },
     ])
   })
 
@@ -95,6 +95,7 @@ describe('listingDetail', () => {
     expect(detail.provenance).toEqual([
       {
         field: 'When',
+        fromFeed: false,
         entries: [
           {
             source: 'Website',
@@ -107,6 +108,7 @@ describe('listingDetail', () => {
       },
       {
         field: 'Cost',
+        fromFeed: false,
         entries: [
           {
             source: 'County resource packet',
@@ -120,13 +122,14 @@ describe('listingDetail', () => {
     ])
     expect(listingDetail({ ...base, provenance }, 'es').provenance[0]).toEqual({
       field: 'Cuándo',
+      fromFeed: false,
       entries: [
         {
           source: 'Sitio web',
           url: 'https://ohrahelps.org/a',
           ref: 'ohrahelps.org',
           quote: 'Tue & Thu 9-12',
-          seen: 'Visto el 23 de octubre',
+          seen: 'Consultado el 23 de octubre',
         },
       ],
     })
@@ -140,5 +143,103 @@ describe('listingDetail', () => {
     const detail = listingDetail({ ...base, conflict: true, reviewedDate: '2026-10-23' }, 'en')
     expect(detail.labels[0]).toEqual({ kind: 'warning', text: 'Schedule needs checking' })
     expect(detail.reviewed).toBe('Source reviewed Oct 23')
+  })
+})
+
+describe('listingDetail, safely', () => {
+  it('never turns a javascript:, data: or other non-web address into a link', () => {
+    const detail = listingDetail(
+      {
+        ...base,
+        source: 'javascript:alert(1)',
+        sourceUrls: ['data:text/html,hi', 'https://ohrahelps.org/a'],
+        provenance: {
+          cost: [
+            { sourceType: 'website', sourceRef: 'javascript:alert(2)', span: null, observedAt: '2026-10-23T17:00:00Z' },
+          ],
+        },
+      },
+      'en',
+    )
+    expect(detail.sources.map(source => source.url)).toEqual(['https://ohrahelps.org/a'])
+    expect(detail.provenance[0]?.entries[0]).toMatchObject({ url: null, ref: 'javascript:alert(2)' })
+  })
+
+  it('drops the provenance of a sensitive location’s address, and recognises the wording loosely', () => {
+    const detail = listingDetail(
+      {
+        ...base,
+        address: '  location not published.  Call the provider. ',
+        provenance: {
+          address: [
+            {
+              sourceType: 'website',
+              sourceRef: 'https://example.org/',
+              span: '123 Hidden Ln',
+              observedAt: '2026-10-23T17:00:00Z',
+            },
+          ],
+          cost: [
+            {
+              sourceType: 'website',
+              sourceRef: 'https://example.org/',
+              span: 'Free',
+              observedAt: '2026-10-23T17:00:00Z',
+            },
+          ],
+        },
+      },
+      'en',
+    )
+    expect(detail.location).toEqual({ published: false })
+    expect(JSON.stringify(detail)).not.toContain('123 Hidden Ln')
+    expect(detail.provenance.map(field => field.field)).toEqual(['Cost'])
+  })
+})
+
+describe('listingDetail, wording', () => {
+  it('says "Not confirmed" for the steward’s "Unknown" and for an empty description', () => {
+    const detail = listingDetail({ ...base, capacity: 'Unknown', description: '' }, 'es')
+    expect(detail.fields.find(field => field.key === 'capacity')).toMatchObject({
+      text: 'No confirmado',
+      fromFeed: false,
+    })
+    expect(detail.description).toEqual({ text: 'No confirmado', fromFeed: false })
+  })
+
+  it('maps the street address within a longer description, and nothing without one', () => {
+    expect(listingDetail({ ...base, address: 'OHRA Center: 2350 Ashland St, Ashland' }, 'en').location).toEqual({
+      published: true,
+      mapUrl: 'https://www.google.com/maps/search/?api=1&query=2350%20Ashland%20St%2C%20Ashland',
+    })
+    expect(listingDetail({ ...base, address: 'Room 3, behind the church' }, 'en').location).toEqual({
+      published: true,
+      mapUrl: null,
+    })
+  })
+
+  it('names each source by its site and page, so two pages on one site read differently', () => {
+    const detail = listingDetail(
+      { ...base, source: 'https://ohrahelps.org/get-help/', sourceUrls: ['https://ohrahelps.org/events/'] },
+      'en',
+    )
+    expect(detail.sources.map(source => source.name)).toEqual(['ohrahelps.org/get-help', 'ohrahelps.org/events'])
+  })
+
+  it('lists provenance in the order of the details, skipping fields with no sources', () => {
+    const seen = {
+      sourceType: 'website',
+      sourceRef: 'https://ohrahelps.org/',
+      span: null,
+      observedAt: '2026-10-23T17:00:00Z',
+    } as const
+    const detail = listingDetail({ ...base, provenance: { cost: [seen], schedule: [seen], access: [] } }, 'en')
+    expect(detail.provenance.map(field => field.field)).toEqual(['When', 'Cost'])
+  })
+
+  it('gives the review date once: in the labels, or with the sources when a provenance label replaces it', () => {
+    const { provenanceLabel: _, ...unlabelled } = base
+    expect(listingDetail(unlabelled, 'en').reviewed).toBeNull()
+    expect(listingDetail({ ...base, provenanceLabel: 'Posted by OHRA' }, 'en').reviewed).toBe('Source reviewed Oct 23')
   })
 })

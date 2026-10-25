@@ -1,5 +1,5 @@
 import { useId } from 'react'
-import { Link } from 'react-router'
+import { Link, useLocation } from 'react-router'
 import { useI18n } from '../i18n/provider.tsx'
 import type { ListingLabel } from '../lib/listing-labels.ts'
 import { ListingStatus } from './listing-status.tsx'
@@ -21,12 +21,15 @@ const dialable = (phone: string) => phone.replace(/[^\d+]/g, '')
 export function ListingCardView({ listing }: { listing: ListingCard }) {
   const heading = useId()
   const { t, lang, path } = useI18n()
+  const { search } = useLocation()
   // Listing text comes from the steward in English; on other pages, mark it so screen readers use an English voice.
   const feedLang = lang === 'en' ? undefined : 'en'
   return (
     <article className="listing-card" aria-labelledby={heading}>
       <h3 id={heading} lang={feedLang}>
-        <Link to={path(`/resources/${listing.id}`)}>{listing.name}</Link>
+        <Link to={path(`/resources/${listing.id}`)} state={{ search }}>
+          {listing.name}
+        </Link>
       </h3>
       <p className="provider" lang={feedLang}>
         {listing.provider}

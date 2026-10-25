@@ -31,7 +31,7 @@ npm run db:migrate
 npm run dev
 ```
 
-Then open <http://localhost:5173>. `/health` reports whether the app can reach its database.
+Then open <http://localhost:5173>. The pages are the homepage, `/resources` (search), `/resources/<id>` (one listing) and `/about`, each also under `/es`; `/health` reports whether the app can reach its database.
 
 ### The steward's feed
 

@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react'
 import { data, Link, Outlet, redirect, type ShouldRevalidateFunctionArgs, useLocation } from 'react-router'
 import { type FeedStatus, listingsFeedStatus } from '../../server/feed/listings.ts'
 import { FeedFooter, type FooterFeed } from '../components/feed-footer.tsx'
@@ -65,9 +66,28 @@ function LanguageSwitch({ lang }: { lang: Lang }) {
   )
 }
 
+// After a navigation inside the app, move focus to the new page's heading, so screen readers announce the change
+// the way they would for a full page load. Changes of the query string alone (a search) keep focus where it is.
+function useFocusOnNewPage() {
+  const { pathname } = useLocation()
+  const first = useRef(true)
+  // biome-ignore lint/correctness/useExhaustiveDependencies: the effect runs because the page changed, not to read it
+  useEffect(() => {
+    if (first.current) {
+      first.current = false
+      return
+    }
+    const heading = document.querySelector<HTMLElement>('main h1')
+    if (!heading) return
+    heading.tabIndex = -1
+    heading.focus()
+  }, [pathname])
+}
+
 export default function Locale({ loaderData }: Route.ComponentProps) {
   const { lang, feed } = loaderData
   const t = messagesFor(lang)
+  useFocusOnNewPage()
   return (
     <I18nProvider lang={lang}>
       <header className="site-header">

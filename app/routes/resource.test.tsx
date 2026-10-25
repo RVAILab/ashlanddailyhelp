@@ -26,10 +26,10 @@ describe('/resources/:id', () => {
     const details = screen.getByRole('region', { name: 'Details' })
     expect(within(details).getByText('When')).toBeDefined()
     expect(within(details).getByText(base.schedule)).toBeDefined()
-    expect(screen.getByRole('link', { name: 'Open in a map' }).getAttribute('href')).toContain('2350%20Ashland%20St')
-    expect(screen.getByRole('link', { name: base.phone }).getAttribute('href')).toBe(
-      `tel:${base.phone.replace(/[^\d+]/g, '')}`,
+    expect(screen.getByRole('link', { name: 'Open in Google Maps (new tab)' }).getAttribute('href')).toContain(
+      '2350%20Ashland%20St',
     )
+    expect(screen.getByRole('link', { name: 'Call 541-631-2235' }).getAttribute('href')).toBe('tel:5416312235')
     expect(screen.getByRole('link', { name: 'Back to search' }).getAttribute('href')).toBe('/resources')
   })
 
@@ -37,11 +37,9 @@ describe('/resources/:id', () => {
     renderPage(listingDetail(base, 'en'))
     const sources = await screen.findByRole('region', { name: 'Sources' })
     expect(
-      within(sources)
-        .getByRole('link', { name: new URL(base.source).hostname.replace(/^www\./, '') })
-        .getAttribute('href'),
+      within(sources).getByRole('link', { name: 'ohrahelps.org/get-help/program-services' }).getAttribute('href'),
     ).toBe(base.source)
-    expect(within(sources).getByText(/^Source reviewed/)).toBeDefined()
+    expect(within(sources).getByText('Source reviewed Oct 23')).toBeDefined()
   })
 
   it('says where each detail comes from, in a disclosure', async () => {
@@ -71,7 +69,7 @@ describe('/resources/:id', () => {
   it('shows no map for a sensitive location', async () => {
     renderPage(listingDetail({ ...base, address: 'Location not published. Call the provider.' }, 'en'))
     expect(await screen.findByText('Location not published. Call the provider.')).toBeDefined()
-    expect(screen.queryByRole('link', { name: 'Open in a map' })).toBeNull()
+    expect(screen.queryByRole('link', { name: 'Open in Google Maps (new tab)' })).toBeNull()
   })
 
   it('says a listing that is not there is not available, with a way back', async () => {
@@ -89,5 +87,13 @@ describe('/resources/:id', () => {
         .getAttribute('lang'),
     ).toBe('en')
     expect(screen.getByRole('link', { name: 'Volver a la búsqueda' }).getAttribute('href')).toBe('/es/resources')
+  })
+
+  it('goes back to the search it came from', async () => {
+    const Stub = createRoutesStub([
+      { path: '/resources/:id', Component: Resource, loader: () => ({ listing: listingDetail(base, 'en') }) },
+    ])
+    render(<Stub initialEntries={[{ pathname: '/resources/ohra-showers', state: { search: '?q=show' } }]} />)
+    expect((await screen.findByRole('link', { name: 'Back to search' })).getAttribute('href')).toBe('/resources?q=show')
   })
 })

@@ -1,4 +1,4 @@
-import { data, Link } from 'react-router'
+import { data, Link, useLocation } from 'react-router'
 import { findListing } from '../../server/listings/listing.ts'
 import { ListingStatus } from '../components/listing-status.tsx'
 import { services } from '../context.ts'
@@ -22,12 +22,19 @@ export function meta({ loaderData, location }: Route.MetaArgs) {
 
 const dialable = (phone: string) => phone.replace(/[^\d+]/g, '')
 
+// A card links here with the search it came from, so "Back to search" returns to the same results.
+const searchFrom = (state: unknown) =>
+  typeof state === 'object' && state !== null && 'search' in state && typeof state.search === 'string'
+    ? state.search
+    : ''
+
 export default function Resource({ loaderData }: Route.ComponentProps) {
   const { listing } = loaderData
   const { t, lang, path } = useI18n()
+  const location = useLocation()
   const back = (
     <p>
-      <Link to={path('/resources')}>{t.detail.backToSearch}</Link>
+      <Link to={path(`/resources${searchFrom(location.state)}`)}>{t.detail.backToSearch}</Link>
     </p>
   )
   if (!listing)
@@ -48,11 +55,11 @@ export default function Resource({ loaderData }: Route.ComponentProps) {
         {listing.provider}
       </p>
       <ListingStatus labels={listing.labels} />
-      <p lang={feedLang}>{listing.description}</p>
+      <p lang={listing.description.fromFeed ? feedLang : undefined}>{listing.description.text}</p>
       <p className="actions">
         {listing.phone && (
           <a className="action" href={`tel:${dialable(listing.phone)}`}>
-            {listing.phone}
+            {t.detail.call(listing.phone)}
           </a>
         )}
         {listing.location.published && listing.location.mapUrl && (
@@ -71,24 +78,24 @@ export default function Resource({ loaderData }: Route.ComponentProps) {
             </div>
           ))}
           <div>
-            <dt>{t.card.phone}</dt>
+            <dt>{t.detail.fields.phone}</dt>
             <dd>{listing.phone ?? t.detail.notConfirmed}</dd>
           </div>
         </dl>
       </section>
       <section aria-labelledby="sources-heading">
         <h2 id="sources-heading">{t.detail.sources}</h2>
-        <ul>
+        <ul className="sources">
           {listing.sources.map(source => (
             <li key={source.url}>
               <a href={source.url} rel="noopener noreferrer">
-                {source.host}
+                {source.name}
               </a>
             </li>
           ))}
         </ul>
-        <p>{listing.reviewed}</p>
-        <details>
+        {listing.reviewed && <p>{listing.reviewed}</p>}
+        <details className="provenance">
           <summary>{t.detail.whereFrom}</summary>
           {listing.provenance.length === 0 ? (
             <p>{t.detail.whereFromNone}</p>
@@ -96,10 +103,12 @@ export default function Resource({ loaderData }: Route.ComponentProps) {
             <dl>
               {listing.provenance.map(field => (
                 <div key={field.field}>
-                  <dt>{field.field}</dt>
-                  {field.entries.map(entry => (
-                    <dd key={`${entry.ref}:${entry.seen}`}>
-                      {entry.url ? <a href={entry.url}>{entry.ref}</a> : entry.ref} ({entry.source}).{' '}
+                  <dt lang={field.fromFeed ? feedLang : undefined}>{field.field}</dt>
+                  {field.entries.map((entry, index) => (
+                    // biome-ignore lint/suspicious/noArrayIndexKey: entries have no id, and one source can be seen twice in a day
+                    <dd key={index}>
+                      {entry.url ? <a href={entry.url}>{entry.ref}</a> : <span lang={feedLang}>{entry.ref}</span>} (
+                      {entry.source}).{' '}
                       {entry.quote && (
                         <>
                           <q lang={feedLang}>{entry.quote}</q>{' '}

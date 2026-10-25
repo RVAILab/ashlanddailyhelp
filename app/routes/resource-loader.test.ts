@@ -8,7 +8,11 @@ describe('/resources/:id loader', () => {
   let db: Awaited<ReturnType<typeof testDatabase>>
   beforeAll(async () => {
     db = await testDatabase()
-    await storeListings(db)
+    const sample = (await import('../../test/feed.ts')).sampleListingsFeed()
+    await storeListings(db, {
+      ...sample,
+      listings: [...sample.listings, { ...sample.listings[0], id: 'ended', endsAt: '2026-01-01T00:00:00.000Z' }],
+    })
   })
   afterAll(() => db.close())
 
@@ -25,9 +29,11 @@ describe('/resources/:id loader', () => {
     expect(spanish.data.listing?.fields[0]?.label).toBe('Tipo de ayuda')
   })
 
-  it('answers 404 for a listing that is not there', async () => {
-    const missing = await load('/resources/no-such-listing', 'no-such-listing')
-    expect(missing.init?.status).toBe(404)
-    expect(missing.data.listing).toBeNull()
+  it('answers 404 for a listing that is not there, or has ended', async () => {
+    for (const id of ['no-such-listing', 'ended']) {
+      const missing = await load(`/resources/${id}`, id)
+      expect(missing.init?.status).toBe(404)
+      expect(missing.data.listing).toBeNull()
+    }
   })
 })

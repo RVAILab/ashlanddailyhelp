@@ -1,13 +1,18 @@
 import type { FeedListing } from '../../contract/steward/feed.ts'
+import type { Messages } from '../i18n/en.ts'
 import { type Lang, locales, messagesFor } from '../i18n/index.ts'
 import { areaName } from './areas.ts'
 import { type ListingLabel, listingLabels } from './listing-labels.ts'
 
-// The steward's exact wording for a provider whose location must not be published.
-export const SENSITIVE_ADDRESS = 'Location not published. Call the provider.'
+// The steward's wording for a provider whose location must not be published (FEED.md, listings), matched loosely.
+const SENSITIVE_ADDRESS = 'location not published. call the provider.'
+// The steward's own way of saying a field is unknown; shown as "Not confirmed", per the content rules.
+const UNKNOWN = ['', 'unknown']
+
+export type DetailKey = keyof Messages['detail']['fields']
 
 export interface DetailField {
-  key: string
+  key: DetailKey
   label: string
   text: string
   fromFeed: boolean
@@ -25,20 +30,38 @@ export interface ListingDetail {
   id: string
   name: string
   provider: string
-  description: string
+  description: { text: string; fromFeed: boolean }
   phone: string | null
   labels: ListingLabel[]
-  reviewed: string
+  reviewed: string | null
   fields: DetailField[]
   location: { published: true; mapUrl: string | null } | { published: false }
-  sources: Array<{ url: string; host: string }>
-  provenance: Array<{ field: string; entries: ProvenanceEntry[] }>
+  sources: Array<{ url: string; name: string }>
+  provenance: Array<{ field: string; fromFeed: boolean; entries: ProvenanceEntry[] }>
 }
 
-const FEED_FIELDS = ['schedule', 'address', 'access', 'requirements', 'cost', 'accessibility', 'capacity'] as const
+const ORDER = [
+  'categories',
+  'schedule',
+  'address',
+  'access',
+  'requirements',
+  'cost',
+  'accessibility',
+  'capacity',
+  'area',
+  'coverage',
+] as const satisfies readonly DetailKey[]
 
-const host = (url: string) => new URL(url).hostname.replace(/^www\./, '')
-const isUrl = (value: string) => URL.canParse(value) && /^https?:/.test(value)
+const normalize = (text: string) => text.trim().replace(/\s+/g, ' ').toLowerCase()
+const isWebUrl = (value: string) => /^https?:\/\//i.test(value) && URL.canParse(value)
+const siteName = (url: string) => new URL(url).hostname.replace(/^www\./, '')
+const pageName = (url: string) => {
+  const { pathname } = new URL(url)
+  return `${siteName(url)}${pathname === '/' ? '' : pathname.replace(/\/$/, '')}`
+}
+// A map search helps only for a street address: a number followed by a street name, from wherever it starts.
+const streetAddress = (address: string) => address.match(/\b\d+\s+[A-Za-z][\s\S]*$/)?.[0] ?? null
 
 export function listingDetail(listing: FeedListing, lang: Lang): ListingDetail {
   const t = messagesFor(lang)
@@ -46,58 +69,59 @@ export function listingDetail(listing: FeedListing, lang: Lang): ListingDetail {
     new Intl.DateTimeFormat(locales[lang], { timeZone, month: lang === 'es' ? 'long' : 'short', day: 'numeric' })
       .format(new Date(iso))
       .replace(/\s/g, ' ')
-  const sensitive = listing.address.trim() === SENSITIVE_ADDRESS
-  const feedField = (key: (typeof FEED_FIELDS)[number]): DetailField => {
-    const label = t.detail.fields[key] ?? key
-    if (key === 'address' && sensitive) return { key, label, text: t.detail.locationNotPublished, fromFeed: false }
-    const text = listing[key].trim()
-    return text ? { key, label, text, fromFeed: true } : { key, label, text: t.detail.notConfirmed, fromFeed: false }
+  const sensitive = normalize(listing.address) === SENSITIVE_ADDRESS
+  const feedText = (text: string) =>
+    UNKNOWN.includes(normalize(text))
+      ? { text: t.detail.notConfirmed, fromFeed: false }
+      : { text: text.trim(), fromFeed: true }
+  const value = (key: (typeof ORDER)[number]): { text: string; fromFeed: boolean } => {
+    if (key === 'categories')
+      return { text: listing.categories.map(id => t.categories[id]).join(', '), fromFeed: false }
+    if (key === 'area') return { text: areaName(listing.area, t), fromFeed: false }
+    if (key === 'coverage')
+      return listing.coverage.length
+        ? { text: listing.coverage.map(place => areaName(place, t)).join(', '), fromFeed: false }
+        : { text: t.detail.notConfirmed, fromFeed: false }
+    if (key === 'address' && sensitive) return { text: t.detail.locationNotPublished, fromFeed: false }
+    return feedText(listing[key])
   }
-  const fields: DetailField[] = [
-    {
-      key: 'categories',
-      label: t.detail.fields.categories ?? 'categories',
-      text: listing.categories.map(category => t.categories[category]).join(', '),
-      fromFeed: false,
-    },
-    ...FEED_FIELDS.map(feedField),
-    { key: 'area', label: t.detail.fields.area ?? 'area', text: areaName(listing.area, t), fromFeed: false },
-    {
-      key: 'coverage',
-      label: t.detail.fields.coverage ?? 'coverage',
-      text: listing.coverage.length
-        ? listing.coverage.map(place => areaName(place, t)).join(', ')
-        : t.detail.notConfirmed,
-      fromFeed: false,
-    },
-  ]
-  // A map search only helps for a street address; a description of a place ("behind the church") is shown as text.
-  const mapUrl = /\d/.test(listing.address)
-    ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(listing.address)}`
-    : null
+  const fields = ORDER.map(key => ({ key, label: t.detail.fields[key], ...value(key) }))
+
+  const street = sensitive ? null : streetAddress(listing.address)
+  const mapUrl = street ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(street)}` : null
   const sources = [listing.source, ...(listing.sourceUrls ?? [])]
-    .filter((url, index, all) => isUrl(url) && all.indexOf(url) === index)
-    .map(url => ({ url, host: host(url) }))
+    .filter((url, index, all) => isWebUrl(url) && all.indexOf(url) === index)
+    .map(url => ({ url, name: pageName(url) }))
+
+  const known = Object.keys(t.detail.fields) as DetailKey[]
+  const rank = (field: string) => {
+    const at = (ORDER as readonly string[]).indexOf(field)
+    return at === -1 ? ORDER.length + known.indexOf(field as DetailKey) : at
+  }
   const provenance = Object.entries(listing.provenance ?? {})
-    .filter(([field]) => !(sensitive && field === 'address'))
+    .filter(([field, entries]) => entries.length > 0 && !(sensitive && field === 'address'))
+    .sort(([a], [b]) => rank(a) - rank(b))
     .map(([field, entries]) => ({
-      field: t.detail.fields[field] ?? field,
+      field: known.includes(field as DetailKey) ? t.detail.fields[field as DetailKey] : field,
+      fromFeed: !known.includes(field as DetailKey),
       entries: entries.map(entry => ({
         source: t.detail.sourceTypes[entry.sourceType],
-        url: isUrl(entry.sourceRef) ? entry.sourceRef : null,
-        ref: isUrl(entry.sourceRef) ? host(entry.sourceRef) : entry.sourceRef,
+        url: isWebUrl(entry.sourceRef) ? entry.sourceRef : null,
+        ref: isWebUrl(entry.sourceRef) ? siteName(entry.sourceRef) : entry.sourceRef,
         quote: entry.span,
         seen: t.detail.seen(day(entry.observedAt)),
       })),
     }))
+
   return {
     id: listing.id,
     name: listing.name,
     provider: listing.provider,
-    description: listing.description,
+    description: feedText(listing.description),
     phone: listing.phone,
     labels: listingLabels(listing, lang),
-    reviewed: t.detail.reviewed(day(`${listing.reviewedDate}T00:00:00Z`, 'UTC')),
+    // The labels already give the review date unless a provenance label takes its place.
+    reviewed: listing.provenanceLabel ? t.detail.reviewed(day(`${listing.reviewedDate}T00:00:00Z`, 'UTC')) : null,
     fields,
     location: sensitive ? { published: false } : { published: true, mapUrl },
     sources,

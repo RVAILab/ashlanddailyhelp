@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test'
 
 test('the homepage loads', async ({ page }) => {
   await page.goto('/')
-  await expect(page.getByRole('heading', { level: 1, name: 'Ashland Daily Help' })).toBeVisible()
+  await expect(page.getByRole('heading', { level: 1, name: 'Find help in Ashland and Jackson County' })).toBeVisible()
 })
 
 test('the health check reaches the database', async ({ request }) => {

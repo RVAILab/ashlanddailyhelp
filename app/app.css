@@ -243,12 +243,27 @@ a {
   overflow-wrap: anywhere;
 }
 
-details summary {
-  min-height: 44px;
-  display: flex;
-  align-items: center;
+.provenance summary {
+  padding: 0.65rem 0;
   cursor: pointer;
   font-weight: 600;
+}
+
+.provenance dd {
+  margin: 0 0 0.5rem;
+}
+
+.listing-page .provider {
+  margin-top: 0;
+  color: var(--muted);
+}
+
+main h1:focus {
+  outline: none;
+}
+
+main h1:focus-visible {
+  outline: 3px solid var(--focus);
 }
 
 .site-footer {

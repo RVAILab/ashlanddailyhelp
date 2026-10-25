@@ -61,3 +61,31 @@ export function reportSeries(reports, events, unit, dates) {
     };
   });
 }
+
+// Steward feed checks (daily-help-steward docs/FEED.md). Anything that fails returns null and is treated like a failed fetch.
+const isDate = v => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v);
+const isTime = v => typeof v === 'string' && !Number.isNaN(Date.parse(v));
+const isText = v => typeof v === 'string';
+const optional = (v, test) => v === undefined || test(v);
+const feedHeader = feed => !!feed && typeof feed === 'object' && /^1\.\d+$/.test(feed.schemaVersion) && isTime(feed.generatedAt) && ['FICTIONAL_DEMONSTRATION', 'LIVE'].includes(feed.dataset);
+const listingCategories = ['food', 'housing', 'hygiene', 'health', 'essentials'];
+const listingText = ['name', 'provider', 'area', 'description', 'address', 'schedule', 'access', 'requirements', 'cost', 'verification', 'capacity', 'accessibility'];
+export function checkListingsFeed(feed) {
+  if (!feedHeader(feed) || !Array.isArray(feed.listings) || !feed.listings.length) return null;
+  const ok = feed.listings.every(l => !!l && /^[a-z0-9][a-z0-9-]*$/.test(l.id) && listingText.every(k => isText(l[k])) && isDate(l.reviewedDate)
+    && Array.isArray(l.categories) && l.categories.length > 0 && l.categories.every(c => listingCategories.includes(c))
+    && ['coverage', 'tags'].every(k => Array.isArray(l[k]) && l[k].every(isText))
+    && (l.phone === null || (isText(l.phone) && /^[\d\s().+-]+$/.test(l.phone))) && /^https?:\/\//.test(l.source)
+    && optional(l.provenanceLabel, isText) && optional(l.mayBeCanceled, isText) && optional(l.endsAt, isTime) && optional(l.conflict, v => typeof v === 'boolean') && optional(l.unconfirmed, v => typeof v === 'boolean'));
+  return ok ? feed : null;
+}
+export function checkPulseFeed(feed) {
+  try {
+    if (!feedHeader(feed) || !feed.week || !Array.isArray(feed.week.dates) || feed.week.dates.length !== 7 || !feed.week.dates.every(isDate)) return null;
+    // aggregateReports only knows these three units; ids are interpolated into attributes and selectors.
+    if (!Array.isArray(feed.events) || !feed.events.every(e => !!e && /^[\w-]+$/.test(e.id) && isText(e.provider) && isText(e.service) && ['meals', 'sessions', 'encounters'].includes(e.unit) && isDate(e.date))) return null;
+    if (!Array.isArray(feed.reports)) return null;
+    return { ...feed, reports: feed.reports.map(r => validateReport(r, feed.events)) };
+  } catch { return null; }
+}
+export const listingEnded = (listing, now = Date.now()) => !!listing.endsAt && Date.parse(listing.endsAt) <= now;

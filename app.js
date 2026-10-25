@@ -1,5 +1,5 @@
-import { resources, categories, reviewedDate, demoEvents, initialReports } from './data.js';
-import { filterResources, queueReport, approveReport, aggregateReports, reportSeries } from './core.js';
+import { resources, categories, demoEvents, initialReports } from './data.js';
+import { filterResources, queueReport, approveReport, aggregateReports, reportSeries, checkListingsFeed, checkPulseFeed, listingEnded } from './core.js';
 
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
@@ -40,11 +40,46 @@ $$('[data-icon]').forEach(el => el.innerHTML = icon(el.dataset.icon));
 const motionOK = () => window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
 // Miniature category objects (original artwork). Decorative: the text label always carries the meaning.
 const catArt = (id, size = 160, lazy = true) => `<picture><source type="image/avif" srcset="./art/cat-${id}-160.avif 1x, ./art/cat-${id}-320.avif 2x"><source type="image/webp" srcset="./art/cat-${id}-160.webp 1x, ./art/cat-${id}-320.webp 2x"><img src="./art/cat-${id}-160.png" alt="" width="${size}" height="${size}"${lazy ? ' loading="lazy"' : ''} decoding="async"></picture>`;
-const statusChip = r => r.conflict ? `<p class="status-chip is-warn">${icon('alert')}Schedule needs checking</p>` : `<p class="status-chip">${icon('ok')}Source reviewed · Oct 23</p>`;
+const longDate = date => new Date(date + 'T12:00:00Z').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
+const endTime = iso => new Date(iso).toLocaleString('en-US', { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZone: 'America/Los_Angeles' }).replace(/\s?([AP])M/, (_, x) => ` ${x.toLowerCase()}.m.`);
+const chip = (warn, text) => `<p class="status-chip${warn ? ' is-warn' : ''}">${icon(warn ? 'alert' : 'ok')}${escape(text)}</p>`;
+// Status labels come from the steward feed's fields; listings from data.js keep the original "Source reviewed" line.
+const statusChip = r => `<div class="status-chips">${[
+  r.mayBeCanceled && chip(true, r.mayBeCanceled),
+  r.conflict && chip(true, 'Schedule needs checking'),
+  r.endsAt && chip(true, `Ends ${endTime(r.endsAt)}`),
+  r.unconfirmed && chip(true, 'Not yet confirmed by provider'),
+  chip(false, r.provenanceLabel || `Source reviewed · ${new Date(r.reviewedDate + 'T12:00:00Z').toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' })}`)
+].filter(Boolean).join('')}</div>`;
 const streetAddress = r => (r.address.match(/\d+\s[\w .]+?(?:Street|Avenue|Road|Boulevard|Blvd|Way|Lane)\b[^;]*/i) || [])[0] || null;
+// The steward feed's location: one constant, overridable with <meta name="feed-base" content="https://…/"> (no build step).
+const FEED_BASE = new URL($('meta[name="feed-base"]')?.content || './feed/', location.href);
+const feedURL = name => new URL(name, FEED_BASE).href;
+const feedTime = iso => new Date(iso).toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' });
+// First load: network (the service worker falls back to its stored copy), then the device cache directly, then data.js.
+async function loadListings() {
+  const url = feedURL('listings.json');
+  for (const get of [() => fetch(url, { credentials: 'omit', cache: 'no-cache', signal: AbortSignal.timeout?.(6000) }), () => caches.match(url)]) {
+    try { const response = await get(); if (response?.ok) { const feed = checkListingsFeed(await response.json()); if (feed) return feed; } } catch { /* Try the next source. */ }
+  }
+  return null;
+}
+const listingsFeed = location.protocol === 'file:' ? null : await loadListings();
+const listings = listingsFeed ? listingsFeed.listings : resources;
+const shown = () => listings.filter(r => !listingEnded(r));
+if (listingsFeed) $$('[data-asof]').forEach(el => el.textContent = `Listings as of ${feedTime(listingsFeed.generatedAt)}`);
 const SAVED_KEY = 'community-hub:saved:v1';
 let saved = [];
-try { const parsed = JSON.parse(localStorage.getItem(SAVED_KEY) || '[]'); if (Array.isArray(parsed)) saved = parsed.filter(id => resources.some(r => r.id === id)); } catch { /* Storage is optional. */ }
+try { const parsed = JSON.parse(localStorage.getItem(SAVED_KEY) || '[]'); if (Array.isArray(parsed)) saved = parsed.filter(id => listings.some(r => r.id === id)); } catch { /* Storage is optional. */ }
+// Pulse data: the built-in sample week until pulse.json arrives. Practice reports approved in this tab are kept on top of each poll.
+let pulseEvents = demoEvents;
+let pulseDates = ['2026-10-19','2026-10-20','2026-10-21','2026-10-22','2026-10-23','2026-10-24','2026-10-25'];
+let baseReports = initialReports;
+let dataset = 'FICTIONAL_DEMONSTRATION';
+let practice = [];
+const demo = () => dataset === 'FICTIONAL_DEMONSTRATION';
+// With a real dataset, drop the lowercase "sample"/"fictional" qualifiers from generated copy.
+const plain = text => demo() ? text : text.replace(/\b(?:fictional|sample) /g, '');
 let state = { reports: structuredClone(initialReports), pending: [] };
 let filters = { query: '', area: 'all', category: 'all', savedOnly: false };
 let currentView = 'resources';
@@ -53,9 +88,57 @@ let installPrompt;
 let activeResource;
 let pulseUnit = 'meals';
 let pulseDate = null;
-const pulseDates = ['2026-10-19','2026-10-20','2026-10-21','2026-10-22','2026-10-23','2026-10-24','2026-10-25'];
 let dataCleared = false;
 const metricNames = { meals: 'Meals provided', sessions: 'Shower sessions', encounters: 'Navigation encounters' };
+const monthDay = (date, month = true) => new Date(date + 'T12:00:00Z').toLocaleDateString('en-US', month ? { month: 'long', day: 'numeric', timeZone: 'UTC' } : { day: 'numeric', timeZone: 'UTC' });
+const weekLabel = (dash = '–') => { const [a, b] = [pulseDates[0], pulseDates[6]]; return a.slice(0, 7) === b.slice(0, 7) ? `${monthDay(a)}${dash}${monthDay(b, false)}` : `${monthDay(a)}${dash === '–' ? ' – ' : dash}${monthDay(b)}`; };
+function applyDataset() {
+  $$('[data-demo]').forEach(el => el.hidden = !demo());
+  $$('[data-live]').forEach(el => el.hidden = demo());
+  $$('[data-dataset]').forEach(el => el.textContent = dataset);
+  $$('[data-week]').forEach(el => el.textContent = el.dataset.week === 'year' ? `${weekLabel()}, ${pulseDates[6].slice(0, 4)}` : weekLabel());
+  $('#coverage-progress').setAttribute('aria-label', demo() ? 'Sample provider reporting coverage' : 'Provider reporting coverage');
+  $('#coverage-list').setAttribute('aria-label', demo() ? 'Fictional participating providers' : 'Participating providers');
+  $('#pg-stages').setAttribute('aria-label', plain('How a sample report travels'));
+  setTitle();
+}
+// pulse.json: fetched once at startup, then every 30 s only while Pulse is visible and the tab is shown. Never cached by the service worker.
+const PULSE_POLL = 30000;
+let pulseFeed = null, pulseText = null, pulseTag = null, pulseTimer = null, pulseDelay = PULSE_POLL, pulseBusy = false, pulseStale = false;
+const pulseStatus = () => !pulseFeed ? 'Sample reports loaded' : pulseStale ? `Last updated ${feedTime(pulseFeed.generatedAt)}. Showing the last figures received.` : `Updated ${feedTime(pulseFeed.generatedAt)}`;
+function setUpdated(text) { if ($('#pulse-updated').textContent !== text) $('#pulse-updated').textContent = text; }
+function stopPulse() { clearTimeout(pulseTimer); pulseTimer = null; }
+async function pollPulse(once = false) {
+  stopPulse();
+  if (pulseBusy || location.protocol === 'file:' || (!once && (currentView !== 'impact' || document.hidden))) return;
+  pulseBusy = true;
+  try {
+    // A page-set If-None-Match makes the browser pass the server's 304 straight through.
+    const response = await fetch(feedURL('pulse.json'), pulseTag ? { credentials: 'omit', headers: { 'If-None-Match': pulseTag } } : { credentials: 'omit', cache: 'no-cache' });
+    if (response.status !== 304) {
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const text = await response.text();
+      if (text !== pulseText) { const feed = checkPulseFeed(JSON.parse(text)); if (!feed) throw new Error('Invalid pulse feed'); applyPulse(feed); pulseText = text; }
+      pulseTag = response.headers.get('ETag');
+    }
+    pulseStale = false; pulseDelay = PULSE_POLL;
+  } catch {
+    // Keep what's on screen and back off, up to five minutes.
+    pulseStale = !!pulseFeed; pulseDelay = Math.min(pulseDelay * 2, 300000);
+  } finally { pulseBusy = false; }
+  if (pulseFeed) setUpdated(pulseStatus());
+  if (currentView === 'impact' && !document.hidden) pulseTimer = setTimeout(pollPulse, pulseDelay);
+}
+function applyPulse(feed) {
+  const eventsChanged = JSON.stringify(feed.events) !== JSON.stringify(pulseEvents);
+  pulseFeed = feed; dataset = feed.dataset; pulseEvents = feed.events; pulseDates = feed.week.dates; baseReports = feed.reports;
+  const known = r => pulseEvents.some(e => e.id === r.eventId);
+  practice = practice.filter(known);
+  state = { reports: [...feed.reports.filter(r => !practice.some(p => p.eventId === r.eventId)), ...practice], pending: state.pending.filter(known) };
+  if (!pulseDates.includes(pulseDate)) pulseDate = null;
+  if (eventsChanged) renderEventChoices();
+  applyDataset(); renderQueue(); renderDashboard();
+}
 function toast(message) { clearTimeout(toastTimer); $('#toast').textContent = message; $('#toast').hidden = false; toastTimer = setTimeout(() => $('#toast').hidden = true, 6000); }
 function setURL({ view = currentView, resource = null } = {}, push = false) {
   if (location.protocol === 'file:') return;
@@ -77,32 +160,34 @@ function navigate(view, { history = true, focus = true } = {}) {
   $$('.view').forEach(el => el.hidden = el.id !== `view-${currentView}`);
   $$('[data-view]').forEach(el => { if (el.dataset.view === currentView) el.setAttribute('aria-current', 'page'); else el.removeAttribute('aria-current'); });
   if (history) setURL({}, true);
-  document.title = `${({ resources: 'Find resources', impact: 'Community pulse · Sample data', providers: 'Provider preview', about: 'About the hub' })[currentView]} · Ashland Daily Help`;
+  setTitle();
+  if (currentView === 'impact') pollPulse(); else stopPulse();
   if (focus) { window.scrollTo({ top: 0, behavior: 'instant' }); $('#main').focus({ preventScroll: true }); }
 }
+function setTitle() { document.title = `${({ resources: 'Find resources', impact: demo() ? 'Community pulse · Sample data' : 'Community pulse', providers: 'Provider preview', about: 'About the hub' })[currentView]} · Ashland Daily Help`; }
 function readURL() {
   const p = new URLSearchParams(location.search);
   filters.query = (p.get('q') || '').slice(0, 200);
   filters.category = categories.some(c => c.id === p.get('category')) ? p.get('category') : 'all';
   filters.area = ['Ashland', 'Medford', 'Jackson County'].includes(p.get('area')) ? p.get('area') : 'all';
-  filters.sharedList = p.has('list') ? p.get('list').split(',').filter(id => resources.some(r => r.id === id)) : null;
+  filters.sharedList = p.has('list') ? p.get('list').split(',').filter(id => listings.some(r => r.id === id)) : null;
   filters.savedOnly = false;
   $('#search').value = filters.query; $('#hero-q').value = filters.query; $('#area').value = filters.area;
   navigate(p.get('view') || 'resources', { history: false, focus: false });
   renderResources();
   if ($('#resource-dialog').open) $('#resource-dialog').close();
-  const resource = resources.find(r => r.id === p.get('resource'));
+  const resource = shown().find(r => r.id === p.get('resource'));
   if (resource) openResource(resource.id, false);
 }
 function categoryFor(r) { return categories.find(c => c.id === r.categories[0]); }
 function visibleResources() {
-  const base = filters.sharedList ? resources.filter(r => filters.sharedList.includes(r.id)) : resources;
+  const base = filters.sharedList ? shown().filter(r => filters.sharedList.includes(r.id)) : shown();
   return filterResources(base, { ...filters, saved });
 }
 function renderCategories() {
   const grid = $('#categories');
   if (!grid.children.length) grid.innerHTML = categories.map(c => `<button type="button" class="cat" data-category="${c.id}" aria-pressed="false"><span class="cat-art" aria-hidden="true">${catArt(c.id, 160, false)}</span><span class="cat-label">${escape(c.label)}</span><span class="cat-count"></span></button>`).join('');
-  const base = filters.sharedList ? resources.filter(r => filters.sharedList.includes(r.id)) : resources;
+  const base = filters.sharedList ? shown().filter(r => filters.sharedList.includes(r.id)) : shown();
   categories.forEach(c => {
     const button = $(`[data-category="${c.id}"]`, grid);
     const count = filterResources(base, { ...filters, category: c.id, saved }).length;
@@ -114,9 +199,9 @@ function renderCategories() {
 function resourceCard(r) {
   const isSaved = saved.includes(r.id);
   const second = r.phone
-    ? `<a class="button rcard-call" href="tel:${r.phone}" aria-label="Call ${escape(r.provider)}, ${r.phone}">${icon('phone')} Call</a>`
+    ? `<a class="button rcard-call" href="tel:${escape(r.phone)}" aria-label="Call ${escape(r.provider)}, ${escape(r.phone)}">${icon('phone')} Call</a>`
     : `<a class="button" href="${escape(r.source)}" target="_blank" rel="noopener noreferrer" aria-label="${escape(r.provider)} website (opens in a new tab)">Website <span aria-hidden="true">↗</span></a>`;
-  return `<article class="rcard" aria-labelledby="rc-${r.id}"><div class="rcard-top"><span class="rcard-art" aria-hidden="true">${catArt(r.categories[0])}</span><div><p class="rcard-provider">${escape(r.provider)}</p><span class="rcard-area">${escape(r.area)}</span></div><button type="button" class="rcard-save" data-save="${r.id}" aria-label="${isSaved ? 'Remove' : 'Save'} ${escape(r.provider)}${isSaved ? ' from your saved list' : ' to your saved list'}" aria-pressed="${isSaved}">${icon('bookmark')}</button></div><h3 class="rcard-title" id="rc-${r.id}">${escape(r.name)}</h3><p class="rcard-desc">${escape(r.description)}</p><dl class="rcard-facts"><div><dt>${icon('pin')}<span>Where</span></dt><dd>${escape(r.address)}</dd></div><div><dt>${icon('clock')}<span>When</span></dt><dd>${escape(r.schedule)}</dd></div></dl>${statusChip(r)}<div class="rcard-actions"><button type="button" class="button primary" data-resource="${r.id}">View details<span class="sr-only"> for ${escape(r.provider)}</span> <span aria-hidden="true">→</span></button>${second}</div><div class="print-source"><p>${escape(r.address)}</p><p>${escape(r.schedule)}</p>${r.phone ? `<p>Phone: ${r.phone}</p>` : ''}<p>${escape(r.source)}</p></div></article>`;
+  return `<article class="rcard" aria-labelledby="rc-${r.id}"><div class="rcard-top"><span class="rcard-art" aria-hidden="true">${catArt(r.categories[0])}</span><div><p class="rcard-provider">${escape(r.provider)}</p><span class="rcard-area">${escape(r.area)}</span></div><button type="button" class="rcard-save" data-save="${r.id}" aria-label="${isSaved ? 'Remove' : 'Save'} ${escape(r.provider)}${isSaved ? ' from your saved list' : ' to your saved list'}" aria-pressed="${isSaved}">${icon('bookmark')}</button></div><h3 class="rcard-title" id="rc-${r.id}">${escape(r.name)}</h3><p class="rcard-desc">${escape(r.description)}</p><dl class="rcard-facts"><div><dt>${icon('pin')}<span>Where</span></dt><dd>${escape(r.address)}</dd></div><div><dt>${icon('clock')}<span>When</span></dt><dd>${escape(r.schedule)}</dd></div></dl>${statusChip(r)}<div class="rcard-actions"><button type="button" class="button primary" data-resource="${r.id}">View details<span class="sr-only"> for ${escape(r.provider)}</span> <span aria-hidden="true">→</span></button>${second}</div><div class="print-source"><p>${escape(r.address)}</p><p>${escape(r.schedule)}</p>${r.phone ? `<p>Phone: ${escape(r.phone)}</p>` : ''}<p>${escape(r.source)}</p></div></article>`;
 }
 function renderResources() {
   renderCategories();
@@ -136,11 +221,11 @@ function toggleSaved(id) {
   toast(persistent ? 'Saved list updated on this device. Clear it when using a shared device.' : 'Saved for this visit only. This browser is blocking storage.');
 }
 function renderResourceDetail(id) {
-  const r = resources.find(r => r.id === id); if (!r) return;
+  const r = listings.find(r => r.id === id); if (!r) return;
   const isSaved = saved.includes(r.id);
   const street = streetAddress(r);
   const facts = [['pin', 'Where', r.address], ['clock', 'When', r.schedule], ['door', 'How to start', r.access], ['bag', 'What to bring / eligibility', r.requirements], ['tag', 'Cost', r.cost], ['access', 'Accessibility', r.accessibility]];
-  $('#resource-detail').innerHTML = `<div class="rd-head"><span class="rd-art" aria-hidden="true">${catArt(r.categories[0], 160, false)}</span><div><p class="rd-provider">${escape(r.provider)}</p><h2 id="resource-dialog-title">${escape(r.name)}</h2></div></div><p class="rd-desc">${escape(r.description)}</p>${statusChip(r)}<div class="rd-actions">${r.phone ? `<a class="button primary" href="tel:${r.phone}">${icon('phone')} Call ${r.phone}</a>` : ''}${street ? `<a class="button" href="https://www.google.com/maps/dir/?api=1&amp;destination=${encodeURIComponent(street + ', Oregon')}" target="_blank" rel="noopener noreferrer">${icon('route')} Directions <span class="sr-only">(opens in a new tab)</span></a>` : ''}<a class="button ${r.phone ? '' : 'primary'}" href="${escape(r.source)}" target="_blank" rel="noopener noreferrer">${icon('globe')} Provider website <span class="sr-only">(opens in a new tab)</span></a></div><div class="rd-note">${icon(r.conflict ? 'alert' : 'info')}<p><strong>${r.conflict ? 'Schedule conflict to resolve.' : 'Provider confirmation pending.'}</strong> Source reviewed October 23, 2026. Availability is unknown; confirm before traveling.</p></div><dl class="rd-facts">${facts.map(([ic, key, value]) => `<div><dt>${icon(ic)}<span>${key}</span></dt><dd>${escape(value)}</dd></div>`).join('')}</dl><div class="rd-more"><button type="button" class="button" data-share-resource="${r.id}">${icon('share')} Share</button><button type="button" class="button" data-save="${r.id}" aria-pressed="${isSaved}">${icon('bookmark')} ${isSaved ? 'Saved' : 'Save'}</button></div><p class="dialog-source">Source: <a href="${escape(r.source)}" target="_blank" rel="noopener noreferrer">${escape(new URL(r.source).hostname)}</a> · Website review is not provider confirmation.</p><button type="button" class="inline-link" data-correction="${r.id}">Something looks out of date?</button>`;
+  $('#resource-detail').innerHTML = `<div class="rd-head"><span class="rd-art" aria-hidden="true">${catArt(r.categories[0], 160, false)}</span><div><p class="rd-provider">${escape(r.provider)}</p><h2 id="resource-dialog-title">${escape(r.name)}</h2></div></div><p class="rd-desc">${escape(r.description)}</p>${statusChip(r)}<div class="rd-actions">${r.phone ? `<a class="button primary" href="tel:${escape(r.phone)}">${icon('phone')} Call ${escape(r.phone)}</a>` : ''}${street ? `<a class="button" href="https://www.google.com/maps/dir/?api=1&amp;destination=${encodeURIComponent(street + ', Oregon')}" target="_blank" rel="noopener noreferrer">${icon('route')} Directions <span class="sr-only">(opens in a new tab)</span></a>` : ''}<a class="button ${r.phone ? '' : 'primary'}" href="${escape(r.source)}" target="_blank" rel="noopener noreferrer">${icon('globe')} Provider website <span class="sr-only">(opens in a new tab)</span></a></div><div class="rd-note">${icon(r.conflict ? 'alert' : 'info')}<p><strong>${r.conflict ? 'Schedule conflict to resolve.' : 'Provider confirmation pending.'}</strong> Source reviewed ${longDate(r.reviewedDate)}.${r.endsAt ? ` Ends ${escape(endTime(r.endsAt))}.` : ''} Availability is unknown; confirm before traveling.</p></div><dl class="rd-facts">${facts.map(([ic, key, value]) => `<div><dt>${icon(ic)}<span>${key}</span></dt><dd>${escape(value)}</dd></div>`).join('')}</dl><div class="rd-more"><button type="button" class="button" data-share-resource="${r.id}">${icon('share')} Share</button><button type="button" class="button" data-save="${r.id}" aria-pressed="${isSaved}">${icon('bookmark')} ${isSaved ? 'Saved' : 'Save'}</button></div><p class="dialog-source">Source: <a href="${escape(r.source)}" target="_blank" rel="noopener noreferrer">${escape(new URL(r.source).hostname)}</a> · Website review is not provider confirmation.</p><button type="button" class="inline-link" data-correction="${r.id}">Something looks out of date?</button>`;
 }
 function openResource(id, updateURL = true) { activeResource = id; renderResourceDetail(id); if (updateURL) setURL({ resource: id }); if (!$('#resource-dialog').open) $('#resource-dialog').showModal(); }
 function info(title, body) { $('#info-content').innerHTML = `<h2 id="info-dialog-title">${escape(title)}</h2>${body}`; $('#info-dialog').showModal(); }
@@ -171,46 +256,46 @@ function pulseScale(largest) {
   return { step, max: Math.ceil(largest / step) * step };
 }
 function pulseUnitInfo(unit) {
-  const events = demoEvents.filter(e => e.unit === unit);
+  const events = pulseEvents.filter(e => e.unit === unit);
   const reports = events.map(e => state.reports.find(r => r.eventId === e.id)).filter(Boolean);
   const measured = reports.filter(r => r.value !== null && ['completed', 'partial'].includes(r.outcome));
-  const status = !reports.length ? 'Awaiting a sample report' : measured.length ? '' : reports.every(r => r.outcome === 'canceled') ? 'Reported service canceled; no amount assumed' : 'Reported without an amount; unknown, not zero';
+  const status = !reports.length ? plain('Awaiting a sample report') : measured.length ? '' : reports.every(r => r.outcome === 'canceled') ? 'Reported service canceled; no amount assumed' : 'Reported without an amount; unknown, not zero';
   return { events: events.length, reported: reports.length, measured: measured.length, status };
 }
 const pulseLantern = lit => `<svg class="pl-lantern${lit ? ' is-lit' : ''}" viewBox="0 0 24 34" aria-hidden="true" focusable="false"><path class="pl-l-frame" d="M9 5a3 3 0 0 1 6 0M6.5 8h11l-1.5 3.5h-8ZM8 11.5h8V26H8ZM6 26h12l1 3.5H5Z"/><rect class="pl-l-light" x="9.6" y="13.4" width="4.8" height="10.8" rx="2.4"/></svg>`;
 function renderDashboard() {
-  const totals = aggregateReports(state.reports, demoEvents);
+  const totals = aggregateReports(state.reports, pulseEvents);
   $('#metric-cards').innerHTML = Object.entries(metricNames).map(([unit, name], index) => {
     const metric = totals[unit], info = pulseUnitInfo(unit), known = metric.total !== null;
     const split = known && metric.total > 0 ? `<span class="pl-metric-split" aria-hidden="true">${metric.counted ? `<span class="is-counted" style="flex-grow:${metric.counted}"></span>` : ''}${metric.estimated ? `<span class="is-estimated" style="flex-grow:${metric.estimated}"></span>` : ''}</span>` : `<span class="pl-metric-split is-empty" aria-hidden="true"></span>`;
-    return `<button type="button" class="pl-metric" data-pulse-unit="${unit}" aria-pressed="${pulseUnit === unit}"><span class="pl-metric-top"><span class="pl-metric-index">0${index + 1}</span><span class="pl-metric-name">${name}</span><span class="pl-metric-state" aria-hidden="true"></span></span><span class="pl-metric-figure">${known ? `<span class="pl-metric-value">${pulseNum(metric.total)}</span><span class="pl-metric-unit">${pulseUnitWord(unit, metric.total)}</span>` : `<span class="pl-metric-value is-unknown" aria-hidden="true">—</span><span class="pl-metric-unit">No amount yet</span>`}</span>${split}<span class="pl-metric-detail">${known ? `${pulseNum(metric.counted)} counted · ${pulseNum(metric.estimated)} estimated` : escape(info.status)}</span><span class="pl-metric-events">${info.reported} of ${info.events} sample ${info.events === 1 ? 'event' : 'events'} reported</span></button>`;
+    return `<button type="button" class="pl-metric" data-pulse-unit="${unit}" aria-pressed="${pulseUnit === unit}"><span class="pl-metric-top"><span class="pl-metric-index">0${index + 1}</span><span class="pl-metric-name">${name}</span><span class="pl-metric-state" aria-hidden="true"></span></span><span class="pl-metric-figure">${known ? `<span class="pl-metric-value">${pulseNum(metric.total)}</span><span class="pl-metric-unit">${pulseUnitWord(unit, metric.total)}</span>` : `<span class="pl-metric-value is-unknown" aria-hidden="true">—</span><span class="pl-metric-unit">No amount yet</span>`}</span>${split}<span class="pl-metric-detail">${known ? `${pulseNum(metric.counted)} counted · ${pulseNum(metric.estimated)} estimated` : escape(info.status)}</span><span class="pl-metric-events">${plain(`${info.reported} of ${info.events} sample ${info.events === 1 ? 'event' : 'events'} reported`)}</span></button>`;
   }).join('');
   $('#coverage-count').textContent = `${totals.reported} of ${totals.eligible}`;
   $('#coverage-progress').value = totals.reported; $('#coverage-progress').max = totals.eligible;
   $('#coverage-progress').textContent = `${totals.reported} of ${totals.eligible}`;
-  $('#coverage-caption').textContent = `Only the ${totals.eligible} fictional participating providers are included. This is not coverage of all providers in the county.`;
-  const providers = [...new Set(demoEvents.map(e => e.provider))].map(provider => ({ provider, services: [...new Set(demoEvents.filter(e => e.provider === provider).map(e => e.service))].join(', '), reported: demoEvents.some(e => e.provider === provider && state.reports.some(r => r.eventId === e.id)) }));
+  $('#coverage-caption').textContent = plain(`Only the ${totals.eligible} fictional participating providers are included. This is not coverage of all providers in the county.`);
+  const providers = [...new Set(pulseEvents.map(e => e.provider))].map(provider => ({ provider, services: [...new Set(pulseEvents.filter(e => e.provider === provider).map(e => e.service))].join(', '), reported: pulseEvents.some(e => e.provider === provider && state.reports.some(r => r.eventId === e.id)) }));
   $('#coverage-list').innerHTML = providers.map(p => `<li class="${p.reported ? 'is-reported' : 'is-awaiting'}">${pulseLantern(p.reported)}<span><strong>${escape(p.provider)}</strong><span>${escape(p.services)}</span></span><em>${p.reported ? 'Reported' : 'Awaiting report'}</em></li>`).join('');
   $('#pulse-hero-lanterns').innerHTML = providers.map(p => pulseLantern(p.reported)).join('');
-  $('#pulse-hero-coverage').innerHTML = `<strong>${totals.reported} of ${totals.eligible}</strong> fictional sample providers have reported this week. Each lit lantern is one provider’s report.`;
+  $('#pulse-hero-coverage').innerHTML = `<strong>${totals.reported} of ${totals.eligible}</strong> ${plain('fictional sample ')}providers have reported this week. Each lit lantern is one provider’s report.`;
   renderDetailedPulse(totals);
   const names = { capacity: 'Capacity', supplies: 'Supplies', transportation: 'Transportation', timing: 'Timing', requirement: 'Requirements', other: 'Other' };
-  const current = state.reports.filter(r => demoEvents.some(e => e.id === r.eventId));
+  const current = state.reports.filter(r => pulseEvents.some(e => e.id === r.eventId));
   const assessed = { observed: current.filter(r => r.unmet === 'observed').length, none_observed: current.filter(r => r.unmet === 'none_observed').length, not_assessed: current.filter(r => r.unmet === 'not_assessed').length };
   const barriers = Object.entries(totals.unmet).sort((a, b) => b[1] - a[1]);
   const dots = count => `<span class="pl-dots" aria-hidden="true">${current.map((_, i) => `<i class="${i < count ? 'is-on' : ''}"></i>`).join('')}</span>`;
-  $('#barriers').innerHTML = `<ul class="pl-assess" aria-label="Unmet need in the ${current.length} current sample reports"><li><strong>${assessed.observed}</strong> observed unmet need</li><li><strong>${assessed.none_observed}</strong> observed none</li><li><strong>${assessed.not_assessed}</strong> did not assess</li></ul>` + (barriers.length ? `<ul class="pl-barrier-list">${barriers.map(([reason, count]) => `<li class="pl-barrier"><span class="pl-barrier-name">${names[reason]}</span>${dots(count)}<span class="pl-barrier-count"><strong>${count}</strong> of ${current.length} reports</span></li>`).join('')}</ul>` : '<p class="pl-empty">No barriers noted in the sample reports. Unassessed need is not evidence of no need.</p>');
+  $('#barriers').innerHTML = `<ul class="pl-assess" aria-label="${plain(`Unmet need in the ${current.length} current sample reports`)}"><li><strong>${assessed.observed}</strong> observed unmet need</li><li><strong>${assessed.none_observed}</strong> observed none</li><li><strong>${assessed.not_assessed}</strong> did not assess</li></ul>` + (barriers.length ? `<ul class="pl-barrier-list">${barriers.map(([reason, count]) => `<li class="pl-barrier"><span class="pl-barrier-name">${names[reason]}</span>${dots(count)}<span class="pl-barrier-count"><strong>${count}</strong> of ${current.length} reports</span></li>`).join('')}</ul>` : `<p class="pl-empty">${plain('No barriers noted in the sample reports.')} Unassessed need is not evidence of no need.</p>`);
 }
 function pulsePartlyDelivered(date) {
   const current = new Map(state.reports.map(report => [report.eventId, report]));
-  return demoEvents.some(e => e.date === date && e.unit === pulseUnit && current.get(e.id)?.outcome === 'partial' && current.get(e.id)?.value !== null);
+  return pulseEvents.some(e => e.date === date && e.unit === pulseUnit && current.get(e.id)?.outcome === 'partial' && current.get(e.id)?.value !== null);
 }
 function pulseDayText(day) {
   const date = new Date(day.date + 'T12:00:00Z').toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric', timeZone: 'UTC' });
-  return day.total === null ? `${date}: ${day.status.toLowerCase()}.` : `${date}: ${day.total.toLocaleString()} ${pulseUnit}; ${day.counted.toLocaleString()} counted and ${day.estimated.toLocaleString()} estimated.${day.status.startsWith('Partial') ? ' Partial reporting; known amounts only.' : ''}${pulsePartlyDelivered(day.date) ? ' The provider reported the service as only partly delivered.' : ''}`;
+  return day.total === null ? `${date}: ${plain(day.status).toLowerCase()}.` : `${date}: ${day.total.toLocaleString()} ${pulseUnit}; ${day.counted.toLocaleString()} counted and ${day.estimated.toLocaleString()} estimated.${day.status.startsWith('Partial') ? ' Partial reporting; known amounts only.' : ''}${pulsePartlyDelivered(day.date) ? ' The provider reported the service as only partly delivered.' : ''}`;
 }
 function renderDetailedPulse(totals) {
-  const series = reportSeries(state.reports, demoEvents, pulseUnit, pulseDates);
+  const series = reportSeries(state.reports, pulseEvents, pulseUnit, pulseDates);
   const scale = pulseScale(Math.max(0, ...series.map(day => day.total ?? 0)));
   const hasAmounts = series.some(day => day.total !== null);
   $('#trend-title').textContent = metricNames[pulseUnit] + '.';
@@ -226,19 +311,19 @@ function renderDetailedPulse(totals) {
     const top = amount ? `<span class="pl-day-value"><span class="pl-v">${pulseNum(day.total)}</span></span>${label ? `<span class="pl-v-note">${label}</span>` : ''}` : `<span class="pl-status">${label}</span>`;
     return `<button type="button" class="pl-day" data-state="${key}" data-pulse-date="${day.date}" aria-label="${escape(pulseDayText(day))}" aria-pressed="${pulseDate === day.date}" style="--i:${i};--t:${pos(day.total ?? 0)}"><span class="pl-day-plot"><span class="pl-track">${bar}${glyph}${top}</span></span><span class="pl-day-date"><span class="pl-dow">${weekday}</span><span class="pl-dom">${Number(day.date.slice(-2))}</span></span></button>`;
   }).join('');
-  $('#daily-chart').innerHTML = `<div class="pl-plot${hasAmounts ? '' : ' is-empty'}" role="group" aria-label="Daily ${escape(metricNames[pulseUnit].toLowerCase())}, October 19 to 25. Select a day for its details."><div class="pl-grid" aria-hidden="true">${ticks.map(t => `<i style="--p:${pos(t)}"><span>${hasAmounts ? pulseNum(t) : ''}</span></i>`).join('')}<span class="pl-axis-unit">${hasAmounts ? pulseUnit : ''}</span></div>${hasAmounts ? '' : `<p class="pl-plot-note">No amount has been reported for ${escape(metricNames[pulseUnit].toLowerCase())} this week. Each day says why.</p>`}<div class="pl-days">${days}</div></div>`;
+  $('#daily-chart').innerHTML = `<div class="pl-plot${hasAmounts ? '' : ' is-empty'}" role="group" aria-label="Daily ${escape(metricNames[pulseUnit].toLowerCase())}, ${weekLabel(' to ')}. Select a day for its details."><div class="pl-grid" aria-hidden="true">${ticks.map(t => `<i style="--p:${pos(t)}"><span>${hasAmounts ? pulseNum(t) : ''}</span></i>`).join('')}<span class="pl-axis-unit">${hasAmounts ? pulseUnit : ''}</span></div>${hasAmounts ? '' : `<p class="pl-plot-note">No amount has been reported for ${escape(metricNames[pulseUnit].toLowerCase())} this week. Each day says why.</p>`}<div class="pl-days">${days}</div></div>`;
   const selected = series.find(day => day.date === pulseDate);
   $('#chart-selection').textContent = selected ? pulseDayText(selected) : 'Select a day for its amount or reporting status.';
-  $('#chart-table-caption').textContent = `Fictional ${metricNames[pulseUnit].toLowerCase()}, October 19–25, 2026`;
+  $('#chart-table-caption').textContent = `${demo() ? 'Fictional ' + metricNames[pulseUnit].toLowerCase() : metricNames[pulseUnit]}, ${weekLabel()}, ${pulseDates[6].slice(0, 4)}`;
   const cell = value => value === null ? '<span aria-hidden="true">—</span><span class="sr-only">No amount</span>' : pulseNum(value);
-  $('#chart-table-body').innerHTML = series.map(day => `<tr data-state="${pulseDayState(day)[0]}"><th scope="row">${day.date}</th><td>${cell(day.total === null ? null : day.counted)}</td><td>${cell(day.total === null ? null : day.estimated)}</td><td>${cell(day.total)}</td><td>${day.scheduled ? `${day.reported} of ${day.scheduled}` : '<span aria-hidden="true">—</span><span class="sr-only">None scheduled</span>'}</td><td>${day.status}</td></tr>`).join('');
+  $('#chart-table-body').innerHTML = series.map(day => `<tr data-state="${pulseDayState(day)[0]}"><th scope="row">${day.date}</th><td>${cell(day.total === null ? null : day.counted)}</td><td>${cell(day.total === null ? null : day.estimated)}</td><td>${cell(day.total)}</td><td>${day.scheduled ? `${day.reported} of ${day.scheduled}` : '<span aria-hidden="true">—</span><span class="sr-only">None scheduled</span>'}</td><td>${plain(day.status)}</td></tr>`).join('');
   const n = totals.eligible, gap = n > 1 ? 3 : 0, seg = n ? 100 / n - gap : 0;
-  const lit = demoEvents.length ? [...new Set(demoEvents.map(e => e.provider))].map(provider => demoEvents.some(e => e.provider === provider && state.reports.some(r => r.eventId === e.id))) : [];
-  $('#coverage-ring').innerHTML = `<svg viewBox="0 0 120 120" role="img" aria-label="${totals.reported} of ${totals.eligible} fictional providers have reported">${lit.map((on, i) => `<circle class="pl-ring-seg${on ? ' is-lit' : ''}" cx="60" cy="60" r="50" pathLength="100" stroke-dasharray="${seg.toFixed(2)} ${(100 - seg).toFixed(2)}" stroke-dashoffset="${(-(i * 100 / n) - gap / 2).toFixed(2)}" transform="rotate(-90 60 60)" style="--i:${i}"/>`).join('')}</svg>`;
+  const lit = pulseEvents.length ? [...new Set(pulseEvents.map(e => e.provider))].map(provider => pulseEvents.some(e => e.provider === provider && state.reports.some(r => r.eventId === e.id))) : [];
+  $('#coverage-ring').innerHTML = `<svg viewBox="0 0 120 120" role="img" aria-label="${totals.reported} of ${totals.eligible} ${plain('fictional ')}providers have reported">${lit.map((on, i) => `<circle class="pl-ring-seg${on ? ' is-lit' : ''}" cx="60" cy="60" r="50" pathLength="100" stroke-dasharray="${seg.toFixed(2)} ${(100 - seg).toFixed(2)}" stroke-dashoffset="${(-(i * 100 / n) - gap / 2).toFixed(2)}" transform="rotate(-90 60 60)" style="--i:${i}"/>`).join('')}</svg>`;
   const metric = totals[pulseUnit], info = pulseUnitInfo(pulseUnit);
   const pct = part => metric.total > 0 ? Math.round(part / metric.total * 100) : 0;
-  const basis = `<p class="pl-ev-basis">From ${info.measured} of ${info.events} scheduled sample ${info.events === 1 ? 'event' : 'events'} with a reported amount.</p>`;
-  $('#evidence-chart').innerHTML = metric.total === null ? `<p class="pl-ev-missing"><span class="pl-glyph-inline" aria-hidden="true"></span>No amount yet for ${pulseUnit}.</p><p class="pl-ev-basis">${escape(info.status)}. ${info.reported} of ${info.events} sample ${info.events === 1 ? 'event' : 'events'} reported.</p>` : `<p class="pl-ev-total"><span class="pl-ev-num">${pulseNum(metric.total)}</span> <span class="pl-ev-unit">${pulseUnitWord(pulseUnit, metric.total)}</span></p>${metric.total > 0 ? `<div class="pl-ev-bar" role="img" aria-label="${metric.counted} counted and ${metric.estimated} estimated ${pulseUnit}">${metric.counted ? `<span class="is-counted" style="flex-grow:${metric.counted}"></span>` : ''}${metric.estimated ? `<span class="is-estimated" style="flex-grow:${metric.estimated}"></span>` : ''}</div>` : '<div class="pl-ev-bar is-zero" role="img" aria-label="Measured zero"></div>'}<dl class="pl-ev-split"><div><dt><span class="pl-key is-counted" aria-hidden="true"></span>Counted</dt><dd><strong>${pulseNum(metric.counted)}</strong><span>${pct(metric.counted)}%</span></dd></div><div><dt><span class="pl-key is-estimated" aria-hidden="true"></span>Estimated</dt><dd><strong>${pulseNum(metric.estimated)}</strong><span>${pct(metric.estimated)}%</span></dd></div></dl>${basis}`;
+  const basis = `<p class="pl-ev-basis">${plain(`From ${info.measured} of ${info.events} scheduled sample ${info.events === 1 ? 'event' : 'events'} with a reported amount.`)}</p>`;
+  $('#evidence-chart').innerHTML = metric.total === null ? `<p class="pl-ev-missing"><span class="pl-glyph-inline" aria-hidden="true"></span>No amount yet for ${pulseUnit}.</p><p class="pl-ev-basis">${escape(info.status)}. ${plain(`${info.reported} of ${info.events} sample ${info.events === 1 ? 'event' : 'events'} reported.`)}</p>` : `<p class="pl-ev-total"><span class="pl-ev-num">${pulseNum(metric.total)}</span> <span class="pl-ev-unit">${pulseUnitWord(pulseUnit, metric.total)}</span></p>${metric.total > 0 ? `<div class="pl-ev-bar" role="img" aria-label="${metric.counted} counted and ${metric.estimated} estimated ${pulseUnit}">${metric.counted ? `<span class="is-counted" style="flex-grow:${metric.counted}"></span>` : ''}${metric.estimated ? `<span class="is-estimated" style="flex-grow:${metric.estimated}"></span>` : ''}</div>` : '<div class="pl-ev-bar is-zero" role="img" aria-label="Measured zero"></div>'}<dl class="pl-ev-split"><div><dt><span class="pl-key is-counted" aria-hidden="true"></span>Counted</dt><dd><strong>${pulseNum(metric.counted)}</strong><span>${pct(metric.counted)}%</span></dd></div><div><dt><span class="pl-key is-estimated" aria-hidden="true"></span>Estimated</dt><dd><strong>${pulseNum(metric.estimated)}</strong><span>${pct(metric.estimated)}%</span></dd></div></dl>${basis}`;
 }
 let pulseRevealed = false;
 function pulseReveal() {
@@ -269,12 +354,12 @@ const pgUnitShort = { meals: 'meals', sessions: 'sessions', encounters: 'encount
 let pgApproved = null;
 let pgLockedFrom = null;
 const pgPick = name => $(`#report-form input[name=${name}]:checked`)?.value;
-const pgEvent = () => demoEvents.find(item => item.id === pgPick('eventId')) || demoEvents[0];
+const pgEvent = () => pulseEvents.find(item => item.id === pgPick('eventId')) || pulseEvents[0];
 const pgDate = date => new Date(`${date}T12:00:00`).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
 const pgReduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-const pgTotal = (reports, unit) => aggregateReports(reports, demoEvents)[unit].total;
+const pgTotal = (reports, unit) => aggregateReports(reports, pulseEvents)[unit].total;
 const pgNum = n => n === null ? 'no recorded amount' : n.toLocaleString();
-const pgChange = (before, after, word) => before === after ? `sample ${word} stay at ${pgNum(before)}` : `sample ${word}: <strong>${pgNum(before)} → ${pgNum(after)}</strong>`;
+const pgChange = (before, after, word) => plain(before === after ? `sample ${word} stay at ${pgNum(before)}` : `sample ${word}: <strong>${pgNum(before)} → ${pgNum(after)}</strong>`);
 const pgAmount = (r, unit) => r.value === null ? 'amount not recorded' : `${r.value.toLocaleString()} ${pgUnitWord[unit]}, ${pgMethodNames[r.method]}`;
 const pgRaw = () => $('#report-value').value.trim().replace(/[,\s]/g, '');
 function pgValueProblem() {
@@ -317,12 +402,12 @@ function pgStage() {
 function renderQueue() {
   const published = pgApproved && state.reports.includes(pgApproved.report) ? pgApproved : null;
   const tickets = state.pending.map(r => {
-    const event = demoEvents.find(e => e.id === r.eventId), word = pgUnitWord[event.unit];
+    const event = pulseEvents.find(e => e.id === r.eventId), word = pgUnitWord[event.unit];
     const prior = state.reports.find(x => x.eventId === r.eventId);
     const before = pgTotal(state.reports, event.unit), after = pgTotal(approveReport(state, r.eventId).reports, event.unit);
-    return `<article class="pg-ticket" aria-labelledby="ticket-${r.eventId}"><p class="pg-badge" data-tone="waiting"><span aria-hidden="true"></span>Waiting for review · not public yet</p><h3 id="ticket-${r.eventId}">${escape(event.provider)}</h3><p class="pg-ticket-meta">${escape(event.service)} · ${pgDate(event.date)}</p><p class="pg-ticket-amount">${r.value === null ? '<strong class="pg-none">Amount not recorded</strong>' : `<strong>${r.value.toLocaleString()}</strong> ${word} <span>${pgMethodNames[r.method]}</span>`}</p><dl class="pg-ticket-facts"><div><dt>Service</dt><dd>${pgOutcomeNames[r.outcome]}</dd></div><div><dt>Unmet need</dt><dd>${pgUnmetNames[r.unmet]}${r.reasons.length ? ` · ${r.reasons.map(x => pgReasonNames[x]).join(', ')}` : ''}</dd></div></dl><p class="pg-effect">${prior ? `Replaces the approved report for this event (${pgAmount(prior, event.unit)}), so nothing is counted twice. ` : ''}If approved, ${pgChange(before, after, word)}.</p><div class="pg-ticket-actions"><button type="button" class="button pg-approve" data-approve="${r.eventId}">Approve &amp; publish to sample</button><button type="button" class="text-button pg-discard" data-discard="${r.eventId}">Discard</button></div></article>`;
+    return `<article class="pg-ticket" aria-labelledby="ticket-${r.eventId}"><p class="pg-badge" data-tone="waiting"><span aria-hidden="true"></span>Waiting for review · not public yet</p><h3 id="ticket-${r.eventId}">${escape(event.provider)}</h3><p class="pg-ticket-meta">${escape(event.service)} · ${pgDate(event.date)}</p><p class="pg-ticket-amount">${r.value === null ? '<strong class="pg-none">Amount not recorded</strong>' : `<strong>${r.value.toLocaleString()}</strong> ${word} <span>${pgMethodNames[r.method]}</span>`}</p><dl class="pg-ticket-facts"><div><dt>Service</dt><dd>${pgOutcomeNames[r.outcome]}</dd></div><div><dt>Unmet need</dt><dd>${pgUnmetNames[r.unmet]}${r.reasons.length ? ` · ${r.reasons.map(x => pgReasonNames[x]).join(', ')}` : ''}</dd></div></dl><p class="pg-effect">${prior ? `Replaces the approved report for this event (${pgAmount(prior, event.unit)}), so nothing is counted twice. ` : ''}If approved, ${pgChange(before, after, word)}.</p><div class="pg-ticket-actions"><button type="button" class="button pg-approve" data-approve="${r.eventId}">${demo() ? 'Approve &amp; publish to sample' : 'Approve &amp; publish in this tab'}</button><button type="button" class="text-button pg-discard" data-discard="${r.eventId}">Discard</button></div></article>`;
   }).join('');
-  const done = published && !state.pending.length ? `<div class="pg-published" id="pg-published" tabindex="-1"><p class="pg-badge" data-tone="published"><span aria-hidden="true"></span>Approved · published to the sample</p>${published.after === null ? `<p class="pg-figure-note">Recorded as “amount not recorded”. Community Pulse shows it as missing, never as zero.</p>` : `<p class="pg-figure"><span class="sr-only">Sample ${pgUnitWord[published.unit]} ${published.before === published.after ? 'stay at' : `changed from ${pgNum(published.before)} to`} ${pgNum(published.after)}.</span><span aria-hidden="true">${published.before !== null && published.before !== published.after ? `<span class="pg-from">${pgNum(published.before)}</span><span class="pg-arrow">→</span>` : ''}<strong data-count-from="${published.before ?? ''}" data-count-to="${published.after}">${pgNum(published.after)}</strong> <span class="pg-unit-word">${pgUnitWord[published.unit]}</span></span></p>`}<p>${escape(published.provider)}’s report now counts in Community Pulse, in this tab only. Each event keeps one approved report, so approving again can’t inflate the total.</p></div>` : '';
+  const done = published && !state.pending.length ? `<div class="pg-published" id="pg-published" tabindex="-1"><p class="pg-badge" data-tone="published"><span aria-hidden="true"></span>${demo() ? 'Approved · published to the sample' : 'Approved · shown in this tab only'}</p>${published.after === null ? `<p class="pg-figure-note">Recorded as “amount not recorded”. Community Pulse shows it as missing, never as zero.</p>` : `<p class="pg-figure"><span class="sr-only">${demo() ? 'Sample ' : ''}${pgUnitWord[published.unit]} ${published.before === published.after ? 'stay at' : `changed from ${pgNum(published.before)} to`} ${pgNum(published.after)}.</span><span aria-hidden="true">${published.before !== null && published.before !== published.after ? `<span class="pg-from">${pgNum(published.before)}</span><span class="pg-arrow">→</span>` : ''}<strong data-count-from="${published.before ?? ''}" data-count-to="${published.after}">${pgNum(published.after)}</strong> <span class="pg-unit-word">${pgUnitWord[published.unit]}</span></span></p>`}<p>${escape(published.provider)}’s report now counts in Community Pulse, in this tab only. Each event keeps one approved report, so approving again can’t inflate the total.</p></div>` : '';
   $('#review-queue').innerHTML = tickets || done ? tickets + done : '<div class="pg-empty"><img src="./art/lantern-160.webp" width="80" height="80" alt="" loading="lazy" decoding="async"><p><strong>Nothing waiting for review.</strong> Send a practice report and it will appear here first — not on the dashboard.</p></div>';
   pgStage(); updateEvent();
 }
@@ -358,17 +443,17 @@ function phoneGuide() {
 }
 document.addEventListener('click', async event => {
   const unitChoice = event.target.closest('[data-pulse-unit]'); if (unitChoice) { const changed = pulseUnit !== unitChoice.dataset.pulseUnit; pulseUnit = unitChoice.dataset.pulseUnit; pulseDate = null; renderDashboard(); $(`[data-pulse-unit="${pulseUnit}"]`).focus(); if (changed) { const chart = $('#view-impact .pl-chart'); chart.classList.remove('pl-switch'); void chart.offsetWidth; chart.classList.add('pl-switch'); } return; }
-  const dayChoice = event.target.closest('[data-pulse-date]'); if (dayChoice) { pulseDate = dayChoice.dataset.pulseDate; const series = reportSeries(state.reports, demoEvents, pulseUnit, pulseDates); $('#chart-selection').textContent = pulseDayText(series.find(day => day.date === pulseDate)); $$('[data-pulse-date]').forEach(el => el.setAttribute('aria-pressed', String(el.dataset.pulseDate === pulseDate))); return; }
+  const dayChoice = event.target.closest('[data-pulse-date]'); if (dayChoice) { pulseDate = dayChoice.dataset.pulseDate; const series = reportSeries(state.reports, pulseEvents, pulseUnit, pulseDates); $('#chart-selection').textContent = pulseDayText(series.find(day => day.date === pulseDate)); $$('[data-pulse-date]').forEach(el => el.setAttribute('aria-pressed', String(el.dataset.pulseDate === pulseDate))); return; }
   const nav = event.target.closest('[data-view]'); if (nav) { event.preventDefault(); const go = () => navigate(nav.dataset.view); if (document.startViewTransition && motionOK() && nav.dataset.view !== currentView) document.startViewTransition(go); else go(); return; }
   const jump = event.target.closest('[data-jump-category]'); if (jump) { event.preventDefault(); filters.category = jump.dataset.jumpCategory; filters.savedOnly = false; renderResources(); setURL(); goToDirectory($(`[data-category="${filters.category}"]`)); return; }
   const category = event.target.closest('[data-category]'); if (category) { filters.category = category.dataset.category; renderResources(); setURL(); $(`[data-category="${filters.category}"]`).focus(); return; }
   const save = event.target.closest('[data-save]'); if (save) { const id = save.dataset.save; const inDialog = !!save.closest('dialog'); toggleSaved(id); const replacement = $(`[data-save="${id}"]`, inDialog ? $('#resource-dialog') : $('#resource-grid')); replacement?.focus(); return; }
   const resource = event.target.closest('[data-resource]'); if (resource) return openResource(resource.dataset.resource);
-  const share = event.target.closest('[data-share-resource]'); if (share) { const url = new URL(location.href); url.search = ''; url.hash = ''; url.searchParams.set('resource', share.dataset.shareResource); return shareURL(url.href, resources.find(r => r.id === share.dataset.shareResource).provider); }
+  const share = event.target.closest('[data-share-resource]'); if (share) { const url = new URL(location.href); url.search = ''; url.hash = ''; url.searchParams.set('resource', share.dataset.shareResource); return shareURL(url.href, listings.find(r => r.id === share.dataset.shareResource).provider); }
   if (event.target.closest('[data-close]')) { const dialog = event.target.closest('dialog'); if (dialog.id === 'resource-dialog') setURL(); return dialog.close(); }
-  const correction = event.target.closest('[data-correction]'); if (correction) { const r = resources.find(x => x.id === correction.dataset.correction); return info('Help keep details current', `<p>The correction inbox is not connected in this preview. Confirm current information with the provider using the link below. A staffed review inbox will be required before launch.</p><div class="dialog-actions"><a class="button primary" href="${escape(r.source)}" target="_blank" rel="noopener noreferrer">Open provider website ↗</a></div>`); }
-  const approve = event.target.closest('[data-approve]'); if (approve) { const id = approve.dataset.approve, report = state.pending.find(r => r.eventId === id); if (!report) return; const ev = demoEvents.find(e => e.id === id), before = pgTotal(state.reports, ev.unit); state = approveReport(state, id); pgApproved = { report, unit: ev.unit, provider: ev.provider, before, after: pgTotal(state.reports, ev.unit) }; renderQueue(); renderDashboard(); $('#pulse-updated').textContent = `Sample updated ${new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}`; toast(pgApproved.after === null ? 'Approved. Community Pulse shows this amount as not recorded — this tab only.' : `Approved. Community Pulse now shows ${pgNum(pgApproved.after)} sample ${pgUnitWord[ev.unit]} — this tab only.`); pgCount(); $('#pg-published')?.focus(); return; }
-  const discard = event.target.closest('[data-discard]'); if (discard) { state.pending = state.pending.filter(r => r.eventId !== discard.dataset.discard); renderQueue(); toast('Sample discarded. Totals were not changed.'); $('#review-title').focus(); return; }
+  const correction = event.target.closest('[data-correction]'); if (correction) { const r = listings.find(x => x.id === correction.dataset.correction); return info('Help keep details current', `<p>The correction inbox is not connected in this preview. Confirm current information with the provider using the link below. A staffed review inbox will be required before launch.</p><div class="dialog-actions"><a class="button primary" href="${escape(r.source)}" target="_blank" rel="noopener noreferrer">Open provider website ↗</a></div>`); }
+  const approve = event.target.closest('[data-approve]'); if (approve) { const id = approve.dataset.approve, report = state.pending.find(r => r.eventId === id); if (!report) return; const ev = pulseEvents.find(e => e.id === id), before = pgTotal(state.reports, ev.unit); state = approveReport(state, id); practice = [...practice.filter(r => r.eventId !== id), report]; pgApproved = { report, unit: ev.unit, provider: ev.provider, before, after: pgTotal(state.reports, ev.unit) }; renderQueue(); renderDashboard(); setUpdated(`${demo() ? 'Sample updated' : 'Practice report shown'} ${new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}`); toast(pgApproved.after === null ? 'Approved. Community Pulse shows this amount as not recorded — this tab only.' : plain(`Approved. Community Pulse now shows ${pgNum(pgApproved.after)} sample ${pgUnitWord[ev.unit]} — this tab only.`)); pgCount(); $('#pg-published')?.focus(); return; }
+  const discard = event.target.closest('[data-discard]'); if (discard) { state.pending = state.pending.filter(r => r.eventId !== discard.dataset.discard); renderQueue(); toast(demo() ? 'Sample discarded. Totals were not changed.' : 'Discarded. Totals were not changed.'); $('#review-title').focus(); return; }
   if (event.target.closest('#native-install') && installPrompt) { await installPrompt.prompt(); installPrompt = null; $('#info-dialog').close(); }
 });
 $('#search-form').addEventListener('submit', event => { event.preventDefault(); filters.query = $('#search').value; filters.area = $('#area').value; renderResources(); setURL(); });
@@ -381,7 +466,8 @@ $('#share-list').addEventListener('click', shareList);
 $('#print').addEventListener('click', () => window.print());
 $('#resource-dialog').addEventListener('close', () => { if (!$('#resource-dialog').open) activeResource = null; });
 $('#resource-dialog').addEventListener('cancel', () => setURL());
-$('#event').innerHTML = demoEvents.map((e, i) => `<label class="pg-choice pg-event"><input type="radio" name="eventId" value="${e.id}"${i ? '' : ' checked'}><span class="pg-dot" aria-hidden="true"></span><span class="pg-choice-body"><strong>${escape(e.provider)}</strong><small>${escape(e.service)} · ${pgDate(e.date)}</small></span></label>`).join('');
+const renderEventChoices = (checked = pgPick('eventId')) => $('#event').innerHTML = pulseEvents.map((e, i) => `<label class="pg-choice pg-event"><input type="radio" name="eventId" value="${e.id}"${(pulseEvents.some(x => x.id === checked) ? e.id === checked : !i) ? ' checked' : ''}><span class="pg-dot" aria-hidden="true"></span><span class="pg-choice-body"><strong>${escape(e.provider)}</strong><small>${escape(e.service)} · ${pgDate(e.date)}</small></span></label>`).join('');
+renderEventChoices();
 $('#event').addEventListener('change', () => { pgClearErrors(); updateEvent(); });
 $$('input[name=outcome]').forEach(el => el.addEventListener('change', updateMeasurement));
 $('#method').addEventListener('change', updateMeasurement);
@@ -396,32 +482,36 @@ $('#report-form').addEventListener('submit', event => {
   if (problem) { pgFieldError(problem); $('#form-error').textContent = `Question 2: ${problem}`; $('#form-error').hidden = false; $('#report-value').focus(); return; }
   try {
     const eventId = pgPick('eventId');
-    state = queueReport(state, { eventId, outcome: pgPick('outcome'), value: $('#report-value').disabled ? '' : pgRaw(), method: pgPick('method'), unmet: pgPick('unmet'), reasons: $$('input[name=reason]:checked').map(el => el.value) }, demoEvents);
+    state = queueReport(state, { eventId, outcome: pgPick('outcome'), value: $('#report-value').disabled ? '' : pgRaw(), method: pgPick('method'), unmet: pgPick('unmet'), reasons: $$('input[name=reason]:checked').map(el => el.value) }, pulseEvents);
     pgClearErrors(); renderQueue(); toast('Sent to review. Nothing is public until it’s approved.');
     $(`[data-approve="${eventId}"]`)?.closest('.pg-ticket')?.classList.add('pg-arrived');
     $(`[data-approve="${eventId}"]`)?.focus();
   } catch (error) { $('#form-error').textContent = error.message; $('#form-error').hidden = false; $('#form-error').focus(); }
 });
-$('#reset-demo').addEventListener('click', () => { state = { reports: structuredClone(initialReports), pending: [] }; pgApproved = null; pgLockedFrom = null; $('#report-form').reset(); $('#reason-fields').hidden = true; pgClearErrors(); updateMeasurement(); renderQueue(); renderDashboard(); $('#pulse-updated').textContent = 'Sample reports loaded'; toast('Demonstration reset to the original fictional reports.'); });
+$('#reset-demo').addEventListener('click', () => { state = { reports: structuredClone(baseReports), pending: [] }; practice = []; pgApproved = null; pgLockedFrom = null; $('#report-form').reset(); $('#reason-fields').hidden = true; pgClearErrors(); updateMeasurement(); renderQueue(); renderDashboard(); setUpdated(pulseStatus()); toast(demo() ? 'Demonstration reset to the original fictional reports.' : 'Practice reports cleared.'); });
 $('#download-data').addEventListener('click', () => {
-  const totals = aggregateReports(state.reports, demoEvents);
-  const rows = ['dataset,period_start,period_end,unit,value,counted_amount,estimated_amount,reporting_sample_providers,eligible_sample_providers', ...Object.keys(metricNames).map(unit => `FICTIONAL_DEMONSTRATION,2026-10-19,2026-10-25,${unit},${totals[unit].total ?? ''},${totals[unit].counted},${totals[unit].estimated},${totals.reported},${totals.eligible}`)];
-  const link = document.createElement('a'); link.href = URL.createObjectURL(new Blob([rows.join('\n') + '\n'], { type: 'text/csv;charset=utf-8' })); link.download = 'fictional-community-pulse.csv'; link.click(); setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+  const totals = aggregateReports(state.reports, pulseEvents);
+  const sample = demo() ? 'sample_' : '';
+  const rows = [`dataset,period_start,period_end,unit,value,counted_amount,estimated_amount,reporting_${sample}providers,eligible_${sample}providers`, ...Object.keys(metricNames).map(unit => `${dataset},${pulseDates[0]},${pulseDates[6]},${unit},${totals[unit].total ?? ''},${totals[unit].counted},${totals[unit].estimated},${totals.reported},${totals.eligible}`)];
+  const link = document.createElement('a'); link.href = URL.createObjectURL(new Blob([rows.join('\n') + '\n'], { type: 'text/csv;charset=utf-8' })); link.download = demo() ? 'fictional-community-pulse.csv' : 'community-pulse.csv'; link.click(); setTimeout(() => URL.revokeObjectURL(link.href), 1000);
 });
 $('#install-top').addEventListener('click', phoneGuide); $('#install-about').addEventListener('click', phoneGuide);
 window.addEventListener('beforeinstallprompt', event => { event.preventDefault(); installPrompt = event; });
 const updateOffline = () => $('#offline-banner').hidden = navigator.onLine;
-window.addEventListener('online', updateOffline); window.addEventListener('offline', updateOffline); window.addEventListener('popstate', readURL);
+window.addEventListener('online', () => { updateOffline(); pulseDelay = PULSE_POLL; pollPulse(); });
+document.addEventListener('visibilitychange', () => document.hidden ? stopPulse() : pollPulse()); window.addEventListener('offline', updateOffline); window.addEventListener('popstate', readURL);
 $('#clear-device').addEventListener('click', async () => {
   dataCleared = true; saved = []; try { localStorage.removeItem(SAVED_KEY); localStorage.removeItem('community-hub:hero-motion'); } catch {}
-  state = { reports: structuredClone(initialReports), pending: [] }; renderResources(); renderQueue(); renderDashboard();
+  state = { reports: structuredClone(baseReports), pending: [] }; practice = []; renderResources(); renderQueue(); renderDashboard();
   try {
     if ('caches' in window) for (const key of await caches.keys()) if (key.startsWith('hub-preview-')) await caches.delete(key);
     if ('serviceWorker' in navigator) for (const r of await navigator.serviceWorker.getRegistrations()) if (r.scope === new URL('./', location.href).href) await r.unregister();
     toast('Saved resources and the offline copy cleared. Reloading online will create a new offline copy.');
   } catch { toast('Saved list cleared. Browser settings can also clear this site’s offline data.'); }
 });
-if ('serviceWorker' in navigator && window.isSecureContext && ['http:', 'https:'].includes(location.protocol)) window.addEventListener('load', () => { if (!dataCleared) navigator.serviceWorker.register('./sw.js').catch(() => toast('Offline saving is unavailable in this browser. Online browsing still works.')); });
+const registerWorker = () => { if (!dataCleared) navigator.serviceWorker.register('./sw.js').catch(() => toast('Offline saving is unavailable in this browser. Online browsing still works.')); };
+// The listings fetch above can finish after the load event, so register straight away if it has already fired.
+if ('serviceWorker' in navigator && window.isSecureContext && ['http:', 'https:'].includes(location.protocol)) { if (document.readyState === 'complete') registerWorker(); else window.addEventListener('load', registerWorker, { once: true }); }
 function goToDirectory(focusTarget) {
   $('#directory').scrollIntoView({ behavior: motionOK() ? 'smooth' : 'auto', block: 'start' });
   (focusTarget || $('#directory-title')).focus({ preventScroll: true });
@@ -471,4 +561,9 @@ function heroMotion() {
   sync();
 }
 if (document.readyState === 'complete') setTimeout(heroMotion, 400); else window.addEventListener('load', () => setTimeout(heroMotion, 400), { once: true });
-updateEvent(); updateMeasurement(); renderQueue(); renderDashboard(); updateOffline(); readURL();
+updateEvent(); updateMeasurement(); renderQueue(); renderDashboard(); updateOffline(); applyDataset(); pollPulse(true); readURL();
+// Hide a time-bound listing when it ends, even if the feed hasn't been refreshed.
+(function hideEnded() {
+  const next = Math.min(...listings.map(r => r.endsAt ? Date.parse(r.endsAt) - Date.now() : Infinity).filter(ms => ms > 0));
+  if (next < 2 ** 31) setTimeout(() => { renderResources(); if (activeResource && listingEnded(listings.find(r => r.id === activeResource))) { $('#resource-dialog').close(); setURL(); } hideEnded(); }, next + 1000);
+})();

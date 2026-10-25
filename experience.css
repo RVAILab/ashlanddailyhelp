@@ -208,7 +208,8 @@ body::before{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;op
 .rcard-save:active{transform:scale(.92)}
 .rcard-title{margin:4px 0 0;font:450 clamp(24px,2vw,28px)/1.12 var(--serif);letter-spacing:-.02em;color:var(--forest);font-variation-settings:'opsz' 72}
 .rcard-desc{margin:0;font:400 16px/1.55 var(--sans);color:var(--ink-2)}
-.rcard .status-chip{margin-top:auto}
+.status-chips{display:flex;flex-wrap:wrap;gap:6px}
+.rcard .status-chips{margin-top:auto}
 .rcard-facts{display:grid;gap:12px;margin:2px 0 0;padding:14px 0 0;border-top:1px dashed var(--line-2)}
 .rcard-facts>div{display:grid;grid-template-columns:22px minmax(0,1fr);column-gap:10px}
 .rcard-facts dt{grid-column:2;font:700 11.5px/1.3 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
@@ -272,7 +273,7 @@ body::before{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;op
 #resource-detail h2,#info-content h2{margin:6px 0 0;padding:0;font:400 clamp(30px,4vw,40px)/1.05 var(--serif);letter-spacing:-.03em;color:var(--forest);font-variation-settings:'opsz' 96}
 #info-content h2{padding-right:56px;margin-bottom:16px}
 .rd-desc{margin:20px 0 0;font:400 18px/1.55 var(--sans);color:var(--ink-2)}
-#resource-detail .status-chip{margin-top:16px}
+#resource-detail .status-chips{margin-top:16px}
 .rd-actions{display:flex;flex-wrap:wrap;gap:10px;margin:22px 0 0}
 #resource-dialog .rd-actions .button{flex:1 1 180px}
 .rd-facts{display:grid;gap:0;margin:24px 0 0;padding:0;border-top:1px solid var(--line)}
@@ -459,7 +460,7 @@ html.reveal-ready [data-reveal]:not(.is-in){opacity:0;transform:translateY(22px)
   .rgrid{grid-template-columns:1fr 1fr;gap:10px}
   .rcard{break-inside:avoid;box-shadow:none;border:1px solid #888;border-radius:10px;padding:12px;gap:6px;transform:none!important;background:#fff}
   .rcard-area{background:none;padding:0;margin:0}
-  .rcard .status-chip{margin-top:0}
+  .rcard .status-chips{margin-top:0}
   .rcard-top{grid-template-columns:1fr}
   .rcard-title{font-size:16pt}
   .rcard-desc,.rcard-facts dd{font-size:10pt}

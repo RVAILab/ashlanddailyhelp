@@ -3,8 +3,8 @@ metadata:
   created_at:   2026-10-25T11:06:46-07:00
   activated_at: 2026-10-25T14:54:08-07:00
   planned_at:   2026-10-25T14:54:32-07:00
-  finished_at:
-  updated_at:   2026-10-25T14:54:32-07:00
+  finished_at:  2026-10-25T15:04:53-07:00
+  updated_at:   2026-10-25T15:04:53-07:00
 -->
 
 # Story: Shareable Resource Lists
@@ -34,3 +34,23 @@ The list lives in a `saved` cookie on the device (ids only, at most 30), changed
 ### Tests
 
 Cookie parsing and limits, the toggle route (add, remove, safe return, cookie attributes), the list page (saved, shared, unknown ids, share links), cards and listing pages showing Add or Remove, and an end-to-end journey adding two listings and opening the shared link.
+
+## Review
+
+Reviewed 2026-10-25 by an independent agent; findings fixed in the next commit unless noted.
+
+| Criterion | Verdict | Evidence |
+| --- | --- | --- |
+| Add and remove on any page, saved on the device | ✅ | Cards and the listing page, through `/list/toggle`; a cookie of ids |
+| Share by a link short enough to text | ✅ | `/list?ids=…` and a "Text this list" link |
+| A shared list shows current details | ✅ | Looked up on each load |
+| Offline | ⚠️ | The saved list shows; a shared list offline says it isn't saved; changing a list needs a connection |
+| No account, nothing stored on the server | ✅ | Cookie only (ids appear in request logs) |
+
+Fixed: an open redirect through a tab character in the return address; other websites could change someone's list through a link; a shared list offline showed the device's own list; toggling lost the person's place; the listing page had no Add/Remove. Left: the 31st item silently drops the oldest; pages saved in the background can show an old "On my list" state offline.
+
+## Learnings
+
+- Went well: cookie-and-redirect lists work on every page, scripts or not.
+- Surprising: checking a return path's first characters isn't enough; browsers strip tabs and line breaks before resolving it.
+- Next time: validate redirect targets by resolving them and comparing origins, everywhere (one helper, `localReturn`).

@@ -11,7 +11,7 @@ const NEVER = [
   /^\/forget/,
   /^\/list\/(toggle|save)/,
   /^\/(es\/)?report/,
-  /^\/(es\/)?ask/,
+  /^\/(es\/)?(ask|navigator)/,
   /^\/sms/,
   /^\/api\//,
   /^\/cdn-cgi\//,
@@ -68,7 +68,7 @@ self.addEventListener('fetch', event => {
     event.respondWith(switchMode(request))
     return
   }
-  if (request.mode === 'navigate' && request.method === 'POST' && /^\/(es\/)?ask$/.test(url.pathname)) {
+  if (request.mode === 'navigate' && request.method === 'POST' && /^\/(es\/)?(ask|navigator)$/.test(url.pathname)) {
     event.respondWith(fetch(request).catch(() => askOffline()))
     return
   }

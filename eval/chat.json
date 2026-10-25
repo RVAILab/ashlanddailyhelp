@@ -57,6 +57,19 @@
     "lang": "en",
     "citesAny": ["ohra-showers"],
     "orUnknown": true,
-    "never": "24 hours"
+    "never": "is open 24 hours"
+  },
+  {
+    "question": "What does someone need to bring to get groceries from the food pantries, and who can use them?",
+    "lang": "en",
+    "depth": "full",
+    "citesAny": ["access-pantries"],
+    "orUnknown": true
+  },
+  {
+    "question": "Who is eligible for the OHRA shelter and how does a client get in?",
+    "lang": "en",
+    "depth": "full",
+    "citesAny": ["ohra-shelter", "ohra-navigation"]
   }
 ]

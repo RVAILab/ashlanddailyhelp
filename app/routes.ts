@@ -18,6 +18,7 @@ export default [
     route('today', 'routes/today.tsx'),
     route('next', 'routes/next.tsx'),
     route('ask', 'routes/ask.tsx'),
+    route('navigator', 'routes/navigator.tsx'),
     route('pulse', 'routes/pulse.tsx'),
     route('providers', 'routes/providers.tsx'),
     route('report', 'routes/report.tsx'),

@@ -14,6 +14,7 @@ import { storeListings } from '../test/listings.ts'
 interface Case {
   question: string
   lang: 'en' | 'es'
+  depth?: 'brief' | 'full'
   cites?: string[]
   citesAny?: string[]
   unknown?: boolean
@@ -70,7 +71,7 @@ for (const alert of await currentAlerts(db, now)) state(alert.id, JSON.stringify
 
 let failed = 0
 for (const test of cases) {
-  const reply = await answerQuestion({ db, answerer, question: test.question, lang: test.lang, now })
+  const reply = await answerQuestion({ db, answerer, question: test.question, lang: test.lang, now, depth: test.depth })
   const cited = reply.citations.map(citation => citation.id)
   const problems: string[] = []
   const unknownOk = test.orUnknown && !reply.known

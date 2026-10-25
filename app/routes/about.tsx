@@ -38,6 +38,9 @@ export default function About() {
       <p>
         <Link to={path('/pulse')}>{t.pulse.link}</Link>
       </p>
+      <p>
+        <Link to={path('/navigator')}>{t.navigator.link}</Link>
+      </p>
     </main>
   )
 }

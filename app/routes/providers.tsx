@@ -47,6 +47,9 @@ export default function Providers({ loaderData }: Route.ComponentProps) {
             ))}
           </ul>
         ))}
+      <p>
+        <Link to={path('/navigator')}>{t.navigator.link}</Link>
+      </p>
     </main>
   )
 }

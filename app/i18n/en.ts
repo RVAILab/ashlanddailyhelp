@@ -217,6 +217,16 @@ export const en = {
       'You can text Daily Help again. Ask about food, shelter, showers, health care or essentials. Reply HELP for help.',
     limited: 'That’s a lot of texts in a short time. Please wait a minute, or call 211.',
   },
+  navigator: {
+    title: 'Navigator assistant',
+    intro:
+      'For caseworkers and outreach workers: ask about eligibility, requirements and schedules, and get a fuller answer from the Daily Help listings with every source, then share or print the listings it uses.',
+    link: 'Helping people find services? Use the navigator assistant',
+    use: 'Use these listings',
+    share: 'Open as a shareable list',
+    print: 'Print a handout',
+    save: 'Save these to my list',
+  },
   today: {
     title: 'Open today',
     link: 'Open now and later today',

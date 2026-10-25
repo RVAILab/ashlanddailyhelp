@@ -53,10 +53,15 @@ export const ListingsFile = KnownListingsFields.superRefine((file, ctx) => {
     for (const issue of steward.error.issues) ctx.addIssue({ code: 'custom', message: issue.message, path: issue.path })
 }).transform(file => ({
   ...file,
-  // A sensitive location is never placed on a map, even if a feed ever sends its coordinates.
-  listings: file.listings.map(
-    ({ geo, ...listing }): StoredListing => (geo && !sensitive(listing.address) ? { ...listing, geo } : listing),
-  ),
+  // A sensitive location is never placed on a map, even if a feed ever sends its coordinates or their sources (a
+  // geocoder's link carries the address).
+  listings: file.listings.map(({ geo, provenance, ...listing }): StoredListing => {
+    if (!sensitive(listing.address))
+      return { ...listing, ...(geo ? { geo } : {}), ...(provenance ? { provenance } : {}) }
+    if (!provenance) return listing
+    const { geo: _, ...kept } = provenance
+    return { ...listing, provenance: kept }
+  }),
 }))
 
 export type ListingsFile = z.infer<typeof KnownListingsFields>

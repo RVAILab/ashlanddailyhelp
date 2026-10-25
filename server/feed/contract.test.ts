@@ -43,7 +43,19 @@ describe('ListingsFile', () => {
 
   it('never keeps coordinates for a sensitive location, whatever the feed sends', () => {
     const feed = sampleListingsFeed()
-    const hidden = { ...feed.listings[0], address: 'Location not published. Call the provider.', geo }
-    expect(ListingsFile.parse({ ...feed, listings: [hidden] }).listings[0]).not.toHaveProperty('geo')
+    const provenance = {
+      geo: [
+        {
+          sourceType: 'website',
+          sourceRef: 'https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?address=12+Hidden+Ln',
+          observedAt: '2026-10-25T21:40:00Z',
+          span: null,
+        },
+      ],
+    }
+    const hidden = { ...feed.listings[0], address: 'Location not published. Call the provider.', geo, provenance }
+    const parsed = ListingsFile.parse({ ...feed, listings: [hidden] }).listings[0]
+    expect(parsed).not.toHaveProperty('geo')
+    expect(parsed?.provenance).not.toHaveProperty('geo')
   })
 })

@@ -3,8 +3,8 @@ metadata:
   created_at:   2026-10-25T11:06:46-07:00
   activated_at: 2026-10-25T11:39:44-07:00
   planned_at:   2026-10-25T11:41:14-07:00
-  finished_at:
-  updated_at:   2026-10-25T12:01:53-07:00
+  finished_at:  2026-10-25T12:10:17-07:00
+  updated_at:   2026-10-25T12:10:17-07:00
 -->
 
 # Story: Set Up the Cloudflare App
@@ -105,3 +105,9 @@ Findings:
 8. Fixed: unused `@testing-library/user-event`, `preview` script, unused e2e database and a wrong Drizzle credentials fallback removed.
 9. Fixed: an overstated comment about Hyperdrive pooling, and a workflow header that restated the jobs.
 10. Fixed: README and CLAUDE.md inaccuracies (e2e needs a running database, the deploy gate is the repository secret, Hyperdrive precedence and `localConnectionString`, the steward isn't hosted yet, remaining static-site paths).
+
+## Learnings
+
+- Went well: test-first on the health route and the connection lifecycle caught real behaviour (an error opening the database, a connection closed mid-stream) that the end-to-end check would have missed. Keeping the static site deploying from `legacy/` kept `main` releasable through the move.
+- Surprising: Postgres.app asks macOS for permission each time a new program connects, which showed up as 30-second connection timeouts from the local Workers runtime and looked like a driver bug. A private cluster (`scripts/dev-db.sh`) avoids it. Also, `wrangler types` reads `.dev.vars`, so generated types differed between machines.
+- Next time: prove a full request (streamed body included) against the real runtime before trusting a lifecycle design, and get account access (Cloudflare, Neon) lined up before a setup story, so its acceptance criteria can be closed rather than left partial.

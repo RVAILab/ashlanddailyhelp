@@ -31,7 +31,10 @@ describe('/ask', () => {
       state: 'answered',
       question: 'I want to kill myself, is there a shelter?',
       answer: {
-        paragraphs: ['If you or someone else is in danger, call 911.', 'Their page lists a shelter.'],
+        paragraphs: [
+          'If you or someone else is in danger, call 911. To talk to someone now: 988, or 541-774-8201.',
+          'Their page lists a shelter.',
+        ],
         crisis: true,
         known: true,
         asOf: 'Sun, Oct 25, 2026, 12:00 PM PDT',
@@ -49,6 +52,12 @@ describe('/ask', () => {
     const answer = await screen.findByRole('region', { name: /You asked/ })
     const paragraphs = within(answer).getAllByText(/./, { selector: 'p' })
     expect(paragraphs[0]?.textContent).toContain('911')
+    for (const [number, dial] of [
+      ['911', 'tel:911'],
+      ['988', 'tel:988'],
+      ['541-774-8201', 'tel:5417748201'],
+    ])
+      expect(within(answer).getByRole('link', { name: number }).getAttribute('href')).toBe(dial)
     expect(within(answer).getByRole('link', { name: 'Talk through shelter options' }).getAttribute('href')).toBe(
       '/resources/ohra-shelter',
     )

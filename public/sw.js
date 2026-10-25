@@ -68,6 +68,10 @@ self.addEventListener('fetch', event => {
     event.respondWith(switchMode(request))
     return
   }
+  if (request.mode === 'navigate' && request.method === 'POST' && /^\/(es\/)?ask$/.test(url.pathname)) {
+    event.respondWith(fetch(request).catch(() => askOffline()))
+    return
+  }
   if (request.method !== 'GET' || url.origin !== self.location.origin || NEVER.some(path => path.test(url.pathname)))
     return
   if (/^\/(assets|fonts|art)\//.test(url.pathname)) event.respondWith(savedFirst(request))
@@ -119,6 +123,14 @@ async function saved(cache, request, url) {
   // A shared list or sheet must never fall back to this device's own list.
   if (request.mode !== 'navigate' || plainPage(url) || ['/list', '/print'].includes(url.pathname)) return undefined
   return cache.match(url.pathname, { ignoreVary: true })
+}
+
+// A question sent without a connection is never answered from the device; this says so instead of a browser error.
+function askOffline() {
+  return new Response(
+    '<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Offline</title><p>You’re offline. Asking a question needs a connection, so it wasn’t sent. For help finding services, call <a href="tel:211">211</a>. In an emergency, call <a href="tel:911">911</a>.</p><p lang="es">Sin conexión. Para hacer una pregunta se necesita conexión. Para ayuda, llame al <a href="tel:211">211</a>. En una emergencia, llame al <a href="tel:911">911</a>.</p>',
+    { status: 503, headers: { 'Content-Type': 'text/html; charset=utf-8' } },
+  )
 }
 
 function offlinePage() {

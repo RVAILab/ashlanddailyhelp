@@ -97,7 +97,7 @@ function Answer({ result }: { result: Extract<AskResult, { state: 'answered' }> 
       </h2>
       {answer.paragraphs.map((paragraph, index) => (
         <p key={paragraph} className={answer.crisis && index === 0 ? 'ask-crisis' : undefined}>
-          {paragraph}
+          <Dialable text={paragraph} />
         </p>
       ))}
       {answer.citations.length > 0 && (
@@ -119,5 +119,21 @@ function Answer({ result }: { result: Extract<AskResult, { state: 'answered' }> 
       )}
       {answer.asOf && <p className="ask-note">{t.chat.asOf(answer.asOf)}</p>}
     </section>
+  )
+}
+
+// Phone numbers in an answer, crisis lines included, are one tap to call.
+const PHONE = /(\b(?:911|988|211)\b|\b\d{3}-\d{3}-\d{4}\b)/
+
+function Dialable({ text }: { text: string }) {
+  return text.split(PHONE).map((part, index) =>
+    index % 2 === 1 ? (
+      // biome-ignore lint/suspicious/noArrayIndexKey: the parts of one fixed string, never reordered
+      <a key={index} href={`tel:${part.replace(/\D/g, '')}`}>
+        {part}
+      </a>
+    ) : (
+      part
+    ),
   )
 }

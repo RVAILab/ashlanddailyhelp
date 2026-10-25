@@ -4,7 +4,7 @@ metadata:
   activated_at: 2026-10-25T11:39:44-07:00
   planned_at:   2026-10-25T11:41:14-07:00
   finished_at:
-  updated_at:   2026-10-25T11:41:14-07:00
+  updated_at:   2026-10-25T12:01:53-07:00
 -->
 
 # Story: Set Up the Cloudflare App
@@ -76,3 +76,32 @@ None yet. The first tables arrive with `06-ingest-feed`.
 - Whether the Worker's Cloudflare account is the one shared with the steward can't be checked from here (wrangler isn't logged in locally, and the steward isn't hosted yet, steward issue #24).
 - The production database, the `DATABASE_URL` secrets and Hyperdrive need someone with the Cloudflare and Neon accounts.
 - Moving the old site into `legacy/` makes the steward's checks of this repo's `core.js` and `data.js` (`fixtures/site-core`, `npm run demo -- --site`) skip or fail; `05-request-steward-decoupling` asks the steward to drop them.
+
+## Review
+
+Reviewed 2026-10-25 at `fbbc412` by an independent agent; findings checked against the code and fixed in the next commit unless noted.
+
+| Criterion | Verdict | Evidence |
+| --- | --- | --- |
+| Worker `ashlanddailyhelp` serving the static files | ✅ | `legacy/wrangler.jsonc`; the dry run reads 107 files from `legacy/` |
+| Push to `main` deploys; pull requests only run checks | ✅ | `.github/workflows/deploy.yml` (`deploy-*` jobs run only on `main`) |
+| Account confirmed as the one shared with the steward | ❌ | Can't be checked from here: wrangler isn't logged in locally and the steward isn't hosted yet (steward #24). Needs someone with account access. |
+| Postgres reachable from the Worker, migrations in the repo and run on deploy | ⚠️ | Code path, migration runner and deploy step exist (`server/request-database.ts`, `scripts/migrate.ts`, `deploy-app`); proven against Postgres 17 in CI's end-to-end job. No production database yet, and no migrations until `06-ingest-feed`. |
+| App deploy skipped until a production database exists | ✅ | `deploy-app` is gated on the `DATABASE_URL` repository secret, and checks `/health` after deploying |
+| Workflow builds the app before deploying | ✅ | `npm run deploy` builds; the check job builds too |
+| Secrets in Cloudflare and GitHub, never in the repo | ✅ | `.dev.vars` ignored; `DATABASE_URL` reaches only the migration step |
+| README: run locally against a local Postgres and the steward's sample feed | ⚠️ | Local Postgres is covered. The app reads no feed until `06-ingest-feed`; the README says so. |
+| Tests run in CI on every push and pull request | ✅ | `check` and `e2e` jobs |
+
+Findings:
+
+1. Fixed: the database connection closed when the handler returned, before React Router finished streaming the body. `server/request-database.ts` now closes it after the body has been sent, with tests.
+2. Fixed: the production `DATABASE_URL` was visible to every step of `deploy-app`; now only the migration step sees it.
+3. Fixed: a manual run could deploy, and migrate production, from any branch; deploys now require `main`.
+4. Fixed: nothing checked the deployed app; `deploy-app` now fails unless `/health` reaches the database.
+5. Fixed: an error opening the database (for example a malformed URL) escaped the health check's `try`; now reported as `unavailable`, with a test.
+6. Fixed: `wrangler types` typed `DATABASE_URL` from the local `.dev.vars`, so types differed between machines and CI; it now skips env types (`--include-env=false`) and `workers/env.d.ts` declares them.
+7. Fixed: the Worker's wiring had no tests and the route test helper used a double cast; the wiring moved to `server/request-database.ts` with tests, and `test/route.ts` builds real `LoaderFunctionArgs`.
+8. Fixed: unused `@testing-library/user-event`, `preview` script, unused e2e database and a wrong Drizzle credentials fallback removed.
+9. Fixed: an overstated comment about Hyperdrive pooling, and a workflow header that restated the jobs.
+10. Fixed: README and CLAUDE.md inaccuracies (e2e needs a running database, the deploy gate is the repository secret, Hyperdrive precedence and `localConnectionString`, the steward isn't hosted yet, remaining static-site paths).

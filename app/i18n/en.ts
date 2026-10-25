@@ -4,8 +4,51 @@ export const en = {
   siteName: 'Ashland Daily Help',
   language: { name: 'English', switchTo: 'Español' },
   home: {
-    tagline: 'Food, shelter, showers and health care in Ashland and Jackson County.',
-    findHelp: 'Find help',
+    title: 'Find help in Ashland and Jackson County',
+    tagline: 'Food, shelter, showers, health care and everyday essentials, from the providers’ own information.',
+    emergency: {
+      label: 'Emergency and crisis numbers',
+      emergency: 'Emergency',
+      crisis: 'Mental health or suicide crisis',
+      services: 'Help finding services',
+    },
+    kinds: 'What do you need?',
+    hints: {
+      food: 'Meals and groceries',
+      housing: 'Shelter and housing help',
+      hygiene: 'Showers and laundry',
+      health: 'Clinics, medicine and mental health',
+      essentials: 'Clothing, phones, ID and more',
+    } satisfies Record<Category, string>,
+    searchAll: 'Search everything',
+    others: 'Other ways in',
+    helping: 'Helping someone else? Search and share listings',
+    providers: 'Run a service? How listings work',
+    about: 'About Daily Help',
+  },
+  about: {
+    title: 'About Ashland Daily Help',
+    intro:
+      'Daily Help lists free and low-cost services in Ashland and Jackson County: food, shelter, showers, health care and everyday essentials.',
+    sourcesHeading: 'Where the listings come from',
+    sources:
+      'Listings come from what providers publish themselves: their websites, their social media and the county’s weekly resource packet. A separate service, the Daily Help steward, gathers and checks them, and a person reviews anything uncertain before it appears.',
+    callAhead: 'Hours and rules change. When you can, call before you go.',
+    labelsHeading: 'What the labels mean',
+    labels: [
+      ['Schedule needs checking', 'Sources disagree about the times. Call before you go.'],
+      [
+        'Not yet confirmed by provider',
+        'Found only on a flyer, a bulletin or a directory, not on the provider’s own page.',
+      ],
+      ['Source reviewed', 'When Daily Help last checked the provider’s own information.'],
+    ] as Array<[string, string]>,
+    privacyHeading: 'Your privacy',
+    privacy:
+      'Daily Help has no accounts and keeps nothing about you. If you choose a language, that choice is remembered on your device only.',
+    providersHeading: 'For providers',
+    providers:
+      'Your listing comes from what you publish on your own website and in the county resource packet, so keeping those up to date keeps your listing accurate. A way to check and correct your listing here is coming.',
   },
   categories: {
     food: 'Food',

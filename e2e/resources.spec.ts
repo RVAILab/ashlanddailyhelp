@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test'
 
 test('find showers from the homepage, narrow by kind of help, and go back', async ({ page }) => {
   await page.goto('/')
-  await page.getByRole('link', { name: 'Find help' }).click()
+  await page.getByRole('link', { name: 'Search everything' }).click()
   await expect(page.getByRole('status')).toHaveText(/\d+ places/)
 
   await page.getByRole('searchbox', { name: 'Words to search for' }).fill('show')

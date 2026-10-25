@@ -6,6 +6,7 @@ import {
   Scripts,
   ScrollRestoration,
   useLocation,
+  useMatches,
   useRouteLoaderData,
 } from 'react-router'
 import type { Route } from './+types/root'
@@ -13,10 +14,15 @@ import './app.css'
 import { langFromPath, langs, localePath, messagesFor } from './i18n/index.ts'
 import type { loader as localeLoader } from './routes/locale.tsx'
 
+// A page made only of links and text sets handle = { hydrate: false } and ships no JavaScript at all.
+const hasHydrateFalse = (handle: unknown) =>
+  typeof handle === 'object' && handle !== null && 'hydrate' in handle && handle.hydrate === false
+
 export function Layout({ children }: { children: React.ReactNode }) {
   const { pathname, search } = useLocation()
   const origin = useRouteLoaderData<typeof localeLoader>('routes/locale')?.origin
   const page = `${pathname}${search}`
+  const hydrate = useMatches().every(match => !hasHydrateFalse(match.handle))
   return (
     <html lang={langFromPath(pathname)}>
       <head>
@@ -35,8 +41,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         {children}
-        <ScrollRestoration />
-        <Scripts />
+        {hydrate && (
+          <>
+            <ScrollRestoration />
+            <Scripts />
+          </>
+        )}
       </body>
     </html>
   )

@@ -5,8 +5,52 @@ export const es = {
   siteName: 'Ashland Daily Help',
   language: { name: 'Español', switchTo: 'English' },
   home: {
-    tagline: 'Comida, albergue, duchas y atención médica en Ashland y el condado de Jackson.',
-    findHelp: 'Buscar ayuda',
+    title: 'Encuentre ayuda en Ashland y el condado de Jackson',
+    tagline:
+      'Comida, albergue, regaderas, atención médica y artículos básicos, con la información de las propias organizaciones.',
+    emergency: {
+      label: 'Números de emergencia y de crisis',
+      emergency: 'Emergencias',
+      crisis: 'Crisis de salud mental o de suicidio',
+      services: 'Ayuda para encontrar servicios',
+    },
+    kinds: '¿Qué necesita?',
+    hints: {
+      food: 'Comidas y despensas',
+      housing: 'Albergue y ayuda con vivienda',
+      hygiene: 'Regaderas y lavandería',
+      health: 'Clínicas, medicinas y salud mental',
+      essentials: 'Ropa, teléfonos, identificación y más',
+    },
+    searchAll: 'Buscar en todo',
+    others: 'Otras formas de usar el sitio',
+    helping: '¿Ayuda a otra persona? Busque y comparta servicios',
+    providers: '¿Tiene un servicio? Cómo se hace la lista',
+    about: 'Acerca de Daily Help',
+  },
+  about: {
+    title: 'Acerca de Ashland Daily Help',
+    intro:
+      'Daily Help tiene una lista de servicios gratuitos y de bajo costo en Ashland y el condado de Jackson: comida, albergue, regaderas, atención médica y artículos básicos.',
+    sourcesHeading: 'De dónde viene la lista',
+    sources:
+      'La información viene de lo que publican las propias organizaciones: sus sitios web, sus redes sociales y el paquete semanal de recursos del condado. Un servicio aparte, el Daily Help steward, la reúne y la revisa, y una persona revisa lo que no esté claro antes de publicarlo.',
+    callAhead: 'Los horarios y las reglas cambian. Si puede, llame antes de ir.',
+    labelsHeading: 'Qué quieren decir las etiquetas',
+    labels: [
+      ['Verifique el horario antes de ir', 'Las fuentes no coinciden en el horario. Llame antes de ir.'],
+      [
+        'La organización todavía no lo ha confirmado',
+        'Solo aparece en un volante, un boletín o un directorio, no en la información de la propia organización.',
+      ],
+      ['Información revisada', 'Cuándo revisó Daily Help por última vez la información de la propia organización.'],
+    ],
+    privacyHeading: 'Su privacidad',
+    privacy:
+      'Daily Help no tiene cuentas y no guarda nada sobre usted. Si elige un idioma, esa elección se guarda solo en su dispositivo.',
+    providersHeading: 'Para las organizaciones',
+    providers:
+      'Su servicio aparece según lo que publica en su propio sitio web y en el paquete de recursos del condado; si mantiene esa información al día, la lista también lo estará. Pronto habrá una forma de revisar y corregir su servicio aquí.',
   },
   categories: {
     food: 'Comida',

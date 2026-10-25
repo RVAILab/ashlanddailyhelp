@@ -7,7 +7,7 @@ test.describe('a browser that prefers Spanish', () => {
     await page.goto('/')
     await expect(page).toHaveURL(/\/es$/)
     await expect(page.locator('html')).toHaveAttribute('lang', 'es')
-    await expect(page.getByRole('link', { name: 'Buscar ayuda' })).toBeVisible()
+    await expect(page.getByRole('link', { name: 'Buscar en todo' })).toBeVisible()
 
     await page.getByRole('link', { name: 'English' }).click()
     await expect(page).toHaveURL(/\/$/)
@@ -37,7 +37,7 @@ test.describe('a browser that prefers Spanish and keeps no cookies', () => {
     await page.goto('/es')
     await page.getByRole('link', { name: 'English' }).click()
     await context.clearCookies()
-    await page.getByRole('link', { name: 'Find help' }).click()
+    await page.getByRole('link', { name: 'Search everything' }).click()
     await expect(page.getByRole('heading', { level: 1, name: 'Find help' })).toBeVisible()
   })
 })

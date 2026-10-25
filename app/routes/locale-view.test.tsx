@@ -28,8 +28,10 @@ describe('the language layout', () => {
 
   it('puts the page and its links in Spanish under /es', async () => {
     renderAt('/es', 'es')
-    expect(await screen.findByRole('heading', { level: 1, name: 'Ashland Daily Help' })).toBeDefined()
-    expect(screen.getByRole('link', { name: 'Buscar ayuda' }).getAttribute('href')).toBe('/es/resources')
+    expect(
+      await screen.findByRole('heading', { level: 1, name: 'Encuentre ayuda en Ashland y el condado de Jackson' }),
+    ).toBeDefined()
+    expect(screen.getByRole('link', { name: 'Buscar en todo' }).getAttribute('href')).toBe('/es/resources')
     expect(screen.getByRole('link', { name: 'English' }).getAttribute('lang')).toBe('en')
     expect(within(screen.getByRole('contentinfo')).getByText('La lista todavía no se ha cargado.')).toBeDefined()
   })

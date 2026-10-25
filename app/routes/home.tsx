@@ -22,7 +22,10 @@ export default function Home() {
       <nav aria-label={t.home.emergency.label} className="emergency">
         {numbers.map(([number, what]) => (
           <a key={number} href={`tel:${number}`}>
-            <strong>{number}</strong>
+            <strong>
+              <span className="visually-hidden">{t.home.emergency.call} </span>
+              {number}
+            </strong>{' '}
             <span>{what}</span>
           </a>
         ))}

@@ -32,12 +32,17 @@ test.describe('the homepage on a small phone', () => {
 })
 
 test('the first load of the homepage stays under 100 KB and runs no JavaScript', async ({ page }) => {
-  let bytes = 0
-  page.on('response', async response => {
-    const body = await response.body().catch(() => Buffer.alloc(0))
-    bytes += body.length
-  })
+  const bodies: Array<Promise<number>> = []
+  page.on('response', response =>
+    bodies.push(
+      response.body().then(
+        body => body.length,
+        () => 0,
+      ),
+    ),
+  )
   await page.goto('/', { waitUntil: 'networkidle' })
+  const bytes = (await Promise.all(bodies)).reduce((sum, size) => sum + size, 0)
   expect(await page.locator('script').count()).toBe(0)
   expect(bytes).toBeLessThan(100_000)
 })

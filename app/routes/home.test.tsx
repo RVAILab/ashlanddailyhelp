@@ -18,10 +18,10 @@ describe('homepage', () => {
     renderHome()
     const numbers = await screen.findByRole('navigation', { name: 'Emergency and crisis numbers' })
     const links = within(numbers).getAllByRole('link')
-    expect(links.map(link => [link.textContent, link.getAttribute('href')])).toEqual([
-      ['911Emergency', 'tel:911'],
-      ['988Mental health or suicide crisis', 'tel:988'],
-      ['211Help finding services', 'tel:211'],
+    expect(links.map(link => [link.textContent?.replace(/\s+/g, ' ').trim(), link.getAttribute('href')])).toEqual([
+      ['Call 911 Emergency', 'tel:911'],
+      ['Call 988 Suicide and crisis line, call or text', 'tel:988'],
+      ['Call 211 Help finding services', 'tel:211'],
     ])
     const [first] = document.querySelectorAll('a')
     expect(first?.getAttribute('href')).toBe('tel:911')
@@ -58,9 +58,7 @@ describe('homepage', () => {
 
   it('is in Spanish under /es, with Spanish links', async () => {
     renderHome('es')
-    expect(
-      await screen.findByRole('heading', { level: 1, name: 'Encuentre ayuda en Ashland y el condado de Jackson' }),
-    ).toBeDefined()
+    expect(await screen.findByRole('heading', { level: 1, name: 'Encuentre ayuda' })).toBeDefined()
     expect(screen.getByRole('navigation', { name: 'Números de emergencia y de crisis' })).toBeDefined()
     expect(screen.getByRole('link', { name: /Comida/ }).getAttribute('href')).toBe('/es/resources?category=food')
     expect(screen.getByRole('link', { name: 'Acerca de Daily Help' }).getAttribute('href')).toBe('/es/about')

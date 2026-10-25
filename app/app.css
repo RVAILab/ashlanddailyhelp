@@ -266,6 +266,15 @@ main h1:focus-visible {
   outline: 3px solid var(--focus);
 }
 
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
 .emergency {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

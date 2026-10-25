@@ -5,13 +5,14 @@ export const es = {
   siteName: 'Ashland Daily Help',
   language: { name: 'Español', switchTo: 'English' },
   home: {
-    title: 'Encuentre ayuda en Ashland y el condado de Jackson',
+    title: 'Encuentre ayuda',
     tagline:
       'Comida, albergue, regaderas, atención médica y artículos básicos, con la información de las propias organizaciones.',
     emergency: {
       label: 'Números de emergencia y de crisis',
       emergency: 'Emergencias',
-      crisis: 'Crisis de salud mental o de suicidio',
+      call: 'Llame al',
+      crisis: 'Línea de crisis y suicidio, llame o envíe texto',
       services: 'Ayuda para encontrar servicios',
     },
     kinds: '¿Qué necesita?',
@@ -34,7 +35,7 @@ export const es = {
       'Daily Help tiene una lista de servicios gratuitos y de bajo costo en Ashland y el condado de Jackson: comida, albergue, regaderas, atención médica y artículos básicos.',
     sourcesHeading: 'De dónde viene la lista',
     sources:
-      'La información viene de lo que publican las propias organizaciones: sus sitios web, sus redes sociales y el paquete semanal de recursos del condado. Un servicio aparte, el Daily Help steward, la reúne y la revisa, y una persona revisa lo que no esté claro antes de publicarlo.',
+      'La información viene de lo que publican las organizaciones y otros: sus sitios web y redes sociales, el paquete semanal de recursos del condado, avisos de la ciudad y volantes. Un sistema aparte de Daily Help la reúne y la compara. Lo que no se puede confirmar con la información de la propia organización lleva la etiqueta “La organización todavía no lo ha confirmado”.',
     callAhead: 'Los horarios y las reglas cambian. Si puede, llame antes de ir.',
     labelsHeading: 'Qué quieren decir las etiquetas',
     labels: [
@@ -47,7 +48,7 @@ export const es = {
     ],
     privacyHeading: 'Su privacidad',
     privacy:
-      'Daily Help no tiene cuentas y no guarda nada sobre usted. Si elige un idioma, esa elección se guarda solo en su dispositivo.',
+      'Daily Help no tiene cuentas y no le pide ningún dato. Como la mayoría de los sitios web, sus servidores guardan por poco tiempo registros técnicos de las páginas que se piden, incluidas las palabras de búsqueda. Si elige un idioma, una cookie lo recuerda.',
     providersHeading: 'Para las organizaciones',
     providers:
       'Su servicio aparece según lo que publica en su propio sitio web y en el paquete de recursos del condado; si mantiene esa información al día, la lista también lo estará. Pronto habrá una forma de revisar y corregir su servicio aquí.',

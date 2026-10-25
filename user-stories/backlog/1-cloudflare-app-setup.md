@@ -4,7 +4,7 @@ metadata:
   activated_at:
   planned_at:
   finished_at:
-  updated_at:   2026-10-25T11:06:46-07:00
+  updated_at:   2026-10-25T11:12:24-07:00
 -->
 
 # Story: Set Up the Cloudflare App
@@ -17,16 +17,20 @@ SO THAT every other story has somewhere to run, in the same platform the steward
 
 ## Acceptance Criteria
 
-- A Cloudflare project in the account shared with the steward, with production and preview environments.
+- Done in PR #2: a Cloudflare Worker (`ashlanddailyhelp`, `wrangler.jsonc`, `worker.js`) serving the repo's static files at <https://ashlanddailyhelp.kitchenlab.workers.dev>.
+- Done in PR #2: pushing to `main` deploys production through GitHub Actions (`.github/workflows/deploy.yml`), and pull requests run the checks without deploying.
+- The Worker's Cloudflare account is confirmed as the one shared with the steward, or the Worker moves there.
 - A Postgres database reachable from the Worker (for example through Hyperdrive), with migrations checked into the repo and run on deploy.
-- Pushing to `main` deploys production; a pull request gets a preview URL.
-- Secrets (database URL, later the Anthropic API key) live in Cloudflare secrets, never in the repo.
+- A pull request gets a preview URL (`preview_urls` is `false` today).
+- The workflow builds the new app before deploying; today it serves files as committed, with no build step.
+- Secrets (database URL, later the Anthropic API key) live in Cloudflare secrets, never in the repo. The deploy token stays in GitHub secrets (`CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`).
 - The README explains how to run the app locally against a local Postgres and the steward's sample feed (`../daily-help-steward/fixtures/feed-sample/`).
-- A test command exists and runs in CI on every pull request.
+- A test command runs in CI on every pull request, in place of today's `node --check` and `wrangler deploy --dry-run` checks or alongside them.
 
 ## Notes
 
 - The steward chose Cloudflare on Oct 25 (steward `docs/CONTEXT.md`, decision 7).
+- PR #2 (`a8845c3`) deployed the old static site to Cloudflare; this story turns that project into the new app's.
 - Open: the framework (it should render on the server in Workers and ship little JavaScript, for weak connections and offline use) and the Postgres host (Neon, Supabase or other).
 - The old static site stays live until `3-domain-cutover`.
 

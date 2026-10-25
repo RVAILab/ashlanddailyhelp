@@ -26,11 +26,12 @@ export function ListingCardView({ listing }: { listing: ListingCard }) {
   const heading = useId()
   const { t, lang, path } = useI18n()
   const { pathname, search } = useLocation()
-  const back = encodeURIComponent(`${pathname}${search}`)
+  // Back to this card, so toggling keeps the person's place on a long page.
+  const back = encodeURIComponent(`${pathname}${search}#${listing.id}`)
   // Listing text comes from the steward in English; on other pages, mark it so screen readers use an English voice.
   const feedLang = lang === 'en' ? undefined : 'en'
   return (
-    <article className="listing-card" aria-labelledby={heading}>
+    <article className="listing-card" aria-labelledby={heading} id={listing.id}>
       <h3 id={heading} lang={feedLang}>
         <Link to={path(`/resources/${listing.id}`)} state={{ search }}>
           {listing.name}

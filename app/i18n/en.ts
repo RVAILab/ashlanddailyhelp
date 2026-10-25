@@ -175,6 +175,18 @@ export const en = {
     textBody: (url: string) => `Places from Ashland Daily Help: ${url}`,
     save: 'Save this list on my device',
   },
+  print: {
+    title: 'Printable sheet',
+    link: 'Print this',
+    confirm: 'Hours and rules change. Call before you go when you can.',
+    empty: 'Nothing to print here yet.',
+    place: 'Where',
+    when: 'When',
+    bring: 'What to know',
+    back: 'For the latest, scan the code or visit',
+    qr: 'QR code for this page on Ashland Daily Help',
+    help: 'Emergency 911 · Mental Health Crisis Line 988 or 541-774-8201 · Help finding services 211',
+  },
   detail: {
     backToSearch: 'Back to search',
     details: 'Details',

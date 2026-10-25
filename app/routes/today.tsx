@@ -236,7 +236,7 @@ export default function Today({ loaderData }: Route.ComponentProps) {
         </section>
       ))}
       <p>
-        <Link to={path('/resources')}>{t.home.searchAll}</Link>
+        <Link to={path('/resources')}>{t.home.searchAll}</Link> · <a href={path('/print?view=today')}>{t.print.link}</a>
       </p>
     </main>
   )

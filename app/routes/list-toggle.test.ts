@@ -25,3 +25,20 @@ describe('/list/toggle', () => {
     expect(bad.headers.get('Set-Cookie')).toBeNull()
   })
 })
+
+describe('/list/toggle, from the review', () => {
+  it('refuses a return address that browsers would turn into another site', () => {
+    expect(toggle('?id=ohra-showers&return=%2F%09%2Fevil.example').headers.get('Location')).toBe('/list')
+  })
+
+  it('changes nothing when another website sends someone here', () => {
+    const response = loader(
+      loaderArgs(
+        'https://ashlanddailyhelp.com/list/toggle?id=ohra-showers&return=%2Flist',
+        {},
+        { Cookie: '', 'Sec-Fetch-Site': 'cross-site' },
+      ),
+    )
+    expect(response.headers.get('Set-Cookie')).toBeNull()
+  })
+})

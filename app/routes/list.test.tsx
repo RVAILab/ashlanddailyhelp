@@ -33,7 +33,7 @@ describe('/list', () => {
     expect(await screen.findByRole('heading', { level: 1, name: 'My list' })).toBeDefined()
     expect(screen.getByRole('article', { name: card.name })).toBeDefined()
     expect(screen.getByRole('link', { name: 'Remove from my list' }).getAttribute('href')).toBe(
-      '/list/toggle?id=ohra-showers&return=%2Flist',
+      '/list/toggle?id=ohra-showers&return=%2Flist%23ohra-showers',
     )
     const text = screen.getByRole('link', { name: 'Text this list' }).getAttribute('href') ?? ''
     expect(text.startsWith('sms:?&body=')).toBe(true)

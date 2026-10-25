@@ -103,6 +103,11 @@ export default function Resources({ loaderData }: Route.ComponentProps) {
         <section aria-labelledby="results-heading" className="results">
           <h2 id="results-heading">{t.search.results}</h2>
           {demonstration && <p className="notice">{t.feed.demonstration}</p>}
+          {filters.category && !filters.query && (
+            <p>
+              <a href={path(`/print?category=${filters.category}`)}>{t.print.link}</a>
+            </p>
+          )}
           <p role="status" className="result-count">
             {t.search.places(results.length)}
           </p>

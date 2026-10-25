@@ -1,0 +1,47 @@
+import { describe, expect, it } from 'vitest'
+import { testDatabase } from '../../test/db.ts'
+import { storeListings } from '../../test/listings.ts'
+import { loaderArgs } from '../../test/route.ts'
+import { loader } from './print.tsx'
+
+async function load(path: string, cookie = '') {
+  const db = await testDatabase()
+  await storeListings(db)
+  const data = await loader(
+    loaderArgs(`https://ashlanddailyhelp.com${path}`, { database: () => db }, { Cookie: cookie }),
+  )
+  await db.close()
+  return data
+}
+
+describe('/print loader', () => {
+  it('prints a shared or saved list with name, address, phone, hours and requirements', async () => {
+    const data = await load('/print?ids=ohra-showers.uncle-foods')
+    expect(data.title).toBe('My list')
+    expect(data.rows.map(row => row.name)).toEqual(['A shower and a fresh start', 'A seat at the community table'])
+    expect(data.rows[0]).toMatchObject({
+      phone: '541-631-2235',
+      address: expect.any(String),
+      hours: expect.any(String),
+      requirements: expect.any(String),
+    })
+    expect(data.backUrl).toBe('https://ashlanddailyhelp.com/list?ids=ohra-showers.uncle-foods')
+    expect(data.qr.startsWith('<svg')).toBe(true)
+    const saved = await load('/print?list=saved', 'saved=uncle-foods')
+    expect(saved.rows.map(row => row.name)).toEqual(['A seat at the community table'])
+  })
+
+  it('prints a kind of help, with a link back to that search', async () => {
+    const data = await load('/print?category=hygiene')
+    expect(data.title).toBe('Showers and hygiene')
+    expect(data.rows.map(row => row.name)).toEqual(['A shower and a fresh start'])
+    expect(data.backUrl).toBe('https://ashlanddailyhelp.com/resources?category=hygiene')
+  })
+
+  it('prints today’s view', async () => {
+    const data = await load('/print?view=today')
+    expect(data.title).toBe('Open today')
+    expect(data.backUrl).toBe('https://ashlanddailyhelp.com/today')
+    expect(data.rows.length).toBeGreaterThan(0)
+  })
+})

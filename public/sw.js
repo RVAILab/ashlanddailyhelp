@@ -9,6 +9,7 @@ const NEVER = [
   /^\/health/,
   /^\/language/,
   /^\/forget/,
+  /^\/list\/(toggle|save)/,
   /^\/report/,
   /^\/api\//,
   /^\/cdn-cgi\//,
@@ -97,7 +98,8 @@ async function networkFirst(request, url) {
 async function saved(cache, request, url) {
   const exact = await cache.match(request, { ignoreVary: true })
   if (exact) return exact
-  if (request.mode !== 'navigate' || plainPage(url)) return undefined
+  // A shared list must never fall back to this device's own list.
+  if (request.mode !== 'navigate' || plainPage(url) || url.pathname === '/list') return undefined
   return cache.match(url.pathname, { ignoreVary: true })
 }
 

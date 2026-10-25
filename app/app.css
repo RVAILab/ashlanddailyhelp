@@ -465,3 +465,60 @@ main h1:focus-visible {
   font-size: 0.875rem;
   color: var(--muted);
 }
+
+.print-sheet table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.print-sheet th,
+.print-sheet td {
+  padding: 0.4rem;
+  border-bottom: 1px solid var(--field);
+  text-align: left;
+  vertical-align: top;
+}
+
+.print-back {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.print-qr {
+  width: 7rem;
+  flex: none;
+}
+
+@media print {
+  :root {
+    --ink: #000;
+    --muted: #000;
+    --paper: #fff;
+    --card: #fff;
+    --field: #000;
+    --line: #000;
+  }
+
+  body {
+    max-width: none;
+    font-size: 13pt;
+    color: #000;
+    background: #fff;
+  }
+
+  .site-header,
+  .site-footer,
+  .offline-notice,
+  .alerts,
+  .save-toggle,
+  .search-form {
+    display: none;
+  }
+
+  a {
+    color: #000;
+    text-decoration: none;
+  }
+}

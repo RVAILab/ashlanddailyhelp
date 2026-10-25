@@ -16,6 +16,7 @@ export default [
     route('providers', 'routes/providers.tsx'),
     route('report', 'routes/report.tsx'),
     route('list', 'routes/list.tsx'),
+    route('print', 'routes/print.tsx'),
     route('*', 'routes/not-found.tsx'),
   ]),
 ] satisfies RouteConfig

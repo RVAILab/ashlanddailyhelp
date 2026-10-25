@@ -56,6 +56,9 @@ export default function List({ loaderData }: Route.ComponentProps) {
           <h2 id="share-heading">{t.list.share}</h2>
           <p className="share-url">{shareUrl}</p>
           <p>
+            <a href={path(`/print?ids=${presentIds.join('.')}`)}>{t.print.link}</a>
+          </p>
+          <p>
             <a className="call-211" href={`sms:?&body=${encodeURIComponent(t.list.textBody(shareUrl))}`}>
               {t.list.text}
             </a>

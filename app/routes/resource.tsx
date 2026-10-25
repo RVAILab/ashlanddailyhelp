@@ -8,9 +8,10 @@ import { services } from '../context.ts'
 import { langFromPath, messagesFor } from '../i18n/index.ts'
 import { useI18n } from '../i18n/provider.tsx'
 import { listingDetail } from '../lib/listing-detail.ts'
+import { savedIds } from '../lib/saved-list.ts'
 import type { Route } from './+types/resource'
 
-export async function loader({ url, params, context }: Route.LoaderArgs) {
+export async function loader({ request, url, params, context }: Route.LoaderArgs) {
   const db = context.get(services).database()
   if (!db) throw data('The listings database is not configured.', { status: 503 })
   const lang = langFromPath(url.pathname)
@@ -27,7 +28,7 @@ export async function loader({ url, params, context }: Route.LoaderArgs) {
   const detail = listingDetail(listing, lang, translated)
   const alert = (await pageAlerts(db, lang, new Date())).byListing[listing.id]
   if (alert) detail.labels.unshift({ kind: 'warning', text: alert })
-  return data({ listing: detail })
+  return data({ listing: detail, saved: savedIds(request.headers.get('Cookie')).includes(listing.id) })
 }
 
 export function meta({ loaderData, location }: Route.MetaArgs) {
@@ -45,6 +46,7 @@ const searchFrom = (state: unknown) =>
 
 export default function Resource({ loaderData }: Route.ComponentProps) {
   const { listing } = loaderData
+  const saved = 'saved' in loaderData && loaderData.saved
   const { t, lang, path } = useI18n()
   const location = useLocation()
   const back = (
@@ -79,6 +81,11 @@ export default function Resource({ loaderData }: Route.ComponentProps) {
         </p>
       )}
       <p lang={listing.description.fromFeed ? feedLang : undefined}>{listing.description.text}</p>
+      <p className="save-toggle">
+        <a href={`/list/toggle?id=${listing.id}&return=${encodeURIComponent(location.pathname)}`} rel="nofollow">
+          {saved ? t.list.remove : t.list.add}
+        </a>
+      </p>
       <p className="actions">
         {listing.phone && (
           <a className="action" href={`tel:${dialable(listing.phone)}`}>

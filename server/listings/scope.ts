@@ -1,8 +1,8 @@
 import { sql } from 'drizzle-orm'
 import { listings } from '../../db/schema.ts'
 
-// The prototype covers Ashland: services there, and county-wide or statewide services that include it (Oct 25).
-export const SERVED_PLACES = ['Ashland', 'Jackson County', 'Oregon']
+// The prototype covers Ashland and the Rogue Valley around it (demo, Oct 25): local, county-wide and statewide services.
+export const SERVED_PLACES = ['Ashland', 'Medford', 'Rogue Valley', 'Jackson County', 'Oregon']
 
 export const servesAshland = (area: string, coverage: readonly string[] = []) =>
   [area, ...coverage].some(place => SERVED_PLACES.includes(place))

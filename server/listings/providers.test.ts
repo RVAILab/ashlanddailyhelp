@@ -12,13 +12,13 @@ describe('listingsByProvider', () => {
       ...sample,
       listings: [
         ...sample.listings,
-        { ...sample.listings[0], id: 'ohra-medford', area: 'Medford', coverage: ['Medford'] },
+        { ...sample.listings[0], id: 'ohra-grants-pass', area: 'Grants Pass', coverage: ['Grants Pass'] },
       ],
     })
     const now = new Date('2026-10-25T18:00:00Z')
     const ids = (await listingsByProvider(db, 'ohra', now)).map(listing => listing.id)
     expect(ids).toEqual(expect.arrayContaining(['ohra-showers', 'ohra-navigation', 'ohra-shelter']))
-    expect(ids).not.toContain('ohra-medford')
+    expect(ids).not.toContain('ohra-grants-pass')
     expect(await listingsByProvider(db, '  ', now)).toEqual([])
     expect(await listingsByProvider(db, '%', now)).toEqual([])
     await db.close()

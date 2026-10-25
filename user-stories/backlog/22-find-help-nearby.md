@@ -24,7 +24,7 @@ SO THAT I can reach one on foot or by bus
 
 ## Notes
 
-- Blocked by `20-request-coordinates`.
+- Blocked by `21-request-coordinates`.
 
 ## Implementation Plan
 

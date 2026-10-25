@@ -4,7 +4,7 @@ metadata:
   activated_at:
   planned_at:
   finished_at:
-  updated_at:   2026-10-25T11:35:21-07:00
+  updated_at:   2026-10-25T11:36:25-07:00
 -->
 
 # Story: Ingest the Steward Feed
@@ -17,6 +17,7 @@ SO THAT pages and search are fast, and keep working when the steward is slow or 
 
 ## Acceptance Criteria
 
+- Postgres tables hold the community resources and their evidence fields as the app's single store for them, created by migrations in the repo, with queries tested against a real Postgres.
 - A scheduled Worker fetches each feed file from one configurable base URL every few minutes, sending `If-None-Match`; a 304 changes nothing.
 - Each file is checked against the steward's contract before anything is written: schema version major 1, the steward's JSON Schema (`schema/feed/`). A file that fails, or has an unknown major version, is treated like a failed fetch and logged.
 - A valid file replaces the stored state in one transaction, so a page never sees half a feed. Listings dropped from the feed disappear.
@@ -30,8 +31,8 @@ SO THAT pages and search are fast, and keep working when the steward is slow or 
 ## Notes
 
 - Contract: `../daily-help-steward/docs/FEED.md` and `src/contract/feed.ts`. As a server-side consumer, FEED.md rule 8 applies.
-- Current state only; no history. `pulse.json` is not ingested until `24-community-pulse`.
-- Overlaps `backlog/06-store-community-resources-in-db.md` (Oct 24). Merge it into this story or delete it.
+- Current state only; no history. `pulse.json` is not ingested until `23-community-pulse`.
+- Absorbs the Oct 24 story "Store Community Resources in DB" (a central Postgres store for community resource data).
 
 ## Implementation Plan
 

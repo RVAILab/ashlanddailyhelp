@@ -4,7 +4,7 @@ metadata:
   activated_at:
   planned_at:
   finished_at:
-  updated_at:   2026-10-25T11:35:21-07:00
+  updated_at:   2026-10-25T11:36:25-07:00
 -->
 
 # Story: Request an Alerts Feed from the Steward
@@ -24,7 +24,7 @@ SO THAT /today and the homepage can show them before someone travels
 
 ## Notes
 
-- Blocks `15-today-alerts`.
+- Blocks `14-today-alerts`.
 - The steward already has a `city_alert` source type and a cold-weather fixture (`fixtures/alerts/cold-weather-2026-10-25.html`).
 
 ## Implementation Plan

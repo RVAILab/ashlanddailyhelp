@@ -4,7 +4,7 @@ metadata:
   activated_at:
   planned_at:
   finished_at:
-  updated_at:   2026-10-25T11:35:21-07:00
+  updated_at:   2026-10-25T11:36:25-07:00
 -->
 
 # Story: Navigator Assistant
@@ -17,13 +17,13 @@ SO THAT I can help more people, faster
 
 ## Acceptance Criteria
 
-- Uses `25-chat-grounding`, with fuller answers and every source shown.
-- Can turn an answer into a shareable list or handout (`19-shareable-lists`, `20-print-handout`).
+- Uses `24-chat-grounding`, with fuller answers and every source shown.
+- Can turn an answer into a shareable list or handout (`18-shareable-lists`, `19-print-handout`).
 - Access approach decided (open, or limited to known navigators) without adding accounts to the public site.
 
 ## Notes
 
-- Depends on `25-chat-grounding`.
+- Depends on `24-chat-grounding`.
 
 ## Implementation Plan
 

@@ -4,7 +4,7 @@ metadata:
   activated_at:
   planned_at:
   finished_at:
-  updated_at:   2026-10-25T11:35:21-07:00
+  updated_at:   2026-10-25T11:36:25-07:00
 -->
 
 # Story: Resource Detail Page
@@ -23,7 +23,7 @@ SO THAT I can decide whether to go and how to get there
 - A "Where does this come from?" view lists each field's sources from `provenance`: the source, the quoted text and when it was seen.
 - A sensitive location shows "Location not published. Call the provider." and no map.
 - In Spanish, translated text is labelled as an automatic translation with a link to the English.
-- Links to "Report a problem with this listing" (`17-provider-listing-view`).
+- Links to "Report a problem with this listing" (`16-provider-listing-view`).
 
 ## Notes
 

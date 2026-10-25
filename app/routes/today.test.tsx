@@ -25,6 +25,34 @@ describe('/today', () => {
       workedOut: '11:00 AM',
       now: '2026-10-25T18:00:00.000Z',
       nextChange: null,
+      events: {
+        today: [
+          {
+            id: 'flu',
+            title: 'Free flu shot clinic',
+            provider: 'Jackson County Public Health',
+            when: '1:00 PM–4:00 PM',
+            where: 'Ashland Library',
+            status: null,
+            labels: [{ kind: 'caution' as const, text: 'Not yet confirmed by provider' }],
+            listingId: null,
+          },
+        ],
+        finished: [],
+        tomorrow: [
+          {
+            id: 'coats',
+            title: 'Coat giveaway',
+            provider: 'Ashland Rotary',
+            when: '10:00 AM',
+            where: 'Ashland Plaza',
+            status: { kind: 'canceled' as const, text: 'Canceled. Posted by Ashland Rotary.' },
+            labels: [],
+            listingId: 'rotary',
+          },
+        ],
+        thisWeek: [],
+      },
       groups: {
         openNow: [
           { card: card('a', 'Showers'), when: 'Open until 2:00 PM', hours: 'Today: 9:00 AM–12:00 PM, 1:00 PM–2:00 PM' },
@@ -48,5 +76,20 @@ describe('/today', () => {
     expect(
       within(screen.getByRole('region', { name: 'Hours not confirmed (1)' })).getByText('Schedule needs checking'),
     ).toBeDefined()
+  })
+
+  it('says there are no scheduled events today, never sample ones', async () => {
+    const loaderData = {
+      filters: {},
+      areas: [],
+      workedOut: '11:00 AM',
+      now: '2026-10-25T18:00:00.000Z',
+      nextChange: null,
+      events: { today: [], finished: [], tomorrow: [], thisWeek: [] },
+      groups: { openNow: [], later: [], closed: [], notConfirmed: [] },
+    }
+    const Stub = createRoutesStub([{ path: '/today', Component: Today, loader: () => loaderData }])
+    render(<Stub initialEntries={['/today']} />)
+    expect(await screen.findByText('No scheduled events today.')).toBeDefined()
   })
 })

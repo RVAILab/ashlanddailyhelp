@@ -1,6 +1,6 @@
 import { sql } from 'drizzle-orm'
 import { customType, index, integer, jsonb, pgTable, text, timestamp } from 'drizzle-orm/pg-core'
-import type { StoredListing } from '../server/feed/contract.ts'
+import type { FeedEvent, StoredListing } from '../server/feed/contract.ts'
 
 const instant = (name: string) => timestamp(name, { withTimezone: true })
 
@@ -70,4 +70,13 @@ export const translationFailures = pgTable('translation_failures', {
   hash: text().primaryKey(),
   attempts: integer().notNull(),
   failedAt: instant('failed_at').notNull(),
+})
+
+// Dated one-off events (proposed in steward #40). `lastsUntil` is when an event stops being shown: its end, or the end
+// of its local day when it has none.
+export const events = pgTable('events', {
+  id: text().primaryKey(),
+  position: integer().notNull(),
+  lastsUntil: instant('lasts_until').notNull(),
+  data: jsonb().$type<FeedEvent>().notNull(),
 })

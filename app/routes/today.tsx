@@ -1,9 +1,12 @@
 import { useEffect } from 'react'
 import { data, Form, Link, useRevalidator } from 'react-router'
-import type { StoredListing } from '../../server/feed/contract.ts'
+import type { FeedEvent, StoredListing } from '../../server/feed/contract.ts'
+import { upcomingEvents } from '../../server/feed/events.ts'
 import { listingAreas, searchListings } from '../../server/listings/search.ts'
+import { groupEvents } from '../../server/today/events.ts'
 import { groupToday, type TodayEntry } from '../../server/today/group.ts'
 import { type ListingCard, ListingCardView } from '../components/listing-card.tsx'
+import { ListingStatus } from '../components/listing-status.tsx'
 import { services } from '../context.ts'
 import type { Messages } from '../i18n/en.ts'
 import { type Lang, langFromPath, locales, messagesFor } from '../i18n/index.ts'
@@ -69,6 +72,48 @@ function toEntry(
   }
 }
 
+interface EventView {
+  id: string
+  title: string
+  provider: string
+  when: string
+  where: string
+  status: { kind: 'canceled' | 'may_be_canceled'; text: string } | null
+  labels: Array<{ kind: 'caution' | 'source'; text: string }>
+  listingId: string | null
+}
+
+function toEventView(event: FeedEvent, lang: Lang, t: Messages): EventView {
+  const when = event.startsAt
+    ? event.endsAt
+      ? `${clock(lang, event.startsAt)}–${clock(lang, event.endsAt)}`
+      : clock(lang, event.startsAt)
+    : t.events.allDay
+  const labels: EventView['labels'] = []
+  if (event.unconfirmed) labels.push({ kind: 'caution', text: t.labels.unconfirmed })
+  if (event.provenanceLabel) labels.push({ kind: 'source', text: event.provenanceLabel })
+  return {
+    id: event.id,
+    title: event.title,
+    provider: event.provider,
+    when,
+    where: event.address,
+    status: event.status
+      ? {
+          kind: event.status,
+          text: event.note || (event.status === 'canceled' ? t.events.canceled : t.events.mayBeCanceled),
+        }
+      : null,
+    labels,
+    listingId: event.listingId ?? null,
+  }
+}
+
+const dayName = (lang: Lang, date: string) =>
+  new Intl.DateTimeFormat(locales[lang], { timeZone: 'UTC', weekday: 'long', month: 'short', day: 'numeric' }).format(
+    new Date(`${date}T12:00:00Z`),
+  )
+
 export async function loader({ url, context }: Route.LoaderArgs) {
   const db = context.get(services).database()
   if (!db) throw data('The listings database is not configured.', { status: 503 })
@@ -81,12 +126,27 @@ export async function loader({ url, context }: Route.LoaderArgs) {
   if (area) filters.area = area
   else delete filters.area
   const groups = groupToday(await searchListings(db, filters, now, lang), now)
+  const scheduled = groupEvents(
+    (await upcomingEvents(db, now)).filter(
+      event =>
+        (!filters.category || event.categories.includes(filters.category)) &&
+        (!filters.area || event.area === filters.area),
+    ),
+    now,
+  )
+  const view = (list: FeedEvent[]) => list.map(event => toEventView(event, lang, t))
   return {
     filters,
     areas,
     workedOut: clock(lang, now),
     now: now.toISOString(),
     nextChange: groups.nextChange?.toISOString() ?? null,
+    events: {
+      today: view(scheduled.today),
+      finished: view(scheduled.finished),
+      tomorrow: view(scheduled.tomorrow),
+      thisWeek: scheduled.thisWeek.map(event => ({ ...toEventView(event, lang, t), day: dayName(lang, event.date) })),
+    },
     groups: {
       openNow: groups.openNow.map(entry => toEntry(entry, lang, t, 'openNow')),
       later: groups.later.map(entry => toEntry(entry, lang, t, 'later')),
@@ -119,7 +179,7 @@ function useRegroup(serverNow: string, nextChange: string | null) {
 const GROUPS = ['openNow', 'later', 'closed', 'notConfirmed'] as const
 
 export default function Today({ loaderData }: Route.ComponentProps) {
-  const { filters, areas, workedOut, now, nextChange, groups } = loaderData
+  const { filters, areas, workedOut, now, nextChange, groups, events } = loaderData
   const { t, path } = useI18n()
   useRegroup(now, nextChange)
   return (
@@ -151,6 +211,29 @@ export default function Today({ loaderData }: Route.ComponentProps) {
         </label>
         <button type="submit">{t.search.submit}</button>
       </Form>
+      <section aria-labelledby="events-heading" className="today-events">
+        <h2 id="events-heading">{t.events.title}</h2>
+        <h3>{t.events.today}</h3>
+        {events.today.length === 0 ? <p>{t.events.none}</p> : <EventList events={events.today} />}
+        {events.finished.length > 0 && (
+          <details>
+            <summary>{t.events.finished(events.finished.length)}</summary>
+            <EventList events={events.finished} />
+          </details>
+        )}
+        {events.tomorrow.length > 0 && (
+          <>
+            <h3>{t.events.tomorrow}</h3>
+            <EventList events={events.tomorrow} />
+          </>
+        )}
+        {events.thisWeek.length > 0 && (
+          <>
+            <h3>{t.events.thisWeek}</h3>
+            <EventList events={events.thisWeek} />
+          </>
+        )}
+      </section>
       {GROUPS.map(group => (
         <section key={group} aria-labelledby={`${group}-heading`} className={`today-group today-${group}`}>
           <h2 id={`${group}-heading`}>
@@ -174,5 +257,40 @@ export default function Today({ loaderData }: Route.ComponentProps) {
         <Link to={path('/resources')}>{t.home.searchAll}</Link>
       </p>
     </main>
+  )
+}
+
+function EventList({ events }: { events: Array<EventView & { day?: string }> }) {
+  const { t, path } = useI18n()
+  return (
+    <ul className="event-list">
+      {events.map(event => (
+        <li key={event.id}>
+          <article
+            aria-labelledby={`event-${event.id}`}
+            className={event.status?.kind === 'canceled' ? 'event canceled' : 'event'}
+          >
+            <p className="event-when">
+              {event.day ? `${event.day} · ` : ''}
+              {event.when}
+            </p>
+            <h4 id={`event-${event.id}`}>{event.title}</h4>
+            <p className="provider">{event.provider}</p>
+            {event.status && (
+              <p className={`label label-warning event-status-${event.status.kind}`}>
+                <span aria-hidden="true">▲</span> {event.status.text}
+              </p>
+            )}
+            <ListingStatus labels={event.labels} />
+            <p>{event.where}</p>
+            {event.listingId && (
+              <p>
+                <Link to={path(`/resources/${event.listingId}`)}>{t.events.related}</Link>
+              </p>
+            )}
+          </article>
+        </li>
+      ))}
+    </ul>
   )
 }

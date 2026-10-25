@@ -1,0 +1,73 @@
+{
+  "schemaVersion": "1.4",
+  "generatedAt": "2026-10-25T18:00:00Z",
+  "dataset": "FICTIONAL_DEMONSTRATION",
+  "timeZone": "America/Los_Angeles",
+  "from": "2026-10-25",
+  "until": "2026-11-07",
+  "events": [
+    {
+      "id": "flu-clinic-1",
+      "title": "Free flu shot clinic",
+      "provider": "Jackson County Public Health",
+      "categories": ["health"],
+      "description": "Flyer lists free flu shots, no appointment needed.",
+      "date": "2026-10-25",
+      "startsAt": "2026-10-25T13:00:00-07:00",
+      "endsAt": "2026-10-25T16:00:00-07:00",
+      "address": "Ashland Library, 410 Siskiyou Blvd, Ashland",
+      "area": "Ashland",
+      "cost": "Free, according to the flyer",
+      "requirements": "Not confirmed",
+      "provenanceLabel": "Found on a flyer sent to Daily Help",
+      "unconfirmed": true
+    },
+    {
+      "id": "breakfast-1",
+      "listingId": "uncle-foods",
+      "title": "Pancake breakfast",
+      "provider": "Peace House",
+      "categories": ["food"],
+      "description": "Website lists a pancake breakfast.",
+      "date": "2026-10-25",
+      "startsAt": "2026-10-25T08:00:00-07:00",
+      "endsAt": "2026-10-25T10:00:00-07:00",
+      "address": "Trinity Episcopal Church, Ashland",
+      "area": "Ashland",
+      "cost": "Free",
+      "requirements": "Not confirmed",
+      "provenanceLabel": "Posted by Peace House"
+    },
+    {
+      "id": "giveaway-1",
+      "title": "Coat giveaway",
+      "provider": "Ashland Rotary",
+      "categories": ["essentials"],
+      "description": "Coats for anyone who needs one.",
+      "date": "2026-10-26",
+      "startsAt": "2026-10-26T10:00:00-07:00",
+      "address": "Ashland Plaza",
+      "area": "Ashland",
+      "cost": "Free",
+      "requirements": "Not confirmed",
+      "status": "canceled",
+      "note": "Canceled. Posted by Ashland Rotary.",
+      "provenanceLabel": "Posted by Ashland Rotary"
+    },
+    {
+      "id": "showers-pop-up-1",
+      "title": "Pop-up showers",
+      "provider": "OHRA",
+      "categories": ["hygiene"],
+      "description": "Mobile showers at a new place.",
+      "date": "2026-10-28",
+      "address": "Medford Library",
+      "area": "Medford",
+      "cost": "Free",
+      "requirements": "Not confirmed",
+      "status": "may_be_canceled",
+      "note": "May be canceled if it rains.",
+      "provenanceLabel": "Posted by OHRA"
+    }
+  ]
+}

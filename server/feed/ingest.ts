@@ -15,6 +15,8 @@ export interface FeedFileSpec<File extends FileHeader> {
   name: string
   schema: z.ZodType<File, unknown>
   store: (tx: Database, file: File) => Promise<void>
+  // A file the steward may not publish yet: a 404 is recorded as not published, without an error in the logs.
+  optional?: boolean
 }
 
 export interface RefreshDeps {
@@ -25,11 +27,16 @@ export interface RefreshDeps {
   timeoutMs?: number
 }
 
-export type RefreshOutcome = { result: 'stored' } | { result: 'unchanged' } | { result: 'failed'; error: string }
+export type RefreshOutcome =
+  | { result: 'stored' }
+  | { result: 'unchanged' }
+  | { result: 'absent' }
+  | { result: 'failed'; error: string }
 
 const ERROR_LENGTH = 500
 
 class FeedRejected extends Error {}
+class NotPublished extends Error {}
 
 async function within<T>(ms: number, work: Promise<T>, what: string): Promise<T> {
   let timer: ReturnType<typeof setTimeout> | undefined
@@ -59,6 +66,7 @@ async function download(
   const signal = AbortSignal.timeout(timeoutMs)
   const response = await within(timeoutMs, fetch(url, { headers, signal }), 'could not reach the feed host')
   if (response.status === 304) return null
+  if (response.status === 404) throw new NotPublished()
   if (!response.ok) throw new FeedRejected(`HTTP ${response.status}`)
   const body = await within(timeoutMs, response.text(), 'could not read the file').catch(cause => {
     throw cause instanceof FeedRejected ? cause : new FeedRejected(`could not read the file: ${String(cause)}`)
@@ -119,7 +127,13 @@ export async function refreshFeedFile<File extends FileHeader>(
     })
     return { result: 'stored' }
   } catch (cause) {
-    const error = (cause instanceof Error ? cause.message : String(cause)).slice(0, ERROR_LENGTH)
+    if (cause instanceof NotPublished && spec.optional) {
+      await recordError(db, spec.name, 'not published yet', checkedAt)
+      return { result: 'absent' }
+    }
+    const error = (
+      cause instanceof NotPublished ? 'HTTP 404' : cause instanceof Error ? cause.message : String(cause)
+    ).slice(0, ERROR_LENGTH)
     console.error(`feed: ${spec.name} from ${baseUrl} was not stored: ${error}`)
     await recordError(db, spec.name, error, checkedAt)
     return { result: 'failed', error }

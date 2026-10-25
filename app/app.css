@@ -393,6 +393,34 @@ main h1:focus-visible {
   content: "? ";
 }
 
+.event-list {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.event {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--card);
+}
+
+.event h4 {
+  margin: 0;
+}
+
+.event-when {
+  margin: 0;
+  font-weight: 600;
+}
+
+.event.canceled h4 {
+  text-decoration: line-through;
+}
+
 .site-footer {
   margin-top: 3rem;
   padding: 1rem 0 2rem;

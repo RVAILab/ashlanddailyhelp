@@ -116,6 +116,18 @@ export const es = {
     none: 'Nothing here right now.',
     hours: (spans: string) => `Today: ${spans}`,
   },
+  events: {
+    title: 'Scheduled events',
+    today: 'Today',
+    finished: (count: number) => (count === 1 ? '1 event earlier today' : `${count} events earlier today`),
+    tomorrow: 'Tomorrow',
+    thisWeek: 'Later this week',
+    none: 'No scheduled events today.',
+    allDay: 'Time not listed',
+    canceled: 'Canceled',
+    mayBeCanceled: 'May be canceled',
+    related: 'More about this service',
+  },
   detail: {
     backToSearch: 'Volver a la búsqueda',
     details: 'Detalles',

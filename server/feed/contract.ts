@@ -37,3 +37,42 @@ export const ListingsFile = KnownListingsFields.superRefine((file, ctx) => {
 
 export type ListingsFile = z.infer<typeof KnownListingsFields>
 export type StoredListing = ListingsFile['listings'][number]
+
+// Proposed in steward #40 and not yet in its contract: dated one-off events.
+const Day = z.iso.date()
+const Text = z.string()
+
+export const FeedEvent = z.object({
+  id: z.string().regex(/^[A-Za-z0-9_-]+$/),
+  title: z.string().min(1),
+  provider: z.string().min(1),
+  categories: z.array(z.enum(['food', 'housing', 'hygiene', 'health', 'essentials'])).min(1),
+  description: Text,
+  date: Day,
+  startsAt: Instant.optional(),
+  endsAt: Instant.optional(),
+  address: Text,
+  area: Text,
+  cost: Text,
+  requirements: Text,
+  listingId: z.string().optional(),
+  seriesId: z.string().optional(),
+  phone: z.string().optional(),
+  source: z.url().optional(),
+  status: z.enum(['may_be_canceled', 'canceled']).optional(),
+  note: z.string().optional(),
+  provenanceLabel: z.string().optional(),
+  unconfirmed: z.boolean().optional(),
+  conflict: z.boolean().optional(),
+})
+
+export type FeedEvent = z.infer<typeof FeedEvent>
+
+export const EventsFile = z.object({
+  schemaVersion: z.string().regex(/^1\.\d+$/),
+  generatedAt: Instant,
+  dataset: z.enum(['FICTIONAL_DEMONSTRATION', 'LIVE']),
+  events: z.array(FeedEvent),
+})
+
+export type EventsFile = z.infer<typeof EventsFile>

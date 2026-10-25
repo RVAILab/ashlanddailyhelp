@@ -1,7 +1,10 @@
-import { integer, jsonb, pgTable, text, timestamp } from 'drizzle-orm/pg-core'
+import { sql } from 'drizzle-orm'
+import { customType, index, integer, jsonb, pgTable, text, timestamp } from 'drizzle-orm/pg-core'
 import type { FeedListing } from '../contract/steward/feed.ts'
 
 const instant = (name: string) => timestamp(name, { withTimezone: true })
+
+const tsvector = customType<{ data: string }>({ dataType: () => 'tsvector' })
 
 // One row per feed file. The header columns describe the copy in use; the error columns, the last failed refresh.
 export const feedFiles = pgTable('feed_files', {
@@ -16,9 +19,22 @@ export const feedFiles = pgTable('feed_files', {
   lastErrorAt: instant('last_error_at'),
 })
 
-export const listings = pgTable('listings', {
-  id: text().primaryKey(),
-  position: integer().notNull(),
-  endsAt: instant('ends_at'),
-  data: jsonb().$type<FeedListing>().notNull(),
-})
+export const listings = pgTable(
+  'listings',
+  {
+    id: text().primaryKey(),
+    position: integer().notNull(),
+    endsAt: instant('ends_at'),
+    data: jsonb().$type<FeedListing>().notNull(),
+    // Kept in step with data by Postgres; weighted so a match in the name ranks above one in the description.
+    search: tsvector()
+      .notNull()
+      .generatedAlwaysAs(
+        sql`setweight(to_tsvector('english', coalesce(data->>'name', '')), 'A')
+          || setweight(to_tsvector('english', coalesce(data->>'provider', '')), 'B')
+          || setweight(to_tsvector('english', coalesce(data->>'description', '')), 'C')
+          || setweight(jsonb_to_tsvector('english', coalesce(data->'tags', '[]'::jsonb), '["string"]'), 'C')`,
+      ),
+  },
+  table => [index('listings_search').using('gin', table.search)],
+)

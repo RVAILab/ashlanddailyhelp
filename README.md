@@ -63,7 +63,7 @@ npm run check       # lint, typecheck and tests: run before every push
 
 Every push to `main` deploys, so `.githooks/pre-push` runs `npm run check`. Enable it once per clone with `git config core.hooksPath .githooks`.
 
-Before the first `npm run e2e`, run `npx playwright install chromium`. The journeys use the database in `.dev.vars`, so start it and apply migrations first (`npm run db:start`, `npm run db:migrate`). Their setup replaces the listings in that database with the sample feed.
+Before the first `npm run e2e`, run `npx playwright install chromium`. The journeys use the database in `.dev.vars`, so start it and apply migrations first (`npm run db:start`, `npm run db:migrate`). Their setup applies migrations to that database and replaces its listings with the sample feed.
 
 ### Database migrations
 

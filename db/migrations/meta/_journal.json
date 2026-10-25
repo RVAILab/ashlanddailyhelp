@@ -8,6 +8,13 @@
       "when": 1792956160575,
       "tag": "0000_feed",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1792957734806,
+      "tag": "0001_search",
+      "breakpoints": true
     }
   ]
 }

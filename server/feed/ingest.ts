@@ -15,8 +15,10 @@ export interface FeedFileSpec<File extends FileHeader> {
   name: string
   schema: z.ZodType<File, unknown>
   store: (tx: Database, file: File) => Promise<void>
-  // A file the steward may not publish yet: a 404 is recorded as not published, without an error in the logs.
+  // A file the steward may not publish yet: a 404 is recorded as not published, without an error in the logs, and
+  // anything stored from an earlier copy is cleared, since the steward has stopped publishing it.
   optional?: boolean
+  clear?: (tx: Database) => Promise<void>
 }
 
 export interface RefreshDeps {
@@ -128,6 +130,7 @@ export async function refreshFeedFile<File extends FileHeader>(
     return { result: 'stored' }
   } catch (cause) {
     if (cause instanceof NotPublished && spec.optional) {
+      if (spec.clear) await spec.clear(db).catch(error => console.error(`feed: could not clear ${spec.name}`, error))
       await recordError(db, spec.name, 'not published yet', checkedAt)
       return { result: 'absent' }
     }

@@ -25,6 +25,7 @@ describe('/today', () => {
       workedOut: '11:00 AM',
       now: '2026-10-25T18:00:00.000Z',
       nextChange: null,
+      eventsDemonstration: false,
       events: {
         today: [
           {
@@ -85,11 +86,13 @@ describe('/today', () => {
       workedOut: '11:00 AM',
       now: '2026-10-25T18:00:00.000Z',
       nextChange: null,
+      eventsDemonstration: true,
       events: { today: [], finished: [], tomorrow: [], thisWeek: [] },
       groups: { openNow: [], later: [], closed: [], notConfirmed: [] },
     }
     const Stub = createRoutesStub([{ path: '/today', Component: Today, loader: () => loaderData }])
     render(<Stub initialEntries={['/today']} />)
     expect(await screen.findByText('No scheduled events today.')).toBeDefined()
+    expect(screen.getByText('This is demonstration data. Some listings are fictional.')).toBeDefined()
   })
 })

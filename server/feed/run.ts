@@ -2,6 +2,7 @@ import { connect, type DatabaseConnection } from '../db.ts'
 import { databaseUrl } from '../request-database.ts'
 import type { Translator } from '../translate/claude.ts'
 import { translatePending } from '../translate/run.ts'
+import { alertsFile } from './alerts.ts'
 import { eventsFile } from './events.ts'
 import { type RefreshOutcome, refreshFeedFile } from './ingest.ts'
 import { listingsFile } from './listings.ts'
@@ -50,6 +51,8 @@ export async function runIngest(
     console.log(`feed: listings.json ${outcome.result}`)
     const events = await refreshFeedFile(eventsFile, { db: connection.db, baseUrl, fetch, now: () => new Date() })
     console.log(`feed: events.json ${events.result}`)
+    const notices = await refreshFeedFile(alertsFile, { db: connection.db, baseUrl, fetch, now: () => new Date() })
+    console.log(`feed: alerts.json ${notices.result}`)
     if (translator) {
       // A translation problem never undoes or fails the refresh; the English is shown until a later run succeeds.
       await translatePending(connection.db, translator, {

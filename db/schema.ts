@@ -1,6 +1,6 @@
 import { sql } from 'drizzle-orm'
 import { customType, index, integer, jsonb, pgTable, text, timestamp } from 'drizzle-orm/pg-core'
-import type { FeedEvent, StoredListing } from '../server/feed/contract.ts'
+import type { FeedAlert, FeedEvent, StoredListing } from '../server/feed/contract.ts'
 
 const instant = (name: string) => timestamp(name, { withTimezone: true })
 
@@ -79,4 +79,12 @@ export const events = pgTable('events', {
   position: integer().notNull(),
   lastsUntil: instant('lasts_until').notNull(),
   data: jsonb().$type<FeedEvent>().notNull(),
+})
+
+// Time-bound notices (proposed in steward #41), shown until they end.
+export const alerts = pgTable('alerts', {
+  id: text().primaryKey(),
+  position: integer().notNull(),
+  endsAt: instant('ends_at').notNull(),
+  data: jsonb().$type<FeedAlert>().notNull(),
 })

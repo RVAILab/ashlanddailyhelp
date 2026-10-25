@@ -2,6 +2,8 @@ import { useEffect } from 'react'
 import { data, Form, Link, useRevalidator } from 'react-router'
 import type { FeedEvent, StoredListing } from '../../server/feed/contract.ts'
 import { upcomingEvents } from '../../server/feed/events.ts'
+import { feedFileStatus } from '../../server/feed/ingest.ts'
+import { currentListings } from '../../server/feed/listings.ts'
 import { listingAreas, searchListings } from '../../server/listings/search.ts'
 import { groupEvents } from '../../server/today/events.ts'
 import { groupToday, type TodayEntry } from '../../server/today/group.ts'
@@ -83,7 +85,7 @@ interface EventView {
   listingId: string | null
 }
 
-function toEventView(event: FeedEvent, lang: Lang, t: Messages): EventView {
+function toEventView(event: FeedEvent, lang: Lang, t: Messages, known: Set<string>): EventView {
   const when = event.startsAt
     ? event.endsAt
       ? `${clock(lang, event.startsAt)}–${clock(lang, event.endsAt)}`
@@ -105,7 +107,8 @@ function toEventView(event: FeedEvent, lang: Lang, t: Messages): EventView {
         }
       : null,
     labels,
-    listingId: event.listingId ?? null,
+    // Only link to a listing that is actually there, rather than to a page that says it isn't.
+    listingId: event.listingId && known.has(event.listingId) ? event.listingId : null,
   }
 }
 
@@ -134,7 +137,9 @@ export async function loader({ url, context }: Route.LoaderArgs) {
     ),
     now,
   )
-  const view = (list: FeedEvent[]) => list.map(event => toEventView(event, lang, t))
+  const known = new Set((await currentListings(db, now)).map(listing => listing.id))
+  const eventsFeed = await feedFileStatus(db, 'events.json')
+  const view = (list: FeedEvent[]) => list.map(event => toEventView(event, lang, t, known))
   return {
     filters,
     areas,
@@ -145,8 +150,12 @@ export async function loader({ url, context }: Route.LoaderArgs) {
       today: view(scheduled.today),
       finished: view(scheduled.finished),
       tomorrow: view(scheduled.tomorrow),
-      thisWeek: scheduled.thisWeek.map(event => ({ ...toEventView(event, lang, t), day: dayName(lang, event.date) })),
+      thisWeek: scheduled.thisWeek.map(event => ({
+        ...toEventView(event, lang, t, known),
+        day: dayName(lang, event.date),
+      })),
     },
+    eventsDemonstration: eventsFeed?.dataset === 'FICTIONAL_DEMONSTRATION',
     groups: {
       openNow: groups.openNow.map(entry => toEntry(entry, lang, t, 'openNow')),
       later: groups.later.map(entry => toEntry(entry, lang, t, 'later')),
@@ -179,7 +188,7 @@ function useRegroup(serverNow: string, nextChange: string | null) {
 const GROUPS = ['openNow', 'later', 'closed', 'notConfirmed'] as const
 
 export default function Today({ loaderData }: Route.ComponentProps) {
-  const { filters, areas, workedOut, now, nextChange, groups, events } = loaderData
+  const { filters, areas, workedOut, now, nextChange, groups, events, eventsDemonstration } = loaderData
   const { t, path } = useI18n()
   useRegroup(now, nextChange)
   return (
@@ -213,6 +222,7 @@ export default function Today({ loaderData }: Route.ComponentProps) {
       </Form>
       <section aria-labelledby="events-heading" className="today-events">
         <h2 id="events-heading">{t.events.title}</h2>
+        {eventsDemonstration && <p className="notice">{t.feed.demonstration}</p>}
         <h3>{t.events.today}</h3>
         {events.today.length === 0 ? <p>{t.events.none}</p> : <EventList events={events.today} />}
         {events.finished.length > 0 && (

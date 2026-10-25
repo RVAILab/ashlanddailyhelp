@@ -1,0 +1,43 @@
+{
+  "schemaVersion": "1.4",
+  "generatedAt": "2026-10-25T18:00:00Z",
+  "dataset": "FICTIONAL_DEMONSTRATION",
+  "alerts": [
+    {
+      "id": "notice-smoke",
+      "kind": "weather",
+      "severity": "notice",
+      "title": "Smoke advisory",
+      "message": "The county advises limiting time outdoors until Monday evening.",
+      "startsAt": "2026-10-25T08:00:00-07:00",
+      "endsAt": "2026-10-26T18:00:00-07:00",
+      "area": "Jackson County",
+      "provenanceLabel": "From a Jackson County advisory"
+    },
+    {
+      "id": "shelter-sunday",
+      "kind": "shelter_opening",
+      "severity": "urgent",
+      "title": "Severe weather shelter open Sunday night",
+      "message": "The City of Ashland is opening a severe weather shelter from 7:00 pm Sunday to 7:30 am Monday.",
+      "startsAt": "2026-10-25T19:00:00-07:00",
+      "endsAt": "2026-10-26T07:30:00-07:00",
+      "area": "Ashland",
+      "listingIds": ["ohra-shelter"],
+      "provenanceLabel": "From a City of Ashland alert"
+    },
+    {
+      "id": "withdrawn-1",
+      "kind": "closure",
+      "severity": "urgent",
+      "title": "Issued in error",
+      "message": "Withdrawn.",
+      "startsAt": "2026-10-25T08:00:00-07:00",
+      "endsAt": "2026-10-26T08:00:00-07:00",
+      "area": "Ashland",
+      "status": "withdrawn",
+      "note": "Issued in error.",
+      "provenanceLabel": "Daily Help coordinator"
+    }
+  ]
+}

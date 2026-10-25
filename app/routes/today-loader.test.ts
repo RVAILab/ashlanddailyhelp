@@ -58,3 +58,35 @@ describe('/today loader', () => {
     ).toEqual(['ohra-showers'])
   })
 })
+
+describe('/today loader, events', () => {
+  it('shows events that finished earlier today apart, filters them, and links only to stored listings', async () => {
+    const { readFileSync } = await import('node:fs')
+    const { refreshFeedFile } = await import('../../server/feed/ingest.ts')
+    const { eventsFile } = await import('../../server/feed/events.ts')
+    const { feedHost, json } = await import('../../test/feed.ts')
+    vi.useFakeTimers({ toFake: ['Date'] })
+    vi.setSystemTime(new Date('2026-10-25T18:00:00Z'))
+    const db = await testDatabase()
+    await storeListings(db)
+    const events = JSON.parse(readFileSync('test/fixtures/proposed/events.json', 'utf8'))
+    events.events[0].listingId = 'no-such-listing'
+    await refreshFeedFile(eventsFile, {
+      db,
+      baseUrl: 'https://feed.example.org/',
+      fetch: feedHost(json(events)).fetch,
+      now: () => new Date(),
+    })
+    const page = await loader(loaderArgs('/today', { database: () => db }))
+    expect(page.events.finished.map(event => event.id)).toEqual(['breakfast-1'])
+    expect(page.events.finished[0]?.listingId).toBe('uncle-foods')
+    expect(page.events.today[0]?.listingId).toBeNull()
+    expect(page.eventsDemonstration).toBe(true)
+    const health = await loader(loaderArgs('/today?category=health', { database: () => db }))
+    expect(
+      [...health.events.today, ...health.events.finished, ...health.events.tomorrow].map(event => event.id),
+    ).toEqual(['flu-clinic-1'])
+    vi.useRealTimers()
+    await db.close()
+  })
+})

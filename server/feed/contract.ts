@@ -55,7 +55,10 @@ export const FeedEvent = z.object({
   area: Text,
   cost: Text,
   requirements: Text,
-  listingId: z.string().optional(),
+  listingId: z
+    .string()
+    .regex(/^[a-z0-9][a-z0-9-]*$/)
+    .optional(),
   seriesId: z.string().optional(),
   phone: z.string().optional(),
   source: z.url().optional(),
@@ -76,3 +79,34 @@ export const EventsFile = z.object({
 })
 
 export type EventsFile = z.infer<typeof EventsFile>
+
+// Proposed in steward #41 and not yet in its contract: time-bound notices.
+export const FeedAlert = z.object({
+  id: z.string().regex(/^[A-Za-z0-9_-]+$/),
+  kind: z.enum(['shelter_opening', 'closure', 'cancellation', 'weather', 'other']),
+  severity: z.enum(['urgent', 'notice']),
+  title: z.string().min(1),
+  message: z.string().min(1),
+  startsAt: Instant,
+  endsAt: Instant,
+  area: z.string(),
+  provenanceLabel: z.string(),
+  coverage: z.array(z.string()).optional(),
+  listingIds: z.array(z.string()).optional(),
+  eventIds: z.array(z.string()).optional(),
+  status: z.enum(['may_be_canceled', 'canceled', 'withdrawn']).optional(),
+  note: z.string().optional(),
+  source: z.url().optional(),
+  unconfirmed: z.boolean().optional(),
+})
+
+export type FeedAlert = z.infer<typeof FeedAlert>
+
+export const AlertsFile = z.object({
+  schemaVersion: z.string().regex(/^1\.\d+$/),
+  generatedAt: Instant,
+  dataset: z.enum(['FICTIONAL_DEMONSTRATION', 'LIVE']),
+  alerts: z.array(FeedAlert),
+})
+
+export type AlertsFile = z.infer<typeof AlertsFile>

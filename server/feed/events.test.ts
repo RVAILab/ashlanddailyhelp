@@ -53,3 +53,43 @@ describe('refreshing events.json', () => {
     expect((await refresh(json(feed))).result).toBe('failed')
   })
 })
+
+describe('events, from the review', () => {
+  let db: Awaited<ReturnType<typeof testDatabase>>
+  beforeEach(async () => {
+    db = await testDatabase()
+  })
+  afterEach(async () => {
+    vi.restoreAllMocks()
+    await db.close()
+  })
+  const refresh = (reply: Response) =>
+    refreshFeedFile(eventsFile, {
+      db,
+      baseUrl: 'https://feed.example.org/',
+      fetch: feedHost(reply).fetch,
+      now: () => new Date('2026-10-25T18:00:00Z'),
+    })
+
+  it('keeps events that finished earlier today, so the page can fold them away', async () => {
+    await refresh(json(sample()))
+    const ids = (await upcomingEvents(db, new Date('2026-10-25T18:00:00Z'))).map(event => event.id)
+    expect(ids).toContain('breakfast-1')
+  })
+
+  it('clears stored events when the steward stops publishing the file', async () => {
+    await refresh(json(sample()))
+    await refresh(new Response('', { status: 404 }))
+    expect(await upcomingEvents(db, new Date('2026-10-25T00:00:00Z'))).toEqual([])
+  })
+})
+
+describe('endOfPacificDay', () => {
+  it('is the next local midnight, on both daylight-saving days', async () => {
+    const { endOfPacificDay } = await import('./events.ts')
+    expect(endOfPacificDay('2026-10-31').toISOString()).toBe('2026-11-01T07:00:00.000Z')
+    expect(endOfPacificDay('2026-11-01').toISOString()).toBe('2026-11-02T08:00:00.000Z')
+    expect(endOfPacificDay('2027-03-13').toISOString()).toBe('2027-03-14T08:00:00.000Z')
+    expect(endOfPacificDay('2027-03-14').toISOString()).toBe('2027-03-15T07:00:00.000Z')
+  })
+})

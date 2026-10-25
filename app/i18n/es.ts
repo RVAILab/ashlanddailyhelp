@@ -137,6 +137,27 @@ export const es = {
     mayBeCanceled: 'May be canceled',
     affects: 'See',
   },
+  providers: {
+    title: 'Check your listing',
+    intro:
+      'Find your organization’s listings to see exactly what the public sees and where each detail came from. Listings come from what you publish, so the steward checks any correction against your own information.',
+    name: 'Organization name',
+    submit: 'Find listings',
+    none: 'No listings match that name.',
+    check: 'Check and correct',
+    reportTitle: 'Check this listing',
+    reportIntro: 'This is the listing as the public sees it, with where each detail came from.',
+    whereFrom: 'Where each detail comes from',
+    noSources: 'Sources for each detail are not recorded yet.',
+    request: 'Request a correction by email',
+    requestHelp:
+      'Say what is wrong and, if you can, where the right information is published. Nothing you send is stored on this site.',
+    noAddress: 'Corrections can’t be sent online yet. For help with a listing, call 211.',
+    reportLink: 'Report a problem with this listing',
+    subject: (name: string) => `Correction for Daily Help listing: ${name}`,
+    body: (id: string, page: string, translation: boolean) =>
+      `Listing: ${id}\nPage: ${page}\n${translation ? 'About: the automatic Spanish translation\n' : ''}\nWhat is wrong:\n\nWhere the right information is published:\n`,
+  },
   detail: {
     backToSearch: 'Volver a la búsqueda',
     details: 'Detalles',
@@ -190,7 +211,7 @@ export const es = {
     demonstration: 'Estos son datos de demostración. Algunos lugares de la lista son ficticios.',
     none: 'La lista todavía no se ha cargado.',
     offline:
-      'You’re offline. These are the copies saved on this device, as of the date below; call before you go when you can.',
+      'You’re offline. These are the copies saved on this device, as of the date below, and searching needs a connection; call before you go when you can.',
     clearDevice: 'Clear this device',
     unavailable: 'La información no está disponible en este momento. Para encontrar ayuda, llame al',
   },

@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { data, Form, Link, useRevalidator } from 'react-router'
+import { data, Link, useRevalidator } from 'react-router'
 import type { FeedEvent, StoredListing } from '../../server/feed/contract.ts'
 import { upcomingEvents } from '../../server/feed/events.ts'
 import { feedFileStatus } from '../../server/feed/ingest.ts'
@@ -17,8 +17,6 @@ import type { Messages } from '../i18n/en.ts'
 import { type Lang, langFromPath, locales, messagesFor } from '../i18n/index.ts'
 import { useI18n } from '../i18n/provider.tsx'
 import { areaName } from '../lib/areas.ts'
-import { categories } from '../lib/categories.ts'
-import { readFilters } from '../lib/filters.ts'
 import { listingLabels } from '../lib/listing-labels.ts'
 import type { Route } from './+types/today'
 
@@ -130,20 +128,16 @@ export async function loader({ url, context }: Route.LoaderArgs) {
   const lang = langFromPath(url.pathname)
   const t = messagesFor(lang)
   const now = new Date()
-  const { query: _, ...filters } = readFilters(url.searchParams)
   const alerts = await pageAlerts(db, lang, now)
-  const groups = groupToday(await searchListings(db, filters, now, lang), now, new Set(alerts.closedListings))
+  const groups = groupToday(await searchListings(db, {}, now, lang), now, new Set(alerts.closedListings))
   const scheduled = groupEvents(
-    (await upcomingEvents(db, now)).filter(
-      event => (!filters.category || event.categories.includes(filters.category)) && servesAshland(event.area),
-    ),
+    (await upcomingEvents(db, now)).filter(event => servesAshland(event.area)),
     now,
   )
   const known = new Set((await currentListings(db, now)).map(listing => listing.id))
   const eventsFeed = await feedFileStatus(db, 'events.json')
   const view = (list: FeedEvent[]) => list.map(event => toEventView(event, lang, t, known))
   return {
-    filters,
     workedOut: clock(lang, now),
     now: now.toISOString(),
     nextChange: soonest(groups.nextChange?.toISOString() ?? null, alerts.nextEnd),
@@ -192,7 +186,7 @@ function useRegroup(serverNow: string, nextChange: string | null) {
 const GROUPS = ['openNow', 'later', 'closed', 'notConfirmed'] as const
 
 export default function Today({ loaderData }: Route.ComponentProps) {
-  const { filters, workedOut, now, nextChange, groups, events, eventsDemonstration, alerts } = loaderData
+  const { workedOut, now, nextChange, groups, events, eventsDemonstration, alerts } = loaderData
   const { t, path } = useI18n()
   useRegroup(now, nextChange)
   return (
@@ -200,20 +194,6 @@ export default function Today({ loaderData }: Route.ComponentProps) {
       <h1>{t.today.title}</h1>
       <AlertList alerts={alerts.alerts} listingNames={alerts.listingNames} demonstration={alerts.demonstration} />
       <p>{t.today.workedOut(workedOut)}</p>
-      <Form method="get" className="search-form">
-        <label>
-          {t.search.kind}
-          <select name="category" defaultValue={filters.category ?? ''} key={`c-${filters.category ?? ''}`}>
-            <option value="">{t.search.anyKind}</option>
-            {categories.map(id => (
-              <option key={id} value={id}>
-                {t.categories[id]}
-              </option>
-            ))}
-          </select>
-        </label>
-        <button type="submit">{t.search.submit}</button>
-      </Form>
       <section aria-labelledby="events-heading" className="today-events">
         <h2 id="events-heading">{t.events.title}</h2>
         {eventsDemonstration && <p className="notice">{t.feed.demonstration}</p>}

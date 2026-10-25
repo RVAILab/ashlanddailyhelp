@@ -50,8 +50,8 @@ describe('homepage', () => {
         .getByRole('link', { name: 'Helping someone else? Search and share listings' })
         .getAttribute('href'),
     ).toBe('/resources')
-    expect(within(others).getByRole('link', { name: 'Run a service? How listings work' }).getAttribute('href')).toBe(
-      '/about#providers',
+    expect(within(others).getByRole('link', { name: 'Run a service? Check your listing' }).getAttribute('href')).toBe(
+      '/providers',
     )
     expect(within(others).getByRole('link', { name: 'About Daily Help' }).getAttribute('href')).toBe('/about')
   })

@@ -24,7 +24,7 @@ export const en = {
     searchAll: 'Search everything',
     others: 'Other ways in',
     helping: 'Helping someone else? Search and share listings',
-    providers: 'Run a service? How listings work',
+    providers: 'Run a service? Check your listing',
     about: 'About Daily Help',
   },
   about: {
@@ -49,7 +49,7 @@ export const en = {
       'Daily Help has no accounts and asks nothing about you. Like most websites, its servers keep short-lived technical logs of the pages requested, including search words. If you choose a language, a cookie remembers it.',
     providersHeading: 'For providers',
     providers:
-      'Your listing comes from what you publish on your own website and in the county resource packet, so keeping those up to date keeps your listing accurate. A way to check and correct your listing here is coming.',
+      'Your listing comes from what you publish on your own website and in the county resource packet, so keeping those up to date keeps your listing accurate. You can check your listing and request a correction from the “Check your listing” page.',
   },
   categories: {
     food: 'Food',
@@ -135,6 +135,27 @@ export const en = {
     mayBeCanceled: 'May be canceled',
     affects: 'See',
   },
+  providers: {
+    title: 'Check your listing',
+    intro:
+      'Find your organization’s listings to see exactly what the public sees and where each detail came from. Listings come from what you publish, so the steward checks any correction against your own information.',
+    name: 'Organization name',
+    submit: 'Find listings',
+    none: 'No listings match that name.',
+    check: 'Check and correct',
+    reportTitle: 'Check this listing',
+    reportIntro: 'This is the listing as the public sees it, with where each detail came from.',
+    whereFrom: 'Where each detail comes from',
+    noSources: 'Sources for each detail are not recorded yet.',
+    request: 'Request a correction by email',
+    requestHelp:
+      'Say what is wrong and, if you can, where the right information is published. Nothing you send is stored on this site.',
+    noAddress: 'Corrections can’t be sent online yet. For help with a listing, call 211.',
+    reportLink: 'Report a problem with this listing',
+    subject: (name: string) => `Correction for Daily Help listing: ${name}`,
+    body: (id: string, page: string, translation: boolean) =>
+      `Listing: ${id}\nPage: ${page}\n${translation ? 'About: the automatic Spanish translation\n' : ''}\nWhat is wrong:\n\nWhere the right information is published:\n`,
+  },
   detail: {
     backToSearch: 'Back to search',
     details: 'Details',
@@ -187,7 +208,7 @@ export const en = {
     demonstration: 'This is demonstration data. Some listings are fictional.',
     none: 'Listings have not loaded yet.',
     offline:
-      'You’re offline. These are the copies saved on this device, as of the date below; call before you go when you can.',
+      'You’re offline. These are the copies saved on this device, as of the date below, and searching needs a connection; call before you go when you can.',
     clearDevice: 'Clear this device',
     unavailable: 'Listings are unavailable right now. For help finding services, call',
   },

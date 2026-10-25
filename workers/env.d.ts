@@ -5,4 +5,6 @@ interface Env {
   FEED_BASE_URL?: string
   // Machine translation of listing text into Spanish; without it, Spanish pages show listings in English.
   ANTHROPIC_API_KEY?: string
+  // The steward's intake address for listing corrections.
+  CORRECTIONS_EMAIL?: string
 }

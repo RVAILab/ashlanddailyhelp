@@ -1,3 +1,4 @@
+import { useSyncExternalStore } from 'react'
 import {
   isRouteErrorResponse,
   Links,
@@ -20,9 +21,24 @@ export const shipsJavaScript = (handles: unknown[]) => handles.every(handle => !
 const hasHydrateFalse = (handle: unknown) =>
   typeof handle === 'object' && handle !== null && 'hydrate' in handle && handle.hydrate === false
 
-const OFFLINE_SCRIPT = `(function(){var n=document.getElementById('offline-notice');function u(){if(n)n.hidden=navigator.onLine}u();addEventListener('online',u);addEventListener('offline',u);if('serviceWorker' in navigator&&location.search.indexOf('cleared')<0)navigator.serviceWorker.register('/sw.js')})()`
+const OFFLINE_SCRIPT = `(function(){var n=document.getElementById('offline-notice');function u(){if(n)n.hidden=navigator.onLine}u();addEventListener('online',u);addEventListener('offline',u);if('serviceWorker' in navigator&&location.search.indexOf('cleared')<0){navigator.serviceWorker.register('/sw.js');addEventListener('load',function(){navigator.serviceWorker.ready.then(function(r){r.active&&r.active.postMessage('save-pages')})})}})()`
+
+// Online state for hydrated pages; on pages without JavaScript the inline script shows the notice instead.
+const subscribeOnline = (change: () => void) => {
+  addEventListener('online', change)
+  addEventListener('offline', change)
+  return () => {
+    removeEventListener('online', change)
+    removeEventListener('offline', change)
+  }
+}
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  const online = useSyncExternalStore(
+    subscribeOnline,
+    () => navigator.onLine,
+    () => true,
+  )
   const { pathname, search } = useLocation()
   const origin = useRouteLoaderData<typeof localeLoader>('routes/locale')?.origin
   const page = `${pathname}${search}`
@@ -47,7 +63,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        <p id="offline-notice" className="notice offline-notice" hidden suppressHydrationWarning>
+        <p id="offline-notice" className="notice offline-notice" hidden={online} suppressHydrationWarning>
           {messagesFor(langFromPath(pathname)).feed.offline}
         </p>
         {children}

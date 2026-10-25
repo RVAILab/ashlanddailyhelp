@@ -5,7 +5,7 @@ import { listings } from '../../db/schema.ts'
 import type { Database } from '../db.ts'
 import { isCurrent } from '../feed/listings.ts'
 import { withoutAccents } from '../translate/run.ts'
-import { SERVED_PLACES } from './scope.ts'
+import { servesAshlandSql } from './scope.ts'
 
 export interface ListingFilters {
   query?: string
@@ -26,13 +26,7 @@ export async function searchListings(
 ): Promise<FeedListing[]> {
   const conditions: Array<SQL | undefined> = [isCurrent(now)]
   if (filters.category) conditions.push(sql`${listings.data}->'categories' ? ${filters.category}`)
-  const places = sql.join(
-    SERVED_PLACES.map(place => sql`${place}`),
-    sql`, `,
-  )
-  conditions.push(
-    sql`(${listings.data}->>'area' in (${places}) or ${listings.data}->'coverage' ?| array[${places}]::text[])`,
-  )
+  conditions.push(servesAshlandSql())
   const terms = filters.query ? prefixQuery(filters.query) : null
   const stemmed = sql`to_tsquery('english', ${terms})`
   const plain = sql`to_tsquery('simple', ${terms})`

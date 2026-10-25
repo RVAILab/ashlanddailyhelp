@@ -11,6 +11,8 @@ export default [
     route('resources/:id', 'routes/resource.tsx'),
     route('about', 'routes/about.tsx'),
     route('today', 'routes/today.tsx'),
+    route('providers', 'routes/providers.tsx'),
+    route('report', 'routes/report.tsx'),
     route('*', 'routes/not-found.tsx'),
   ]),
 ] satisfies RouteConfig

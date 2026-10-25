@@ -64,7 +64,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
             <Link to={path('/resources')}>{t.home.helping}</Link>
           </li>
           <li>
-            <Link to={`${path('/about')}#providers`}>{t.home.providers}</Link>
+            <Link to={path('/providers')}>{t.home.providers}</Link>
           </li>
           <li>
             <Link to={path('/about')}>{t.home.about}</Link>

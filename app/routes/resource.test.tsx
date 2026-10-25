@@ -104,3 +104,15 @@ describe('/resources/:id', () => {
     expect(screen.getByRole('link', { name: 'Ver en inglés' }).getAttribute('href')).toBe('/resources/ohra-showers')
   })
 })
+
+describe('/resources/:id, reporting', () => {
+  it('links to the report page for this listing', async () => {
+    const Stub = createRoutesStub([
+      { path: '/resources/:id', Component: Resource, loader: () => ({ listing: listingDetail(base, 'en') }) },
+    ])
+    render(<Stub initialEntries={['/resources/ohra-showers']} />)
+    expect((await screen.findByRole('link', { name: 'Report a problem with this listing' })).getAttribute('href')).toBe(
+      '/report?listing=ohra-showers',
+    )
+  })
+})

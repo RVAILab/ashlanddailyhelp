@@ -118,6 +118,11 @@ export default function Resource({ loaderData }: Route.ComponentProps) {
           ))}
         </ul>
         {listing.reviewed && <p>{listing.reviewed}</p>}
+        <p>
+          <Link to={path(`/report?listing=${listing.id}${listing.translated ? '&about=translation' : ''}`)}>
+            {t.providers.reportLink}
+          </Link>
+        </p>
         <details className="provenance">
           <summary>{t.detail.whereFrom}</summary>
           {listing.provenance.length === 0 ? (

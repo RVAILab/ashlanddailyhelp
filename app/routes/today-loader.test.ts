@@ -50,17 +50,10 @@ describe('/today loader', () => {
     expect(page.workedOut).toBe('11:00 AM')
     expect(page.nextChange).toBe('2026-10-25T20:00:00.000Z')
   })
-
-  it('filters by kind of help', async () => {
-    const page = await loader(loaderArgs('/today?category=hygiene', { database: () => db }))
-    expect(
-      [...page.groups.openNow, ...page.groups.later, ...page.groups.notConfirmed].map(entry => entry.card.id),
-    ).toEqual(['ohra-showers'])
-  })
 })
 
 describe('/today loader, events', () => {
-  it('shows events that finished earlier today apart, filters them, and links only to stored listings', async () => {
+  it('shows events that finished earlier today apart, and links only to stored listings', async () => {
     const { readFileSync } = await import('node:fs')
     const { refreshFeedFile } = await import('../../server/feed/ingest.ts')
     const { eventsFile } = await import('../../server/feed/events.ts')
@@ -82,10 +75,6 @@ describe('/today loader, events', () => {
     expect(page.events.finished[0]?.listingId).toBe('uncle-foods')
     expect(page.events.today[0]?.listingId).toBeNull()
     expect(page.eventsDemonstration).toBe(true)
-    const health = await loader(loaderArgs('/today?category=health', { database: () => db }))
-    expect(
-      [...health.events.today, ...health.events.finished, ...health.events.tomorrow].map(event => event.id),
-    ).toEqual(['flu-clinic-1'])
     vi.useRealTimers()
     await db.close()
   })

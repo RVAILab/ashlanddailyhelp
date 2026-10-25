@@ -5,6 +5,7 @@
   --paper: #fbfaf6;
   --card: #ffffff;
   --line: #d9d6cc;
+  --field: #6f7570;
   --accent: #1f5f4a;
   --warning: #8a3b12;
   --caution: #6b4f00;
@@ -20,6 +21,7 @@
     --paper: #161a18;
     --card: #1f2421;
     --line: #3a413c;
+    --field: #8a928c;
     --accent: #8fd3b6;
     --warning: #ffb48a;
     --caution: #f0cf6b;
@@ -62,7 +64,7 @@ a {
   min-height: 44px;
   font: inherit;
   padding: 0 0.75rem;
-  border: 1px solid var(--line);
+  border: 1px solid var(--field);
   border-radius: 6px;
   background: var(--card);
   color: var(--ink);
@@ -86,6 +88,28 @@ a {
   padding: 0.5rem 0.75rem;
   border-left: 4px solid var(--caution);
   background: var(--card);
+}
+
+.empty {
+  display: grid;
+  gap: 0.75rem;
+  justify-items: start;
+}
+
+.call-211 {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 1rem;
+  border-radius: 6px;
+  background: var(--accent);
+  color: var(--paper);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.listing-status svg {
+  vertical-align: -0.125em;
 }
 
 .result-count {

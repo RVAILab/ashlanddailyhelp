@@ -26,7 +26,8 @@ export const listings = pgTable(
     position: integer().notNull(),
     endsAt: instant('ends_at'),
     data: jsonb().$type<FeedListing>().notNull(),
-    // Kept in step with data by Postgres; weighted so a match in the name ranks above one in the description.
+    // Kept in step with data by Postgres, weighted so a match in the name ranks above one in the description or tags.
+    // `search` is stemmed English; `words` is unstemmed, so part-words ("navigat") and common words still match.
     search: tsvector()
       .notNull()
       .generatedAlwaysAs(
@@ -35,6 +36,14 @@ export const listings = pgTable(
           || setweight(to_tsvector('english', coalesce(data->>'description', '')), 'C')
           || setweight(jsonb_to_tsvector('english', coalesce(data->'tags', '[]'::jsonb), '["string"]'), 'C')`,
       ),
+    words: tsvector()
+      .notNull()
+      .generatedAlwaysAs(
+        sql`setweight(to_tsvector('simple', coalesce(data->>'name', '')), 'A')
+          || setweight(to_tsvector('simple', coalesce(data->>'provider', '')), 'B')
+          || setweight(to_tsvector('simple', coalesce(data->>'description', '')), 'C')
+          || setweight(jsonb_to_tsvector('simple', coalesce(data->'tags', '[]'::jsonb), '["string"]'), 'C')`,
+      ),
   },
-  table => [index('listings_search').using('gin', table.search)],
+  table => [index('listings_search').using('gin', table.search), index('listings_words').using('gin', table.words)],
 )

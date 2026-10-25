@@ -16,6 +16,7 @@ export function connect(connectionString: string): DatabaseConnection {
     max: 5,
     fetch_types: false,
     connect_timeout: 5,
+    onnotice: () => {},
     connection: { statement_timeout: 10_000 },
   })
   return { db: drizzle({ client, schema }), close: () => client.end() }

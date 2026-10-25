@@ -14,6 +14,8 @@ export interface ListingCard {
   labels: ListingLabel[]
 }
 
+const dialable = (phone: string) => phone.replace(/[^\d+]/g, '')
+
 export function ListingCardView({ listing }: { listing: ListingCard }) {
   const heading = useId()
   return (
@@ -31,7 +33,7 @@ export function ListingCardView({ listing }: { listing: ListingCard }) {
         <dt>Where</dt>
         <dd>{listing.address}</dd>
         <dt>Phone</dt>
-        <dd>{listing.phone ? <a href={`tel:${listing.phone}`}>{listing.phone}</a> : 'Phone not listed'}</dd>
+        <dd>{listing.phone ? <a href={`tel:${dialable(listing.phone)}`}>{listing.phone}</a> : 'Not confirmed'}</dd>
       </dl>
     </article>
   )

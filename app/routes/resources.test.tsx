@@ -53,34 +53,48 @@ describe('/resources', () => {
     expect((await screen.findByRole('status')).textContent).toBe('1 place')
     const card = screen.getByRole('article', { name: 'Shower Program' })
     expect(within(card).getByText('OHRA')).toBeDefined()
-    expect(within(card).getByRole('link', { name: '541-708-6100' }).getAttribute('href')).toBe('tel:541-708-6100')
+    expect(within(card).getByRole('link', { name: '541-708-6100' }).getAttribute('href')).toBe('tel:5417086100')
     expect(within(card).getByText('Schedule needs checking')).toBeDefined()
     expect(within(card).getByText('Added by Daily Help from ohrahelps.org')).toBeDefined()
   })
 
-  it('says when no phone is listed', async () => {
+  it('says a missing phone is not confirmed', async () => {
     renderPage({ results: [{ ...showers, phone: null }] })
-    expect(within(await screen.findByRole('article')).getByText('Phone not listed')).toBeDefined()
+    expect(within(await screen.findByRole('article')).getByText('Not confirmed')).toBeDefined()
   })
 
   it('suggests removing filters and calling 211 when nothing matches', async () => {
     renderPage({ results: [], filters: { query: 'zzyzx' } }, '/resources?q=zzyzx')
     expect((await screen.findByRole('status')).textContent).toBe('No places match')
-    expect(screen.getByRole('link', { name: 'clear the search' }).getAttribute('href')).toBe('/resources')
-    expect(screen.getByRole('link', { name: '211' }).getAttribute('href')).toBe('tel:211')
-    const advice = screen.getByRole('link', { name: 'clear the search' }).closest('p')
-    expect(advice?.textContent).toBe(
-      'Try fewer words or another area, or clear the search. For help finding services, call 211.',
+    const clear = screen.getByRole('link', { name: 'clear the search' })
+    expect(clear.getAttribute('href')).toBe('/resources')
+    expect(clear.closest('p')?.textContent).toBe(
+      'Try fewer words, or another kind of help or area. You can also clear the search. For help finding services, call 211.',
     )
+    expect(screen.getByRole('link', { name: 'Call 211' }).getAttribute('href')).toBe('tel:211')
+  })
+
+  it('says nothing is listed, without suggesting filters, when nothing matches an unfiltered search', async () => {
+    renderPage({ results: [] })
+    expect(
+      await screen.findByText('No places are listed right now. For help finding services, call 211.'),
+    ).toBeDefined()
+    expect(screen.queryByRole('link', { name: 'clear the search' })).toBeNull()
   })
 
   it('says when listings have not loaded yet, instead of "no match"', async () => {
     renderPage({ results: [], feedLoaded: false })
-    const message = 'Listings have not loaded yet. For help finding services now, call 211.'
     expect(
-      await screen.findByText((_, element) => element?.tagName === 'P' && element.textContent === message),
+      await screen.findByText('Listings have not loaded yet. For help finding services now, call 211.'),
     ).toBeDefined()
+    expect(screen.getByRole('link', { name: 'Call 211' })).toBeDefined()
     expect(screen.queryByRole('status')).toBeNull()
+  })
+
+  it('gives the results a heading, so the cards sit under it', async () => {
+    renderPage({})
+    expect(await screen.findByRole('heading', { level: 2, name: 'Results' })).toBeDefined()
+    expect(screen.getByRole('region', { name: 'Results' })).toBeDefined()
   })
 
   it('labels demonstration data next to the results', async () => {

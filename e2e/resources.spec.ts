@@ -8,6 +8,7 @@ test('find showers from the homepage, narrow by kind of help, and go back', asyn
   await page.getByRole('searchbox', { name: 'Words to search for' }).fill('show')
   await page.getByRole('button', { name: 'Search' }).click()
   await expect(page).toHaveURL(/q=show/)
+  await expect(page.getByRole('button', { name: 'Search' })).toBeFocused()
   await expect(page.getByRole('article', { name: 'A shower and a fresh start' })).toBeVisible()
 
   await page.getByRole('combobox', { name: 'Kind of help' }).selectOption('food')

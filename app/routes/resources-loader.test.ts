@@ -24,6 +24,15 @@ describe('/resources loader', () => {
     expect(data).toMatchObject({ feedLoaded: true, demonstration: true })
   })
 
+  it('matches the area without regard to case, and ignores an area the feed doesn’t name', async () => {
+    const lower = await loader(loaderArgs('/resources?area=medford', { database: () => db }))
+    expect(lower.filters.area).toBe('Medford')
+    expect(lower.results.map(card => card.id)).toContain('rogue-retreat')
+    const unknown = await loader(loaderArgs('/resources?area=Atlantis', { database: () => db }))
+    expect(unknown.filters).toEqual({})
+    expect(unknown.results.length).toBeGreaterThan(1)
+  })
+
   it('answers 503 when there is no database', async () => {
     await expect(loader(loaderArgs('/resources'))).rejects.toMatchObject({ init: { status: 503 } })
   })

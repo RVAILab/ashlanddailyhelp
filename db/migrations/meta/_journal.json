@@ -15,6 +15,13 @@
       "when": 1792957734806,
       "tag": "0001_search",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1792958491346,
+      "tag": "0002_words",
+      "breakpoints": true
     }
   ]
 }

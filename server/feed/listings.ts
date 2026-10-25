@@ -23,11 +23,14 @@ export const listingsFile: FeedFileSpec<ListingsFile> = {
   },
 }
 
+// A time-bound listing (a shelter open tonight) stops being current at its endsAt, even before the next refresh.
+export const isCurrent = (now: Date) => or(isNull(listings.endsAt), gt(listings.endsAt, now))
+
 export async function currentListings(db: Database, now: Date): Promise<FeedListing[]> {
   const rows = await db
     .select({ data: listings.data })
     .from(listings)
-    .where(or(isNull(listings.endsAt), gt(listings.endsAt, now)))
+    .where(isCurrent(now))
     .orderBy(asc(listings.position))
   return rows.map(row => row.data)
 }

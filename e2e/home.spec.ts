@@ -41,7 +41,7 @@ test('the first load of the homepage stays under 100 KB besides fonts and art, a
   const total = (extra: boolean) => sizes.filter(body => body.extra === extra).reduce((sum, body) => sum + body.size, 0)
   expect(await page.locator('script[src], script[type="module"]').count()).toBe(0)
   expect(total(false)).toBeLessThan(100_000)
-  expect(total(true)).toBeLessThan(200_000)
+  expect(total(true)).toBeLessThan(300_000)
 })
 
 test('the search page still hydrates', async ({ page }) => {

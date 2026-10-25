@@ -46,11 +46,29 @@ export default function Home({ loaderData }: Route.ComponentProps) {
           <p className="eyebrow">
             <span aria-hidden="true">✳</span> {t.home.eyebrow}
           </p>
-          <h1>{t.home.title}</h1>
+          <h1>
+            <span>{t.home.hero.first}</span> <span>{t.home.hero.second}</span> <em>{t.home.hero.emphasis}</em>
+          </h1>
           <p className="lede">{t.home.tagline}</p>
+          <search>
+            <form action={path('/resources')} method="get" className="hero-search">
+              <label htmlFor="hero-q" className="visually-hidden">
+                {t.home.searchLabel}
+              </label>
+              <input id="hero-q" name="q" type="search" placeholder={t.home.kinds} />
+              <button type="submit">
+                {t.home.find} <span aria-hidden="true">→</span>
+              </button>
+            </form>
+          </search>
           <p>
             <Link to={path('/today')} className="today-link">
               {t.today.link} <span aria-hidden="true">→</span>
+            </Link>
+          </p>
+          <p>
+            <Link to={path('/next')} className="next-link">
+              {t.next.link}
             </Link>
           </p>
         </div>
@@ -101,6 +119,14 @@ export default function Home({ loaderData }: Route.ComponentProps) {
           </li>
         </ul>
       </section>
+      <p className="belonging">
+        {t.home.belonging.map((line, index) => (
+          <span key={line}>
+            {index > 0 && <span aria-hidden="true">✳ </span>}
+            <em>{line}</em>{' '}
+          </span>
+        ))}
+      </p>
       <section aria-labelledby="others-heading">
         <h2 id="others-heading">{t.home.others}</h2>
         <ul className="others">

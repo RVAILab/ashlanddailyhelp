@@ -14,6 +14,7 @@ function renderHome(lang: 'en' | 'es' = 'en', art = true) {
         listingNames: {},
         byListing: {},
         closedListings: [],
+        closedEvents: [],
         demonstration: false,
         nextEnd: null,
         art,
@@ -59,8 +60,9 @@ describe('homepage', () => {
 
   it('is in Spanish under /es, with Spanish links', async () => {
     renderHome('es')
-    expect(await screen.findByRole('heading', { level: 1, name: 'Encuentre ayuda' })).toBeDefined()
-    expect(screen.getByRole('link', { name: /Comida/ }).getAttribute('href')).toBe('/es/resources?category=food')
+    expect((await screen.findByRole('link', { name: /Comida/ })).getAttribute('href')).toBe(
+      '/es/resources?category=food',
+    )
     expect(screen.getByRole('link', { name: 'Acerca de Daily Help' }).getAttribute('href')).toBe('/es/about')
   })
 
@@ -77,6 +79,15 @@ describe('homepage', () => {
     renderHome('en', false)
     await screen.findByRole('region', { name: 'What do you need?' })
     expect(document.querySelectorAll('img, picture')).toHaveLength(0)
+  })
+
+  it('leads with the legacy promise and a search that works without JavaScript', async () => {
+    renderHome()
+    expect(await screen.findByRole('heading', { level: 1, name: 'A little help. A whole community.' })).toBeDefined()
+    const search = document.querySelector('search form')
+    expect(search?.getAttribute('action')).toBe('/resources')
+    expect(search?.getAttribute('method')).toBe('get')
+    expect(screen.getByRole('searchbox', { name: 'Search for help' }).getAttribute('name')).toBe('q')
   })
 
   it('ships no JavaScript, since it is only links and text', () => {

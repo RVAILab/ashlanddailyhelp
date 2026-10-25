@@ -18,6 +18,7 @@ export default {
       answerer: env.ANTHROPIC_API_KEY
         ? claudeAnswerer(new Anthropic({ apiKey: env.ANTHROPIC_API_KEY, timeout: 60_000, maxRetries: 1 }).beta.messages)
         : null,
+      smsAuthToken: env.TWILIO_AUTH_TOKEN,
       askAllowed: async key => (env.ASK_LIMIT ? (await env.ASK_LIMIT.limit({ key })).success : true),
     })
     try {

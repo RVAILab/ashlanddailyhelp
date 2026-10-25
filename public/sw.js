@@ -12,6 +12,7 @@ const NEVER = [
   /^\/list\/(toggle|save)/,
   /^\/(es\/)?report/,
   /^\/(es\/)?ask/,
+  /^\/sms/,
   /^\/api\//,
   /^\/cdn-cgi\//,
   /^\/offline-pages\.json/,

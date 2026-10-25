@@ -10,6 +10,8 @@ export interface AppServices {
   answerer?: Answerer | null
   // Whether this connection may ask again now (a Workers rate limit); unset, there is no limit (tests, local).
   askAllowed?: (key: string) => Promise<boolean>
+  // Twilio's auth token, which signs every text webhook; unset, /sms is closed.
+  smsAuthToken?: string
 }
 
 export const services = createContext<AppServices>()

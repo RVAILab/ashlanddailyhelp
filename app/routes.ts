@@ -9,6 +9,7 @@ export default [
   route('list/save', 'routes/list-save.ts'),
   route('offline-pages.json', 'routes/offline-pages.ts'),
   route('pulse.csv', 'routes/pulse-csv.ts'),
+  route('sms', 'routes/sms.ts'),
   route('es?', 'routes/locale.tsx', [
     index('routes/home.tsx'),
     route('resources', 'routes/resources.tsx'),

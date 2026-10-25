@@ -211,6 +211,12 @@ export const en = {
     offline: 'Asking needs a connection. Without one, call 211.',
     again: 'Ask another question',
   },
+  sms: {
+    help: 'Daily Help answers questions about free help in Ashland from its directory. Emergency: 911. Crisis: 988 or 541-774-8201. Services: 211. Reply STOP to stop.',
+    start:
+      'You can text Daily Help again. Ask about food, shelter, showers, health care or essentials. Reply HELP for help.',
+    limited: 'That’s a lot of texts in a short time. Please wait a minute, or call 211.',
+  },
   today: {
     title: 'Open today',
     link: 'Open now and later today',

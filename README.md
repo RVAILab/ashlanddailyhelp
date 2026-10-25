@@ -57,6 +57,18 @@ Every page is in English and Spanish: English at the plain URLs (`/resources`), 
 
 Interface text lives in `app/i18n/en.ts` and `app/i18n/es.ts`. To add a string, add it to both (the type checker fails if Spanish lacks a key) and read it with `useI18n()` in components, or `messagesFor(lang)` in loaders and `meta`. The Spanish catalog was written carefully but has not yet been reviewed by a Spanish speaker; please do before launch.
 
+### Chat on the website and by text
+
+`/ask` answers questions in plain words from the directory, and so does `/sms` for text messages. Both use one answering service (`server/chat/`, with Claude). They need the Worker's `ANTHROPIC_API_KEY` secret; without it, asking says it isn't available. Each connection, or each phone number (seen only as a hash), may ask 10 questions a minute (`ASK_LIMIT` in `wrangler.jsonc`). Nothing about a question or the person asking is stored. Before changing the prompt, retrieval or model, run `npm run chat:eval`.
+
+To answer texts, connect a Twilio number once:
+
+1. In Twilio, buy a number and set its messaging webhook ("A message comes in") to `https://ashlanddailyhelp.com/sms`, HTTP POST.
+2. `npx wrangler secret put TWILIO_AUTH_TOKEN --name ashlanddailyhelp-app` with the account's auth token, which signs every webhook. Without it, `/sms` answers 503.
+3. Text the number "HELP", then a question.
+
+Twilio handles STOP and START for the number itself. Replies are plain text, at most three segments.
+
 ### Tests and checks
 
 ```sh

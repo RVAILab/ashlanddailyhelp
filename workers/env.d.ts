@@ -8,6 +8,8 @@ interface Env {
   ANTHROPIC_API_KEY?: string
   // How often one connection may ask a chat question (wrangler.jsonc ratelimits).
   ASK_LIMIT?: RateLimit
+  // Twilio's auth token, for the text-message webhook (/sms); unset, texting is closed.
+  TWILIO_AUTH_TOKEN?: string
   // The steward's intake address for listing corrections.
   CORRECTIONS_EMAIL?: string
 }

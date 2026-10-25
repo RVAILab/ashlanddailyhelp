@@ -1,6 +1,7 @@
 import type { Lang } from '../../app/i18n/index.ts'
 import { type AlertView, alertView } from '../../app/lib/alert-view.ts'
 import type { Database } from '../db.ts'
+import { servesAshland } from '../listings/scope.ts'
 import { currentAlerts } from './alerts.ts'
 import { currentListings } from './listings.ts'
 
@@ -16,7 +17,7 @@ export async function pageAlerts(db: Database | null, lang: Lang, now: Date): Pr
   const empty: PageAlerts = { alerts: [], listingNames: {}, byListing: {} }
   if (!db) return empty
   try {
-    const alerts = await currentAlerts(db, now)
+    const alerts = (await currentAlerts(db, now)).filter(alert => servesAshland(alert.area, alert.coverage))
     if (alerts.length === 0) return empty
     const listingNames = Object.fromEntries((await currentListings(db, now)).map(listing => [listing.id, listing.name]))
     const byListing: Record<string, string> = {}

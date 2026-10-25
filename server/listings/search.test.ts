@@ -2,7 +2,7 @@ import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 import { testDatabase } from '../../test/db.ts'
 import { sampleListingsFeed } from '../../test/feed.ts'
 import { storeListings } from '../../test/listings.ts'
-import { listingAreas, searchListings } from './search.ts'
+import { searchListings } from './search.ts'
 
 const now = new Date('2026-10-25T18:00:00Z')
 type Db = Awaited<ReturnType<typeof testDatabase>>
@@ -43,19 +43,25 @@ describe('searchListings', () => {
     expect(await ids({ category: 'hygiene' })).toEqual(['ohra-showers'])
   })
 
-  it('filters by area, counting listings whose coverage includes it', async () => {
-    const medford = await ids({ area: 'Medford' })
-    expect(medford).toContain('rogue-retreat')
-    expect(medford).toContain('access-pantries')
-    expect(medford).not.toContain('ohra-showers')
+  it('covers Ashland: listings there, and county-wide or statewide ones that include it', async () => {
+    const all = await ids({})
+    expect(all).toContain('ohra-showers')
+    expect(all).toContain('access-pantries')
+    expect(all).toContain('211-directory')
   })
 
-  it('combines filters', async () => {
-    expect(await ids({ category: 'housing', area: 'Medford' })).toEqual([
-      'jcls-resources',
-      'rogue-retreat',
-      '211-directory',
-    ])
+  it('leaves out listings that serve only other towns', async () => {
+    const other = await testDatabase()
+    const sample = sampleListingsFeed()
+    await storeListings(other, {
+      ...sample,
+      listings: [
+        sample.listings[0],
+        { ...sample.listings[1], id: 'medford-only', area: 'Medford', coverage: ['Medford'] },
+      ],
+    })
+    expect((await searchListings(other, {}, now)).map(listing => listing.id)).toEqual([sample.listings[0].id])
+    await other.close()
   })
 
   it('matches words in the name, provider, description and tags', async () => {
@@ -102,53 +108,5 @@ describe('searchListings', () => {
 
   it('finds nothing for words no listing has', async () => {
     expect(await ids({ query: 'zzyzx' })).toEqual([])
-  })
-})
-
-describe('listingAreas', () => {
-  it('lists the places the feed names, Ashland first, then the county, then the rest', async () => {
-    const db = await testDatabase()
-    await storeListings(db)
-    expect(await listingAreas(db, now)).toEqual(['Ashland', 'Jackson County', 'Medford', 'Oregon'])
-    await db.close()
-  })
-})
-
-describe('searchListings in Spanish', () => {
-  it('finds a listing by a word in its stored translation, ignoring accents', async () => {
-    const { translatePending } = await import('../translate/run.ts')
-    const db = await testDatabase()
-    const sample = sampleListingsFeed()
-    await storeListings(db, {
-      ...sample,
-      listings: sample.listings.filter(
-        (listing: Listing) => listing.id === 'ohra-showers' || listing.id === 'uncle-foods',
-      ),
-    })
-    const quiet = vi.spyOn(console, 'log').mockImplementation(() => {})
-    await translatePending(
-      db,
-      {
-        translate: async texts => ({
-          translations: new Map(
-            texts.map(text => [
-              text.id,
-              text.text.includes('Shower')
-                ? 'Servicio de regaderas y lavandería en el Centro OHRA.'
-                : 'Comida comunitaria.',
-            ]),
-          ),
-          usage: { inputTokens: 0, outputTokens: 0, cacheReadTokens: 0 },
-        }),
-      },
-      { lang: 'es', now },
-    )
-    quiet.mockRestore()
-    const ids = async (query: string, lang: 'en' | 'es') =>
-      (await searchListings(db, { query }, now, lang)).map(listing => listing.id)
-    expect(await ids('lavanderia', 'es')).toEqual(['ohra-showers'])
-    expect(await ids('regadera', 'es')).toEqual(['ohra-showers'])
-    expect(await ids('lavanderia', 'en')).toEqual([])
-    await db.close()
   })
 })

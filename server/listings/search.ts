@@ -5,11 +5,11 @@ import { listings } from '../../db/schema.ts'
 import type { Database } from '../db.ts'
 import { isCurrent } from '../feed/listings.ts'
 import { withoutAccents } from '../translate/run.ts'
+import { SERVED_PLACES } from './scope.ts'
 
 export interface ListingFilters {
   query?: string
   category?: Category
-  area?: string
 }
 
 // Each word becomes a prefix term, all required, so "show" finds "showers" and no input can break the query syntax.
@@ -26,10 +26,13 @@ export async function searchListings(
 ): Promise<FeedListing[]> {
   const conditions: Array<SQL | undefined> = [isCurrent(now)]
   if (filters.category) conditions.push(sql`${listings.data}->'categories' ? ${filters.category}`)
-  if (filters.area)
-    conditions.push(
-      sql`(${listings.data}->>'area' = ${filters.area} or ${listings.data}->'coverage' ? ${filters.area})`,
-    )
+  const places = sql.join(
+    SERVED_PLACES.map(place => sql`${place}`),
+    sql`, `,
+  )
+  conditions.push(
+    sql`(${listings.data}->>'area' in (${places}) or ${listings.data}->'coverage' ?| array[${places}]::text[])`,
+  )
   const terms = filters.query ? prefixQuery(filters.query) : null
   const stemmed = sql`to_tsquery('english', ${terms})`
   const plain = sql`to_tsquery('simple', ${terms})`
@@ -46,18 +49,4 @@ export async function searchListings(
     .where(and(...conditions))
     .orderBy(...(terms ? [desc(rank)] : []), asc(listings.position))
   return rows.map(row => row.data)
-}
-
-const FIRST_AREAS = ['Ashland', 'Jackson County']
-
-export async function listingAreas(db: Database, now: Date): Promise<string[]> {
-  const rows = await db
-    .selectDistinct({ area: sql<string>`place` })
-    .from(
-      sql`${listings}, lateral (select ${listings.data}->>'area' as place union select jsonb_array_elements_text(${listings.data}->'coverage')) places`,
-    )
-    .where(isCurrent(now))
-  const areas = rows.map(row => row.area).filter(Boolean)
-  const rest = areas.filter(area => !FIRST_AREAS.includes(area)).sort((a, b) => a.localeCompare(b, 'en'))
-  return [...FIRST_AREAS.filter(area => areas.includes(area)), ...rest]
 }

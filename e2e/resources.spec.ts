@@ -24,8 +24,8 @@ test('find showers from the homepage, narrow by kind of help, and go back', asyn
 test('a shared search link opens the same results, even without JavaScript', async ({ browser }) => {
   const context = await browser.newContext({ javaScriptEnabled: false })
   const page = await context.newPage()
-  await page.goto('/resources?category=housing&area=Medford')
-  await expect(page.getByRole('combobox', { name: 'Area' })).toHaveValue('Medford')
+  await page.goto('/resources?category=housing')
+  await expect(page.getByRole('combobox', { name: 'Kind of help' })).toHaveValue('housing')
   await expect(page.getByRole('article', { name: 'Explore supportive shelter programs' })).toBeVisible()
   await context.close()
 })

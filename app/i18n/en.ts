@@ -72,7 +72,7 @@ export const en = {
     submit: 'Search',
     results: 'Results',
     places: (count: number) => (count === 0 ? 'No places match' : count === 1 ? '1 place' : `${count} places`),
-    tryFewer: 'Try fewer words, or another kind of help or area. You can also',
+    tryFewer: 'Try fewer words, or another kind of help. You can also',
     clear: 'clear the search',
     help211: 'For help finding services, call 211.',
     noneListed: 'No places are listed right now. For help finding services, call 211.',

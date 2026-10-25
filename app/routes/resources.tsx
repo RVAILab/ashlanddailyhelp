@@ -3,7 +3,7 @@ import { data, Form, Link } from 'react-router'
 import type { FeedListing } from '../../contract/steward/feed.ts'
 import { listingsFeedStatus } from '../../server/feed/listings.ts'
 import { pageAlerts } from '../../server/feed/page-alerts.ts'
-import { listingAreas, searchListings } from '../../server/listings/search.ts'
+import { searchListings } from '../../server/listings/search.ts'
 import { translationsFor } from '../../server/translate/lookup.ts'
 import { translatableTexts } from '../../server/translate/texts.ts'
 import { type ListingCard, ListingCardView } from '../components/listing-card.tsx'
@@ -43,12 +43,8 @@ export async function loader({ url, context }: Route.LoaderArgs) {
   if (!db) throw data('The listings database is not configured.', { status: 503 })
   const lang = langFromPath(url.pathname)
   const now = new Date()
-  const [areas, feed] = await Promise.all([listingAreas(db, now), listingsFeedStatus(db)])
+  const feed = await listingsFeedStatus(db)
   const filters = readFilters(url.searchParams)
-  // An area is one the feed names, matched without regard to case; anything else is ignored rather than matching nothing.
-  const area = areas.find(known => known.toLowerCase() === filters.area?.toLowerCase())
-  if (area) filters.area = area
-  else delete filters.area
   const found = await searchListings(db, filters, now, lang)
   const alerts = await pageAlerts(db, lang, now)
   const translated =
@@ -61,7 +57,6 @@ export async function loader({ url, context }: Route.LoaderArgs) {
       : new Map<string, string>()
   return {
     filters,
-    areas,
     results: found.map(listing => toCard(listing, lang, translated, alerts.byListing[listing.id])),
     feedLoaded: feed.state !== 'none',
     demonstration: feed.state === 'stored' && feed.dataset === 'FICTIONAL_DEMONSTRATION',
@@ -83,19 +78,17 @@ function Call211({ t }: { t: Messages }) {
 }
 
 export default function Resources({ loaderData }: Route.ComponentProps) {
-  const { filters, areas, results, feedLoaded, demonstration } = loaderData
+  const { filters, results, feedLoaded, demonstration } = loaderData
   const { t, path } = useI18n()
   // Uncontrolled fields keep whatever someone typed before the page finished loading. When the URL changes (back,
   // forward, a shared link) they are set to match it, without remounting, so focus stays where it was.
   const query = useRef<HTMLInputElement>(null)
   const category = useRef<HTMLSelectElement>(null)
-  const area = useRef<HTMLSelectElement>(null)
   useEffect(() => {
     if (query.current) query.current.value = filters.query ?? ''
     if (category.current) category.current.value = filters.category ?? ''
-    if (area.current) area.current.value = filters.area ?? ''
-  }, [filters.query, filters.category, filters.area])
-  const filtered = Boolean(filters.query || filters.category || filters.area)
+  }, [filters.query, filters.category])
+  const filtered = Boolean(filters.query || filters.category)
 
   return (
     <main>
@@ -112,17 +105,6 @@ export default function Resources({ loaderData }: Route.ComponentProps) {
             {categories.map(id => (
               <option key={id} value={id}>
                 {t.categories[id]}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          {t.search.area}
-          <select ref={area} name="area" defaultValue={filters.area ?? ''}>
-            <option value="">{t.search.anyArea}</option>
-            {areas.map(name => (
-              <option key={name} value={name}>
-                {areaName(name, t)}
               </option>
             ))}
           </select>

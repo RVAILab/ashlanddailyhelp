@@ -26,7 +26,6 @@ type Data = Awaited<ReturnType<typeof import('./resources.tsx').loader>>
 function renderPage(data: Partial<Data>, url = '/resources', lang: 'en' | 'es' = 'en') {
   const loaderData: Data = {
     filters: {},
-    areas: ['Ashland', 'Jackson County', 'Medford'],
     results: [showers],
     feedLoaded: true,
     demonstration: false,
@@ -44,15 +43,11 @@ function renderPage(data: Partial<Data>, url = '/resources', lang: 'en' | 'es' =
 
 describe('/resources', () => {
   it('shows a labelled search form holding the current filters', async () => {
-    renderPage(
-      { filters: { query: 'shower', category: 'hygiene', area: 'Ashland' } },
-      '/resources?q=shower&category=hygiene&area=Ashland',
-    )
+    renderPage({ filters: { query: 'shower', category: 'hygiene' } }, '/resources?q=shower&category=hygiene')
     const form = await screen.findByRole('search')
     expect(within(form).getByRole('searchbox', { name: 'Words to search for' })).toHaveProperty('value', 'shower')
     expect(within(form).getByRole('combobox', { name: 'Kind of help' })).toHaveProperty('value', 'hygiene')
-    expect(within(form).getByRole('combobox', { name: 'Area' })).toHaveProperty('value', 'Ashland')
-    expect(within(form).getByRole('option', { name: 'Jackson County (county-wide)' })).toBeDefined()
+    expect(within(form).queryByRole('combobox', { name: 'Area' })).toBeNull()
     expect(within(form).getByRole('button', { name: 'Search' })).toBeDefined()
   })
 
@@ -77,7 +72,7 @@ describe('/resources', () => {
     const clear = screen.getByRole('link', { name: 'clear the search' })
     expect(clear.getAttribute('href')).toBe('/resources')
     expect(clear.closest('p')?.textContent).toBe(
-      'Try fewer words, or another kind of help or area. You can also clear the search. For help finding services, call 211.',
+      'Try fewer words, or another kind of help. You can also clear the search. For help finding services, call 211.',
     )
     expect(screen.getByRole('link', { name: 'Call 211' }).getAttribute('href')).toBe('tel:211')
   })
@@ -114,7 +109,6 @@ describe('/resources', () => {
     renderPage({ results: [], filters: { query: 'zzyzx' } }, '/es/resources?q=zzyzx', 'es')
     expect(await screen.findByRole('heading', { level: 1, name: 'Buscar ayuda' })).toBeDefined()
     expect(screen.getByRole('searchbox', { name: 'Palabras para buscar' })).toBeDefined()
-    expect(screen.getByRole('option', { name: 'Todo el condado de Jackson' })).toBeDefined()
     expect(screen.getByRole('status').textContent).toBe('No se encontraron lugares')
     expect(screen.getByRole('link', { name: 'borrar la búsqueda' }).getAttribute('href')).toBe('/es/resources')
     expect(screen.getByRole('link', { name: 'Llamar al 211' }).getAttribute('href')).toBe('tel:211')

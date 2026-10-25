@@ -21,7 +21,6 @@ describe('/today', () => {
   it('shows the four groups with counts, each entry with today’s hours', async () => {
     const loaderData = {
       filters: {},
-      areas: ['Ashland'],
       workedOut: '11:00 AM',
       now: '2026-10-25T18:00:00.000Z',
       nextChange: null,
@@ -83,7 +82,6 @@ describe('/today', () => {
   it('says there are no scheduled events today, never sample ones', async () => {
     const loaderData = {
       filters: {},
-      areas: [],
       workedOut: '11:00 AM',
       now: '2026-10-25T18:00:00.000Z',
       nextChange: null,

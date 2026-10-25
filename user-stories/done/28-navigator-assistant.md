@@ -3,8 +3,8 @@ metadata:
   created_at:   2026-10-25T11:06:46-07:00
   activated_at: 2026-10-25T16:44:56-07:00
   planned_at:   2026-10-25T16:45:16-07:00
-  finished_at:
-  updated_at:   2026-10-25T16:45:16-07:00
+  finished_at:  2026-10-25T16:52:19-07:00
+  updated_at:   2026-10-25T16:52:19-07:00
 -->
 
 # Story: Navigator Assistant
@@ -47,3 +47,29 @@ Tests:
 - A `navigator` view test: the list, print and save links carry the cited ids; sources show.
 - The ask view test still passes with the shared component.
 
+
+## Review
+
+Reviewed 2026-10-25 at `a33d7cc` plus fixes. A subagent did an independent read.
+
+| Criterion | Verdict | Evidence |
+| --- | --- | --- |
+| Uses `25-chat-grounding`, with fuller answers and every source shown | ✅ | `answerQuestion({ depth: 'full' })`: 12 listings and the full-detail prompt. The ids check is unchanged. Each citation links to its listing page and to its source site (`app/components/chat-answer.tsx`). Two full-depth eval cases pass (13 of 13). |
+| Can turn an answer into a shareable list or handout | ✅ | `app/routes/navigator.tsx`: "Open as a shareable list", "Print a handout" and "Save these to my list", with the cited listing ids (tested). |
+| Access decided without accounts | ✅ | Open, `noindex`, rate-limited, and linked from /providers and /about. A passphrase in a Worker secret is the fallback if abuse appears. |
+
+These findings were fixed:
+
+- Sources showed as plain site names. They now link to the source (in a new tab, as the link says).
+- `/list/save` merged lists without the 30-listing cap, so a nearly full list silently dropped the new ones. It now keeps the newest, as one-at-a-time saving does. This was there before, but this page made it likelier.
+
+Not changed:
+
+- `/list/save` redirects to the English `/list`.
+- At full depth, only the eval guards against the model filling in details from the wording. The time-of-day check covers the riskiest kind.
+
+## Learnings
+
+- **Went well:** the refactor before the feature (a shared action and answer view) left the navigator page as little more than a depth setting and three links.
+- **Surprising:** a cap enforced when reading (`savedIds` keeps the first 30) hides a missing cap when writing, and drops the wrong end.
+- **Next time:** enforce limits where data is written, not only where it is read.

@@ -4,7 +4,7 @@ metadata:
   activated_at:
   planned_at:
   finished_at:
-  updated_at:   2026-10-25T11:06:46-07:00
+  updated_at:   2026-10-25T11:35:21-07:00
 -->
 
 # Story: Today: Scheduled Events
@@ -25,7 +25,7 @@ SO THAT I don't miss one-off help like a pop-up clinic or a clothing giveaway
 
 ## Notes
 
-- Blocked by `1-request-events-feed`.
+- Blocked by `03-request-events-feed`.
 
 ## Implementation Plan
 

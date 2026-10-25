@@ -4,7 +4,7 @@ metadata:
   activated_at:
   planned_at:
   finished_at:
-  updated_at:   2026-10-25T11:06:46-07:00
+  updated_at:   2026-10-25T11:35:21-07:00
 -->
 
 # Story: Find Help Nearby
@@ -24,7 +24,7 @@ SO THAT I can reach one on foot or by bus
 
 ## Notes
 
-- Blocked by `3-request-coordinates`.
+- Blocked by `22-request-coordinates`.
 
 ## Implementation Plan
 

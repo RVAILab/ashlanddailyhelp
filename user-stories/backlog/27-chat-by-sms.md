@@ -4,7 +4,7 @@ metadata:
   activated_at:
   planned_at:
   finished_at:
-  updated_at:   2026-10-25T11:06:46-07:00
+  updated_at:   2026-10-25T11:35:21-07:00
 -->
 
 # Story: Chat by Text Message
@@ -17,13 +17,13 @@ SO THAT I can find help without the internet
 
 ## Acceptance Criteria
 
-- A phone number that answers texts using `4-chat-grounding`, in short messages with addresses and phone numbers.
+- A phone number that answers texts using `25-chat-grounding`, in short messages with addresses and phone numbers.
 - Replies in the language the person writes in.
 - STOP and HELP work; phone numbers are not kept longer than needed.
 
 ## Notes
 
-- Depends on `4-chat-grounding`. Needs an SMS provider and a budget.
+- Depends on `25-chat-grounding`. Needs an SMS provider and a budget.
 
 ## Implementation Plan
 

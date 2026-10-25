@@ -4,7 +4,7 @@ metadata:
   activated_at:
   planned_at:
   finished_at:
-  updated_at:   2026-10-25T11:06:46-07:00
+  updated_at:   2026-10-25T11:35:21-07:00
 -->
 
 # Story: Request Coordinates from the Steward
@@ -23,7 +23,7 @@ SO THAT people can find help nearby and open a map
 
 ## Notes
 
-- Blocks `3-find-help-nearby` and map links that don't depend on the address text.
+- Blocks `23-find-help-nearby` and map links that don't depend on the address text.
 
 ## Implementation Plan
 

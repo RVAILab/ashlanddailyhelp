@@ -4,7 +4,7 @@ metadata:
   activated_at:
   planned_at:
   finished_at:
-  updated_at:   2026-10-25T11:06:46-07:00
+  updated_at:   2026-10-25T11:35:21-07:00
 -->
 
 # Story: Ingest the Steward Feed
@@ -25,13 +25,13 @@ SO THAT pages and search are fast, and keep working when the steward is slow or 
 - Listings whose `endsAt` has passed are hidden, even before the next refresh.
 - The feed's `dataset` (`FICTIONAL_DEMONSTRATION` or `LIVE`) is stored and available to every page for labelling.
 - Tests run the ingest against the steward's `fixtures/feed-sample/`, including invalid and unknown-version files.
-- New feed files from `1-request-events-feed` and `1-request-alerts-feed` are ingested the same way once they exist.
+- New feed files from `03-request-events-feed` and `04-request-alerts-feed` are ingested the same way once they exist.
 
 ## Notes
 
 - Contract: `../daily-help-steward/docs/FEED.md` and `src/contract/feed.ts`. As a server-side consumer, FEED.md rule 8 applies.
-- Current state only; no history. `pulse.json` is not ingested until `4-community-pulse`.
-- Overlaps `backlog/store-community-resources-in-db.md` (Oct 24). Merge it into this story or delete it.
+- Current state only; no history. `pulse.json` is not ingested until `24-community-pulse`.
+- Overlaps `backlog/06-store-community-resources-in-db.md` (Oct 24). Merge it into this story or delete it.
 
 ## Implementation Plan
 

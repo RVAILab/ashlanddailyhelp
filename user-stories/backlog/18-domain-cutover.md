@@ -4,7 +4,7 @@ metadata:
   activated_at:
   planned_at:
   finished_at:
-  updated_at:   2026-10-25T11:12:24-07:00
+  updated_at:   2026-10-25T11:35:21-07:00
 -->
 
 # Story: Move ashlanddailyhelp.com to the New App
@@ -21,7 +21,7 @@ SO THAT everyone gets the new app at the address they already know
 - ashlanddailyhelp.com and www are custom domains on the Cloudflare Worker, served over HTTPS, with the zone moved to Cloudflare or pointed at it.
 - Old URLs redirect: `?view=`, `?resource=`, `?category=`, `?q=` and `?list=` land on the matching new pages.
 - Returning visitors' old service worker is replaced and its `hub-preview-*` caches are cleared.
-- The old static files (`data.js`, `core.js`, `app.js`, the CSS files, `sw.js`, `build.json`) are removed from this repo, after `1-request-steward-decoupling` lands, along with `worker.js`'s `/index.html` workaround, which exists only for the old `sw.js`.
+- The old static files (`data.js`, `core.js`, `app.js`, the CSS files, `sw.js`, `build.json`) are removed from this repo, after `05-request-steward-decoupling` lands, along with `worker.js`'s `/index.html` workaround, which exists only for the old `sw.js`.
 - The Bluehost hosting is shut down only after the domain is confirmed serving from Cloudflare.
 - This repo's CLAUDE.md and README, and RogueRaise's `2026-10-unhoused/RESOURCES.md`, describe the new app.
 - The steward's CORS allow-list and feed URL match the production setup.

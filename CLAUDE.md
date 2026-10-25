@@ -33,7 +33,7 @@ The new app reads the steward's feed, keeps its current state in Postgres, and s
 - TypeScript in strict mode, with no `any`. Validate everything that crosses a boundary (feed files, requests, environment) where it enters, and trust the types inside.
 - The feed contract belongs to the steward. Validate against its schema (`../daily-help-steward/schema/feed/`, `src/contract/feed.ts`) rather than redefining it by hand, and send contract changes to the steward as requests.
 
-The framework, Postgres host and tooling are chosen in the `1-cloudflare-app-setup` story; record them here once chosen.
+The framework, Postgres host and tooling are chosen in the `01-cloudflare-app-setup` story; record them here once chosen.
 
 ## How we work
 

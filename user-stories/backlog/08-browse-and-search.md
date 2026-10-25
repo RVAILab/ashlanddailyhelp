@@ -4,7 +4,7 @@ metadata:
   activated_at:
   planned_at:
   finished_at:
-  updated_at:   2026-10-25T11:06:46-07:00
+  updated_at:   2026-10-25T11:35:21-07:00
 -->
 
 # Story: Browse and Search Resources
@@ -26,7 +26,7 @@ SO THAT I can find a specific kind of help
 
 ## Notes
 
-- Search by distance is `3-find-help-nearby`.
+- Search by distance is `23-find-help-nearby`.
 
 ## Implementation Plan
 

@@ -4,7 +4,7 @@ metadata:
   activated_at:
   planned_at:
   finished_at:
-  updated_at:   2026-10-25T11:06:46-07:00
+  updated_at:   2026-10-25T11:35:21-07:00
 -->
 
 # Story: Request an Events Feed from the Steward
@@ -25,7 +25,7 @@ SO THAT /today can show scheduled events
 
 ## Notes
 
-- Blocks `2-today-events`.
+- Blocks `14-today-events`.
 
 ## Implementation Plan
 

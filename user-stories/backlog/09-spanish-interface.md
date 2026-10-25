@@ -4,7 +4,7 @@ metadata:
   activated_at:
   planned_at:
   finished_at:
-  updated_at:   2026-10-25T11:06:46-07:00
+  updated_at:   2026-10-25T11:35:21-07:00
 -->
 
 # Story: Spanish Interface
@@ -24,7 +24,7 @@ SO THAT I can use the app in my language
 
 ## Notes
 
-- Listing text is `2-translate-listings`.
+- Listing text is `12-translate-listings`.
 
 ## Implementation Plan
 

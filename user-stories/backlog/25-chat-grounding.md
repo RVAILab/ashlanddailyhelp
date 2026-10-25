@@ -4,7 +4,7 @@ metadata:
   activated_at:
   planned_at:
   finished_at:
-  updated_at:   2026-10-25T11:06:46-07:00
+  updated_at:   2026-10-25T11:35:21-07:00
 -->
 
 # Story: Grounded Answers from the Directory
@@ -26,7 +26,7 @@ SO THAT every chat channel gives the same accurate, sourced answers
 
 ## Notes
 
-- Decided Oct 25: chat comes after v1. Shared by `4-chat-on-website`, `4-chat-by-sms` and `4-navigator-assistant`.
+- Decided Oct 25: chat comes after v1. Shared by `26-chat-on-website`, `27-chat-by-sms` and `28-navigator-assistant`.
 
 ## Implementation Plan
 

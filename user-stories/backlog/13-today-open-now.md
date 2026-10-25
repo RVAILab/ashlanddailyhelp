@@ -4,7 +4,7 @@ metadata:
   activated_at:
   planned_at:
   finished_at:
-  updated_at:   2026-10-25T11:06:46-07:00
+  updated_at:   2026-10-25T11:35:21-07:00
 -->
 
 # Story: Today: What's Open Now
@@ -28,7 +28,7 @@ SO THAT I know where I can go next
 
 ## Notes
 
-- Blocked by `1-request-structured-hours`.
+- Blocked by `02-request-structured-hours`.
 
 ## Implementation Plan
 

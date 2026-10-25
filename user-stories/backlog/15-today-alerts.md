@@ -4,7 +4,7 @@ metadata:
   activated_at:
   planned_at:
   finished_at:
-  updated_at:   2026-10-25T11:06:46-07:00
+  updated_at:   2026-10-25T11:35:21-07:00
 -->
 
 # Story: Today: Alerts and Cancellations
@@ -25,7 +25,7 @@ SO THAT I know about an open warming shelter or a canceled meal before I travel
 
 ## Notes
 
-- Blocked by `1-request-alerts-feed`.
+- Blocked by `04-request-alerts-feed`.
 
 ## Implementation Plan
 

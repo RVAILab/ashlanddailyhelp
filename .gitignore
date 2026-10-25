@@ -1,1 +1,10 @@
 feed/
+node_modules/
+build/
+.react-router/
+.wrangler/
+.dev.vars
+worker-configuration.d.ts
+test-results/
+playwright-report/
+.postgres/

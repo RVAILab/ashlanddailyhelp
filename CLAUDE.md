@@ -4,9 +4,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-Ashland Daily Help: a static, dependency-free web app (plain HTML, CSS and ES modules) listing community resources for Ashland and Jackson County, Oregon. It is an installable, offline-capable PWA. There is no package.json, bundler, linter or test suite in the repo; files are served exactly as committed.
+Ashland Daily Help lists community resources for Ashland and Jackson County, Oregon. The repo holds two apps:
 
-It is being replaced by a full-stack app (see "The new app" and "How we work"). Until that ships, the "Static site" sections below describe what is live today.
+- The new app at the repo root: a full-stack TypeScript app (see "The new app" and "How we work"). All new work goes here.
+- The original static site in `legacy/`: dependency-free HTML, CSS and ES modules, served exactly as committed. It stays live until `17-domain-cutover`; the "Static site" sections below describe it, and their paths are relative to `legacy/`.
 
 ## Sibling repo: RogueRaise
 
@@ -19,9 +20,9 @@ Keep the two in step: when a provider's details change in `data.js`, check wheth
 
 ## Backend repo: daily-help-steward
 
-Collection and ingest of resources and events is moving to a separate app, [RVAILab/daily-help-steward](https://github.com/RVAILab/daily-help-steward), usually checked out next to this one at `../daily-help-steward` (check it exists before relying on it). The steward harvests what providers already publish, reconciles it through a human review queue, and keeps provenance for every field. It will be deployed separately and serve the data this app displays through an API; this app stays a static front end.
+Collection and ingest of resources and events is moving to a separate app, [RVAILab/daily-help-steward](https://github.com/RVAILab/daily-help-steward), usually checked out next to this one at `../daily-help-steward` (check it exists before relying on it). The steward harvests what providers already publish, reconciles it through a human review queue, and keeps provenance for every field. It is deployed separately and publishes the feed this app reads.
 
-The app reads the steward's feed (`listings.json`, `pulse.json`; contract in the steward's `docs/FEED.md`) from `FEED_BASE` in `app.js` (default `./feed/`, overridable with `<meta name="feed-base">`). With no valid feed it falls back to the bundled `data.js` and the built-in sample week. Feed checks live in `core.js` (`checkListingsFeed`, `checkPulseFeed`). The service worker caches `listings.json` but never `pulse.json`. "Sample"/"fictional" copy is tagged `data-demo` / `data-live` in `index.html` (or passed through `plain()` in `app.js`) and follows `pulse.json`'s `dataset`. See the README's "With the steward feed". Keep field names and enum values in `data.js` and `core.js` aligned with the steward's contract; when you change them here, flag that the steward needs the same change.
+The static site reads the steward's feed (`listings.json`, `pulse.json`; contract in the steward's `docs/FEED.md`) from `FEED_BASE` in `app.js` (default `./feed/`, overridable with `<meta name="feed-base">`). With no valid feed it falls back to the bundled `data.js` and the built-in sample week. Feed checks live in `core.js` (`checkListingsFeed`, `checkPulseFeed`). The service worker caches `listings.json` but never `pulse.json`. "Sample"/"fictional" copy is tagged `data-demo` / `data-live` in `index.html` (or passed through `plain()` in `app.js`) and follows `pulse.json`'s `dataset`. See the README's "With the steward feed". Keep field names and enum values in `data.js` and `core.js` aligned with the steward's contract; when you change them here, flag that the steward needs the same change.
 
 ## The new app
 
@@ -33,7 +34,15 @@ The new app reads the steward's feed, keeps its current state in Postgres, and s
 - TypeScript in strict mode, with no `any`. Validate everything that crosses a boundary (feed files, requests, environment) where it enters, and trust the types inside.
 - The feed contract belongs to the steward. Validate against its schema (`../daily-help-steward/schema/feed/`, `src/contract/feed.ts`) rather than redefining it by hand, and send contract changes to the steward as requests.
 
-The framework, Postgres host and tooling are chosen in the `01-cloudflare-app-setup` story; record them here once chosen.
+Chosen in `01-cloudflare-app-setup`:
+
+- React Router 8 in framework mode with `@cloudflare/vite-plugin`. Routes are listed in `app/routes.ts`; route modules live in `app/routes/`. `workers/app.ts` is the Worker entry; it puts per-request services (the database) into the React Router context (`app/context.ts`), which loaders read with `context.get(services)`.
+- Server-only code lives in `server/`; tables in `db/schema.ts`, migrations in `db/migrations/` (Drizzle ORM and drizzle-kit). In the Worker, postgres.js connects through the `HYPERDRIVE` binding or the `DATABASE_URL` secret.
+- Vitest runs `*.test.ts` in Node and `*.test.tsx` in happy-dom (Testing Library). Database tests use PGlite through `test/db.ts`, which applies every migration; route loaders are called with `test/route.ts`. Playwright journeys in `e2e/` run against the built Worker and a real Postgres.
+- Biome for lint and format (single quotes, no semicolons, 120 columns); TypeScript 7 strict with `noUncheckedIndexedAccess`.
+- Production Postgres: Neon, set up once by hand (README, "Production setup"). The app deploys to the `ashlanddailyhelp-app` Worker; the static site keeps the `ashlanddailyhelp` Worker.
+
+Commands: `npm run dev`, `npm test`, `npm run e2e`, `npm run lint`, `npm run typecheck`, `npm run db:start` (a private Postgres on port 5433), `npm run db:generate`, `npm run db:migrate`. Local secrets go in `.dev.vars` (see `.dev.vars.example`).
 
 ## How we work
 
@@ -52,16 +61,16 @@ We work in the eXtreme Programming tradition of Pivotal Labs.
 
 ## Static site: running locally
 
-Serve the repo root over HTTP; the service worker and URL state need `http(s):`, not `file:`:
+Serve `legacy/` over HTTP; the service worker and URL state need `http(s):`, not `file:`:
 
 ```sh
-python3 -m http.server 8000
+python3 -m http.server 8000 --directory legacy
 ```
 
 `core.js` and `data.js` have no DOM dependencies, so their logic can be exercised directly with Node:
 
 ```sh
-node --input-type=module -e "import { filterResources } from './core.js'; import { resources } from './data.js'; console.log(filterResources(resources, { query: 'shower' }).map(r => r.id))"
+node --input-type=module -e "import { filterResources } from './legacy/core.js'; import { resources } from './legacy/data.js'; console.log(filterResources(resources, { query: 'shower' }).map(r => r.id))"
 ```
 
 ## Static site: architecture

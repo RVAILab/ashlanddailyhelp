@@ -1,6 +1,8 @@
-# Deploys the site to Cloudflare (wrangler.jsonc) on every push to main. Pull requests run the checks but never deploy.
-# Secrets: CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID.
-name: Deploy site
+# Checks every push and pull request, and deploys on every push to main.
+# The old static site (legacy/) keeps deploying to the ashlanddailyhelp Worker until the domain cutover.
+# The new app deploys to the ashlanddailyhelp-app Worker once the DATABASE_URL repository secret exists.
+# Secrets: CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID, and DATABASE_URL for the app's migrations.
+name: Check and deploy
 on:
   push:
     branches: [main]
@@ -8,17 +10,79 @@ on:
   workflow_dispatch:
 concurrency: ${{ github.event_name == 'pull_request' && github.ref || 'deploy' }}
 jobs:
-  deploy:
+  check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-      - run: for f in *.js; do node --check "$f"; done
-      - run: npx --yes wrangler@4.152.0 deploy --dry-run
-      - if: github.event_name != 'pull_request'
-        run: npx --yes wrangler@4.152.0 deploy
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+
+  e2e:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports: ["5432:5432"]
+        options: --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      DATABASE_URL: postgres://postgres:postgres@127.0.0.1:5432/postgres
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: echo "DATABASE_URL=$DATABASE_URL" > .dev.vars
+      - run: npm run db:migrate
+      - run: npm run e2e
+
+  deploy-legacy:
+    needs: [check, e2e]
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: for f in legacy/*.js; do node --check "$f"; done
+      - run: npx --yes wrangler@4.152.0 deploy -c legacy/wrangler.jsonc
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+  deploy-app:
+    needs: [check, e2e]
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - if: env.DATABASE_URL == ''
+        run: echo "::notice::DATABASE_URL is not set, so the app is not deployed. See the README's production setup."
+      - if: env.DATABASE_URL != ''
+        uses: actions/checkout@v4
+      - if: env.DATABASE_URL != ''
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - if: env.DATABASE_URL != ''
+        run: npm ci
+      - if: env.DATABASE_URL != ''
+        run: npm run db:migrate
+      - if: env.DATABASE_URL != ''
+        run: npm run deploy

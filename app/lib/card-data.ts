@@ -1,4 +1,4 @@
-import type { FeedListing } from '../../contract/steward/feed.ts'
+import type { StoredListing } from '../../server/feed/contract.ts'
 import type { ListingCard } from '../components/listing-card.tsx'
 import { type Lang, messagesFor } from '../i18n/index.ts'
 import { areaName } from './areas.ts'
@@ -12,7 +12,7 @@ interface CardOptions {
 
 // What a listing card shows, worked out on the server like the labels.
 export function toCard(
-  listing: FeedListing,
+  listing: StoredListing,
   lang: Lang,
   { translated = new Map(), alert, saved = false }: CardOptions = {},
 ): ListingCard {
@@ -34,5 +34,6 @@ export function toCard(
     phone: listing.phone,
     labels,
     saved,
+    ...(listing.geo ? { geo: { lat: listing.geo.lat, lng: listing.geo.lng } } : {}),
   }
 }

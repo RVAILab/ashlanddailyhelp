@@ -92,6 +92,17 @@ export const en = {
     where: 'Where',
     phone: 'Phone',
     noPhone: 'Not confirmed',
+    distance: 'Distance',
+  },
+  nearby: {
+    sort: 'Sort by distance from me',
+    asking: 'Finding where you are…',
+    failed: 'Couldn’t get your location. Results stay in their usual order.',
+    sorted: 'Sorted by distance from you. Your location stays on this phone.',
+    usual: 'Back to the usual order',
+    unknown: 'Distance not known',
+    miles: (miles: number) => (miles < 0.1 ? 'Under 0.1 mi' : `${miles.toFixed(1)} mi`),
+    walk: (minutes: number) => `about ${minutes} min walk`,
   },
   labels: {
     conflict: 'Schedule needs checking',

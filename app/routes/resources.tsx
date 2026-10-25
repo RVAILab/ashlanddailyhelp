@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { data, Form, Link } from 'react-router'
 import type { FeedListing } from '../../contract/steward/feed.ts'
 import { listingsFeedStatus } from '../../server/feed/listings.ts'
@@ -15,6 +15,7 @@ import { areaName } from '../lib/areas.ts'
 import { toCard } from '../lib/card-data.ts'
 import { categories } from '../lib/categories.ts'
 import { readFilters } from '../lib/filters.ts'
+import { byDistance, type Point, walkMinutes } from '../lib/nearby.ts'
 import { savedIds } from '../lib/saved-list.ts'
 import type { Route } from './+types/resources'
 
@@ -123,10 +124,61 @@ export default function Resources({ loaderData }: Route.ComponentProps) {
               <Call211 t={t} />
             </div>
           ) : (
-            results.map(listing => <ListingCardView key={listing.id} listing={listing} />)
+            <NearbyResults results={results} />
           )}
         </section>
       )}
     </main>
+  )
+}
+
+type Nearby = { state: 'usual' | 'asking' | 'failed' } | { state: 'sorted'; from: Point }
+
+// Sorting by distance happens on this device: the location goes to the sort and nowhere else.
+function NearbyResults({ results }: { results: ListingCard[] }) {
+  const { t } = useI18n()
+  const [hydrated, setHydrated] = useState(false)
+  const [nearby, setNearby] = useState<Nearby>({ state: 'usual' })
+  useEffect(() => setHydrated(true), [])
+  const locate = () => {
+    if (!navigator.geolocation) return setNearby({ state: 'failed' })
+    setNearby({ state: 'asking' })
+    navigator.geolocation.getCurrentPosition(
+      ({ coords }) => setNearby({ state: 'sorted', from: { lat: coords.latitude, lng: coords.longitude } }),
+      () => setNearby({ state: 'failed' }),
+      { maximumAge: 5 * 60 * 1000, timeout: 20_000 },
+    )
+  }
+  const distance = (miles: number | null) => {
+    if (miles === null) return t.nearby.unknown
+    const walk = walkMinutes(miles)
+    return walk === null ? t.nearby.miles(miles) : `${t.nearby.miles(miles)} · ${t.nearby.walk(walk)}`
+  }
+  return (
+    <>
+      {hydrated && (
+        <div className="nearby">
+          {nearby.state === 'sorted' ? (
+            <button type="button" onClick={() => setNearby({ state: 'usual' })}>
+              {t.nearby.usual}
+            </button>
+          ) : (
+            <button type="button" onClick={locate} disabled={nearby.state === 'asking'}>
+              {t.nearby.sort}
+            </button>
+          )}
+          <p aria-live="polite">
+            {nearby.state === 'asking' && t.nearby.asking}
+            {nearby.state === 'failed' && t.nearby.failed}
+            {nearby.state === 'sorted' && t.nearby.sorted}
+          </p>
+        </div>
+      )}
+      {nearby.state === 'sorted'
+        ? byDistance(results, nearby.from).map(({ card, miles }) => (
+            <ListingCardView key={card.id} listing={card} distance={distance(miles)} />
+          ))
+        : results.map(listing => <ListingCardView key={listing.id} listing={listing} />)}
+    </>
   )
 }

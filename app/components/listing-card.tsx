@@ -18,11 +18,13 @@ export interface ListingCard {
   address: string
   phone: string | null
   labels: ListingLabel[]
+  // The map location, when the steward knows it; never for a sensitive location.
+  geo?: { lat: number; lng: number }
 }
 
 const dialable = (phone: string) => phone.replace(/[^\d+]/g, '')
 
-export function ListingCardView({ listing }: { listing: ListingCard }) {
+export function ListingCardView({ listing, distance }: { listing: ListingCard; distance?: string }) {
   const heading = useId()
   const { t, lang, path } = useI18n()
   const { pathname, search } = useLocation()
@@ -50,6 +52,12 @@ export function ListingCardView({ listing }: { listing: ListingCard }) {
         <dd lang={listing.schedule.fromFeed ? feedLang : undefined}>{listing.schedule.text}</dd>
         <dt>{t.card.where}</dt>
         <dd lang={feedLang}>{listing.address}</dd>
+        {distance && (
+          <>
+            <dt>{t.card.distance}</dt>
+            <dd>{distance}</dd>
+          </>
+        )}
         <dt>{t.card.phone}</dt>
         <dd>{listing.phone ? <a href={`tel:${dialable(listing.phone)}`}>{listing.phone}</a> : t.card.noPhone}</dd>
       </dl>

@@ -1,6 +1,6 @@
-import { render, screen, within } from '@testing-library/react'
+import { fireEvent, render, screen, within } from '@testing-library/react'
 import { createRoutesStub } from 'react-router'
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import type { ListingCard } from '../components/listing-card.tsx'
 import { I18nProvider } from '../i18n/provider.tsx'
 import Resources from './resources.tsx'
@@ -150,5 +150,41 @@ describe('/resources', () => {
     const english = within(card).getByRole('link', { name: 'Ver en inglés' })
     expect(english.getAttribute('href')).toBe('/resources/ohra-showers')
     expect(english.getAttribute('hreflang')).toBe('en')
+  })
+
+  describe('sorting by distance', () => {
+    const plaza = { coords: { latitude: 42.199, longitude: -122.7158 } }
+    const near: ListingCard = { ...showers, id: 'near', name: 'Near the Plaza', geo: { lat: 42.1995, lng: -122.716 } }
+    const far: ListingCard = { ...showers, id: 'far', name: 'Out east', geo: { lat: 42.1876, lng: -122.6839 } }
+    const unknown: ListingCard = { ...showers, id: 'unknown', name: 'No map location' }
+    const locate = (answer: (ok: PositionCallback, fail: PositionErrorCallback) => void) =>
+      vi.stubGlobal('navigator', { ...navigator, geolocation: { getCurrentPosition: vi.fn(answer) } })
+    afterEach(() => vi.unstubAllGlobals())
+
+    it('sorts the results on this device by distance from where I am, sending my location nowhere', async () => {
+      locate(ok => ok(plaza as GeolocationPosition))
+      const fetch = vi.fn()
+      vi.stubGlobal('fetch', fetch)
+      renderPage({ results: [unknown, far, near] })
+      fireEvent.click(await screen.findByRole('button', { name: 'Sort by distance from me' }))
+      expect(await screen.findByText('Sorted by distance from you. Your location stays on this phone.')).toBeDefined()
+      expect(screen.getAllByRole('article').map(card => card.getAttribute('id'))).toEqual(['near', 'far', 'unknown'])
+      expect(
+        within(screen.getByRole('article', { name: 'Near the Plaza' })).getByText('Under 0.1 mi · about 1 min walk'),
+      )
+      expect(within(screen.getByRole('article', { name: 'Out east' })).getByText('1.8 mi · about 36 min walk'))
+      expect(within(screen.getByRole('article', { name: 'No map location' })).getByText('Distance not known'))
+      expect(fetch).not.toHaveBeenCalled()
+      fireEvent.click(screen.getByRole('button', { name: 'Back to the usual order' }))
+      expect(screen.getAllByRole('article').map(card => card.getAttribute('id'))).toEqual(['unknown', 'far', 'near'])
+    })
+
+    it('keeps the usual order and says so when the location can’t be had', async () => {
+      locate((_, fail) => fail({ code: 1 } as GeolocationPositionError))
+      renderPage({ results: [far, near] })
+      fireEvent.click(await screen.findByRole('button', { name: 'Sort by distance from me' }))
+      expect(await screen.findByText('Couldn’t get your location. Results stay in their usual order.')).toBeDefined()
+      expect(screen.getAllByRole('article').map(card => card.getAttribute('id'))).toEqual(['far', 'near'])
+    })
   })
 })

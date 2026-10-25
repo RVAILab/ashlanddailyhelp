@@ -1,10 +1,10 @@
 <!--
 metadata:
   created_at:   2026-10-25T11:06:46-07:00
-  activated_at:
+  activated_at: 2026-10-25T15:43:44-07:00
   planned_at:
   finished_at:
-  updated_at:   2026-10-25T14:03:43-07:00
+  updated_at:   2026-10-25T15:43:44-07:00
 -->
 
 # Story: Find Help Nearby

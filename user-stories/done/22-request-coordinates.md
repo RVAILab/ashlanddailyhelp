@@ -3,8 +3,8 @@ metadata:
   created_at:   2026-10-25T11:06:46-07:00
   activated_at: 2026-10-25T15:38:53-07:00
   planned_at:   2026-10-25T15:40:44-07:00
-  finished_at:
-  updated_at:   2026-10-25T15:40:44-07:00
+  finished_at:  2026-10-25T15:46:34-07:00
+  updated_at:   2026-10-25T15:46:34-07:00
 -->
 
 # Story: Request Coordinates from the Steward
@@ -44,3 +44,25 @@ Tests:
 
 Open: the third criterion (the steward's owner accepts the proposal) waits on the steward.
 
+
+## Review
+
+Reviewed 2026-10-25 at `71d9516` plus fixes. A subagent did an independent read.
+
+| Criterion | Verdict | Evidence |
+| --- | --- | --- |
+| A proposed optional field with coordinates and their provenance | ✅ | Steward #62: `listings[].geo` (`lat`, `lng`, `source`, `matchedAddress`, `by`, `observedAt`) with `provenance.geo`. Accepted here in `server/feed/contract.ts` (`Geo`). |
+| Never present for a sensitive location | ✅ | `ListingsFile`'s transform drops `geo` and `provenance.geo` for the sensitive wording (`server/feed/contract.test.ts`). |
+| The steward's owner has accepted or amended the proposal | ⚠️ | #62 is open, with refinements added as a comment. Pending on the steward. |
+
+These findings were fixed:
+
+- A sensitive listing kept `provenance.geo`, whose Census link carries the address. It is now dropped too.
+- The proposal now says to publish `geo` only for the current address, and that `provider` points can wait (comment on #62).
+- Refactor: `openings` are now read with the steward's 1.4 `FeedOpening`, not our proposal-era copy, so its checks apply.
+
+## Learnings
+
+- **Went well:** the steward already geocodes, so the request was "publish what you have" and could name its real columns.
+- **Surprising:** provenance can leak what the field itself hides. A geocoder's source link is the address.
+- **Next time:** when a field is withheld for privacy, check its provenance, its quotes and its links for the same value.

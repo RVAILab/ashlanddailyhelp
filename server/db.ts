@@ -11,6 +11,12 @@ export interface DatabaseConnection {
 }
 
 export function connect(connectionString: string): DatabaseConnection {
-  const client = postgres(connectionString, { max: 5, fetch_types: false })
+  // A page should fail fast, not hang, when the database is slow to answer.
+  const client = postgres(connectionString, {
+    max: 5,
+    fetch_types: false,
+    connect_timeout: 5,
+    connection: { statement_timeout: 10_000 },
+  })
   return { db: drizzle({ client, schema }), close: () => client.end() }
 }

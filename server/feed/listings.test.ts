@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { testDatabase } from '../../test/db.ts'
 import { feedHost, json, sampleListingsFeed } from '../../test/feed.ts'
 import { refreshFeedFile } from './ingest.ts'
-import { currentListings, listingsFeedHeader, listingsFile } from './listings.ts'
+import { currentListings, listingsFeedStatus, listingsFile } from './listings.ts'
 
 describe('currentListings', () => {
   let db: Awaited<ReturnType<typeof testDatabase>>
@@ -28,37 +28,59 @@ describe('currentListings', () => {
   })
 })
 
-describe('listingsFeedHeader', () => {
+describe('listingsFeedStatus', () => {
   let db: Awaited<ReturnType<typeof testDatabase>>
+  const at = new Date('2026-10-25T18:00:00Z')
+  const refresh = (reply: Response) =>
+    refreshFeedFile(listingsFile, {
+      db,
+      baseUrl: 'https://feed.example.org/',
+      fetch: feedHost(reply).fetch,
+      now: () => at,
+    })
   beforeEach(async () => {
     db = await testDatabase()
   })
   afterEach(() => db.close())
 
-  it('is null before any copy has been stored, or without a database', async () => {
-    expect(await listingsFeedHeader(db)).toBeNull()
-    expect(await listingsFeedHeader(null)).toBeNull()
+  it('is unavailable without a database', async () => {
+    expect(await listingsFeedStatus(null)).toEqual({ state: 'unavailable' })
+  })
+
+  it('is none before any copy has been stored', async () => {
+    expect(await listingsFeedStatus(db)).toEqual({ state: 'none' })
+    vi.spyOn(console, 'error').mockImplementation(() => {})
+    await refresh(new Response('nope', { status: 503 }))
+    expect(await listingsFeedStatus(db)).toEqual({ state: 'none' })
+    vi.restoreAllMocks()
   })
 
   it('gives the stored copy’s generatedAt and dataset', async () => {
     const feed = sampleListingsFeed()
-    await refreshFeedFile(listingsFile, {
-      db,
-      baseUrl: 'https://feed.example.org/',
-      fetch: feedHost(json(feed)).fetch,
-      now: () => new Date(),
-    })
-    expect(await listingsFeedHeader(db)).toEqual({
+    await refresh(json(feed))
+    expect(await listingsFeedStatus(db)).toEqual({
+      state: 'stored',
       generatedAt: new Date(feed.generatedAt).toISOString(),
       dataset: feed.dataset,
+      updateFailing: false,
     })
   })
 
-  it('is null, and logs, when the database fails', async () => {
-    await db.close()
+  it('says when the latest update failed, so the copy may be out of date', async () => {
+    await refresh(json(sampleListingsFeed()))
+    vi.spyOn(console, 'error').mockImplementation(() => {})
+    await refresh(new Response('nope', { status: 500 }))
+    vi.restoreAllMocks()
+    expect(await listingsFeedStatus(db)).toMatchObject({ state: 'stored', updateFailing: true })
+  })
+
+  it('is unavailable, and logs, when the database fails or is too slow', async () => {
     const error = vi.spyOn(console, 'error').mockImplementation(() => {})
-    expect(await listingsFeedHeader(db)).toBeNull()
-    expect(error).toHaveBeenCalled()
+    const slow = { ...db, select: () => new Promise(() => {}) } as unknown as typeof db
+    expect(await listingsFeedStatus(slow, 20)).toEqual({ state: 'unavailable' })
+    await db.close()
+    expect(await listingsFeedStatus(db)).toEqual({ state: 'unavailable' })
+    expect(error).toHaveBeenCalledTimes(2)
     error.mockRestore()
   })
 })

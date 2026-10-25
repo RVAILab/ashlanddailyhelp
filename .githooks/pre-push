@@ -1,0 +1,3 @@
+#!/bin/sh
+# Keeps main releasable: every push deploys. Enable once per clone with: git config core.hooksPath .githooks
+exec npm run check

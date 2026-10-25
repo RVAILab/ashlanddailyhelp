@@ -1,5 +1,6 @@
 import { asc, gt, isNull, or } from 'drizzle-orm'
 import type { FeedListing } from '../../contract/steward/feed.ts'
+import { Dataset } from '../../contract/steward/values.ts'
 import { listings } from '../../db/schema.ts'
 import type { Database } from '../db.ts'
 import { ListingsFile } from './contract.ts'
@@ -31,20 +32,34 @@ export async function currentListings(db: Database, now: Date): Promise<FeedList
   return rows.map(row => row.data)
 }
 
-export interface FeedHeader {
-  generatedAt: string
-  dataset: string
-}
+export type FeedStatus =
+  | { state: 'stored'; generatedAt: string; dataset: Dataset; updateFailing: boolean }
+  | { state: 'none' }
+  | { state: 'unavailable' }
 
-// Every page shows this, so a database problem leaves the footer empty rather than failing the page.
-export async function listingsFeedHeader(db: Database | null): Promise<FeedHeader | null> {
-  if (!db) return null
+// Every page shows this, so a slow or failing database leaves the footer saying so rather than holding up the page.
+export async function listingsFeedStatus(db: Database | null, timeoutMs = 2_000): Promise<FeedStatus> {
+  if (!db) return { state: 'unavailable' }
+  let timer: ReturnType<typeof setTimeout> | undefined
   try {
-    const status = await feedFileStatus(db, listingsFile.name)
-    if (!status?.generatedAt || !status.dataset) return null
-    return { generatedAt: status.generatedAt.toISOString(), dataset: status.dataset }
+    const status = await Promise.race([
+      feedFileStatus(db, listingsFile.name),
+      new Promise<never>((_, reject) => {
+        timer = setTimeout(() => reject(new Error(`no answer within ${timeoutMs} ms`)), timeoutMs)
+      }),
+    ])
+    if (!status?.generatedAt || !status.dataset) return { state: 'none' }
+    const dataset = Dataset.parse(status.dataset)
+    return {
+      state: 'stored',
+      generatedAt: status.generatedAt.toISOString(),
+      dataset,
+      updateFailing: status.lastError !== null,
+    }
   } catch (error) {
-    console.error('feed: could not read the listings header', error)
-    return null
+    console.error('feed: could not read the listings status', error)
+    return { state: 'unavailable' }
+  } finally {
+    clearTimeout(timer)
   }
 }

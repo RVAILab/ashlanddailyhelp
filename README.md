@@ -35,7 +35,7 @@ Then open <http://localhost:5173>. `/health` reports whether the app can reach i
 
 ### The steward's feed
 
-The app keeps a copy of the steward's feed in Postgres. A scheduled Worker refreshes it every 5 minutes from `FEED_BASE_URL` (a Worker variable; `listings.json` is fetched relative to it), with `If-None-Match`, and keeps the last good copy when a fetch fails or a file doesn't match the contract. Every page shows "Listings as of" the copy's `generatedAt`.
+The app keeps a copy of the steward's feed in Postgres. A scheduled Worker refreshes it every 5 minutes from `FEED_BASE_URL`, a Worker variable naming the folder that holds `listings.json` (with or without a trailing slash), with `If-None-Match`. It keeps the last good copy when a fetch fails or a file doesn't match the contract. Each page's footer says "Listings as of" the copy's `generatedAt`, warns when the latest update failed, and says so when no copy has loaded or the database is unavailable.
 
 To load a feed by hand:
 
@@ -45,7 +45,7 @@ npm run feed:ingest -- ../daily-help-steward/fixtures/feed-sample
 npm run feed:ingest -- https://feed.example.org/feed/
 ```
 
-To try the scheduled refresh locally, add `FEED_BASE_URL` to `.dev.vars` (for example a `python3 -m http.server` serving a feed folder), run `npm run dev`, and open `/cdn-cgi/handler/scheduled`.
+To try the scheduled refresh locally, add `FEED_BASE_URL` to `.dev.vars` (for example a `python3 -m http.server` serving a feed folder), run `npm run dev`, and open `/cdn-cgi/local/scheduled`.
 
 The steward's contract (`contract/steward/`) and sample feed (`test/fixtures/feed-sample/`) are copies. After the steward changes either, run `npm run feed:sync` with the steward checked out at `../daily-help-steward`; a test fails while the copies differ.
 
@@ -58,9 +58,12 @@ npm test            # unit and integration tests (Vitest; database tests run on 
 npm run e2e         # end-to-end journeys in a mobile browser against the built Worker (Playwright)
 npm run lint        # Biome
 npm run typecheck   # generated Worker and route types, then tsc
+npm run check       # lint, typecheck and tests: run before every push
 ```
 
-Before the first `npm run e2e`, run `npx playwright install chromium`. The journeys use the database in `.dev.vars`, so start it and apply migrations first (`npm run db:start`, `npm run db:migrate`).
+Every push to `main` deploys, so `.githooks/pre-push` runs `npm run check`. Enable it once per clone with `git config core.hooksPath .githooks`.
+
+Before the first `npm run e2e`, run `npx playwright install chromium`. The journeys use the database in `.dev.vars`, so start it and apply migrations first (`npm run db:start`, `npm run db:migrate`). Their setup replaces the listings in that database with the sample feed.
 
 ### Database migrations
 

@@ -20,7 +20,8 @@
     "db:start": "scripts/dev-db.sh start",
     "db:stop": "scripts/dev-db.sh stop",
     "feed:ingest": "node --env-file-if-exists=.dev.vars scripts/ingest.ts",
-    "feed:sync": "scripts/sync-steward.sh"
+    "feed:sync": "scripts/sync-steward.sh",
+    "check": "npm run lint && npm run typecheck && npm test"
   },
   "dependencies": {
     "drizzle-orm": "^0.45.4",

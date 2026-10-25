@@ -1,19 +1,19 @@
-import { eq } from 'drizzle-orm'
+import { eq, sql } from 'drizzle-orm'
 import type { z } from 'zod'
 import type { Dataset } from '../../contract/steward/values.ts'
 import { feedFiles } from '../../db/schema.ts'
 import type { Database } from '../db.ts'
 import { KNOWN_MAJOR } from './contract.ts'
 
-interface FeedHeader {
+interface FileHeader {
   schemaVersion: string
   generatedAt: string
   dataset: z.infer<typeof Dataset>
 }
 
-export interface FeedFileSpec<File extends FeedHeader> {
+export interface FeedFileSpec<File extends FileHeader> {
   name: string
-  schema: z.ZodType<File>
+  schema: z.ZodType<File, unknown>
   store: (tx: Database, file: File) => Promise<void>
 }
 
@@ -22,51 +22,84 @@ export interface RefreshDeps {
   baseUrl: string
   fetch: typeof globalThis.fetch
   now: () => Date
+  timeoutMs?: number
 }
 
 export type RefreshOutcome = { result: 'stored' } | { result: 'unchanged' } | { result: 'failed'; error: string }
 
+const ERROR_LENGTH = 500
+
 class FeedRejected extends Error {}
 
-async function download(url: string, etag: string | null, fetch: RefreshDeps['fetch']): Promise<Response> {
-  const headers: Record<string, string> = { Accept: 'application/json' }
-  if (etag) headers['If-None-Match'] = etag
-  const response = await fetch(url, { headers, signal: AbortSignal.timeout(15_000) })
-  if (response.status !== 304 && !response.ok) throw new FeedRejected(`HTTP ${response.status}`)
-  return response
+async function within<T>(ms: number, work: Promise<T>, what: string): Promise<T> {
+  let timer: ReturnType<typeof setTimeout> | undefined
+  const timeout = new Promise<never>((_, reject) => {
+    timer = setTimeout(() => reject(new FeedRejected(`${what}: no answer within ${ms / 1000} s`)), ms)
+  })
+  try {
+    return await Promise.race([work, timeout])
+  } finally {
+    clearTimeout(timer)
+  }
 }
 
-async function parse<File extends FeedHeader>(spec: FeedFileSpec<File>, response: Response): Promise<File> {
-  let body: unknown
+function contractError(error: z.ZodError): string {
+  const issues = error.issues.map(issue => `${issue.path.join('.') || 'file'}: ${issue.message}`)
+  const shown = issues.slice(0, 3).join('; ')
+  return `does not match the feed contract: ${shown}${issues.length > 3 ? ` (and ${issues.length - 3} more)` : ''}`
+}
+
+async function download(
+  url: string,
+  etag: string | undefined,
+  { fetch, timeoutMs }: Required<Pick<RefreshDeps, 'fetch' | 'timeoutMs'>>,
+) {
+  const headers: Record<string, string> = { Accept: 'application/json' }
+  if (etag) headers['If-None-Match'] = etag
+  const signal = AbortSignal.timeout(timeoutMs)
+  const response = await within(timeoutMs, fetch(url, { headers, signal }), 'could not reach the feed host')
+  if (response.status === 304) return null
+  if (!response.ok) throw new FeedRejected(`HTTP ${response.status}`)
+  const body = await within(timeoutMs, response.text(), 'could not read the file').catch(cause => {
+    throw cause instanceof FeedRejected ? cause : new FeedRejected(`could not read the file: ${String(cause)}`)
+  })
+  return { body, etag: response.headers.get('ETag') }
+}
+
+function parse<File extends FileHeader>(spec: FeedFileSpec<File>, body: string): File {
+  let json: unknown
   try {
-    body = await response.json()
+    json = JSON.parse(body)
   } catch {
     throw new FeedRejected('not valid JSON')
   }
-  const version = (body as { schemaVersion?: unknown } | null)?.schemaVersion
+  const version = (json as { schemaVersion?: unknown } | null)?.schemaVersion
   if (typeof version === 'string' && version.split('.')[0] !== KNOWN_MAJOR)
     throw new FeedRejected(`unknown major version ${version}`)
-  const checked = spec.schema.safeParse(body)
-  if (!checked.success) throw new FeedRejected(`does not match the feed contract: ${checked.error.message}`)
+  const checked = spec.schema.safeParse(json)
+  if (!checked.success) throw new FeedRejected(contractError(checked.error))
   return checked.data
 }
 
-export async function refreshFeedFile<File extends FeedHeader>(
+export async function refreshFeedFile<File extends FileHeader>(
   spec: FeedFileSpec<File>,
-  { db, baseUrl, fetch, now }: RefreshDeps,
+  { db, baseUrl, fetch, now, timeoutMs = 15_000 }: RefreshDeps,
 ): Promise<RefreshOutcome> {
-  const url = new URL(spec.name, baseUrl).href
-  const [stored] = await db.select({ etag: feedFiles.etag }).from(feedFiles).where(eq(feedFiles.name, spec.name))
   const checkedAt = now()
   try {
-    const response = await download(url, stored?.etag ?? null, fetch)
-    if (response.status === 304) {
-      await db.update(feedFiles).set({ checkedAt }).where(eq(feedFiles.name, spec.name))
+    const url = new URL(spec.name, baseUrl).href
+    const [stored] = await db.select({ etag: feedFiles.etag }).from(feedFiles).where(eq(feedFiles.name, spec.name))
+    const downloaded = await download(url, stored?.etag ?? undefined, { fetch, timeoutMs })
+    if (!downloaded) {
+      await db
+        .update(feedFiles)
+        .set({ checkedAt, lastError: null, lastErrorAt: null })
+        .where(eq(feedFiles.name, spec.name))
       return { result: 'unchanged' }
     }
-    const file = await parse(spec, response)
+    const file = parse(spec, downloaded.body)
     const header = {
-      etag: response.headers.get('ETag'),
+      etag: downloaded.etag,
       schemaVersion: file.schemaVersion,
       generatedAt: new Date(file.generatedAt),
       dataset: file.dataset,
@@ -76,6 +109,8 @@ export async function refreshFeedFile<File extends FeedHeader>(
       lastErrorAt: null,
     }
     await db.transaction(async tx => {
+      // Overlapping refreshes (the schedule and a manual run) take turns rather than collide on the same rows.
+      await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${`feed:${spec.name}`}))`)
       await spec.store(tx, file)
       await tx
         .insert(feedFiles)
@@ -84,13 +119,21 @@ export async function refreshFeedFile<File extends FeedHeader>(
     })
     return { result: 'stored' }
   } catch (cause) {
-    const error = cause instanceof Error ? cause.message : String(cause)
-    console.error(`feed: ${url} was not stored: ${error}`)
+    const error = (cause instanceof Error ? cause.message : String(cause)).slice(0, ERROR_LENGTH)
+    console.error(`feed: ${spec.name} from ${baseUrl} was not stored: ${error}`)
+    await recordError(db, spec.name, error, checkedAt)
+    return { result: 'failed', error }
+  }
+}
+
+async function recordError(db: Database, name: string, error: string, at: Date) {
+  try {
     await db
       .insert(feedFiles)
-      .values({ name: spec.name, checkedAt, lastError: error, lastErrorAt: checkedAt })
-      .onConflictDoUpdate({ target: feedFiles.name, set: { checkedAt, lastError: error, lastErrorAt: checkedAt } })
-    return { result: 'failed', error }
+      .values({ name, checkedAt: at, lastError: error, lastErrorAt: at })
+      .onConflictDoUpdate({ target: feedFiles.name, set: { checkedAt: at, lastError: error, lastErrorAt: at } })
+  } catch (cause) {
+    console.error(`feed: could not record the failure for ${name}`, cause)
   }
 }
 

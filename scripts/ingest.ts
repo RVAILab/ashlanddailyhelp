@@ -6,11 +6,11 @@ import { runIngest } from '../server/feed/run.ts'
 
 const target = process.argv[2] ?? 'test/fixtures/feed-sample'
 const remote = /^https?:\/\//.test(target)
-const baseUrl = remote ? target.replace(/\/?$/, '/') : pathToFileURL(`${resolve(target)}/`).href
+const baseUrl = remote ? target : pathToFileURL(`${resolve(target)}/`).href
 
-const readLocal: typeof fetch = async input => {
+const readLocal: typeof fetch = async (input, init) => {
   const url = new URL(input instanceof Request ? input.url : input)
-  if (url.protocol !== 'file:') return fetch(input)
+  if (url.protocol !== 'file:') return fetch(input, init)
   return new Response(await readFile(fileURLToPath(url)), { headers: { 'Content-Type': 'application/json' } })
 }
 

@@ -57,3 +57,29 @@ test('pages name their other-language versions with full addresses', async ({ pa
     'http://localhost:4173/resources?q=show',
   )
 })
+
+test.describe('pages added since listings were translated, in Spanish', () => {
+  for (const [path, heading] of [
+    ['/es/today', 'Abierto hoy'],
+    ['/es/next', 'Lo que sigue'],
+    ['/es/list', 'Mi lista'],
+    ['/es/pulse', 'Community Pulse'],
+    ['/es/ask', 'Haga una pregunta'],
+    ['/es/navigator', 'Asistente para trabajadores sociales'],
+  ] as const)
+    test(`${path} is in Spanish`, async ({ page }) => {
+      await page.goto(path)
+      await expect(page.locator('html')).toHaveAttribute('lang', 'es')
+      await expect(page.getByRole('heading', { level: 1, name: heading })).toBeVisible()
+      await expect(page.getByRole('contentinfo')).toContainText('Línea de Crisis de Salud Mental')
+    })
+
+  test('a crisis question in Spanish gets the crisis numbers first, in Spanish', async ({ page }) => {
+    await page.goto('/es/ask')
+    await page.getByRole('textbox', { name: 'Su pregunta' }).fill('quiero morir')
+    await page.getByRole('button', { name: 'Preguntar' }).click()
+    const answer = page.getByRole('region', { name: /Usted preguntó/ })
+    await expect(answer.locator('p').first()).toContainText('Si usted u otra persona está en peligro, llame al 911')
+    await expect(answer.getByRole('link', { name: '988' })).toHaveAttribute('href', 'tel:988')
+  })
+})

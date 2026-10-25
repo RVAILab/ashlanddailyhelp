@@ -8,7 +8,6 @@ import { feedFileStatus } from '../feed/ingest.ts'
 import { servesAshland } from '../listings/scope.ts'
 import { searchListings } from '../listings/search.ts'
 
-const MAX_LISTINGS = 8
 const WEEK = 7 * 24 * 60 * 60 * 1000
 // Words that say nothing about the kind of help, so searching for them alone would match everything or nothing.
 const FILLER = new Set(
@@ -97,9 +96,15 @@ const KINDS: Record<Category, RegExp> = {
 }
 
 // The whole question first; when it finds too little, each meaningful word, ranked by how many words a listing matches.
-async function findListings(db: Database, question: string, now: Date, lang: Lang): Promise<StoredListing[]> {
+async function findListings(
+  db: Database,
+  question: string,
+  now: Date,
+  lang: Lang,
+  max: number,
+): Promise<StoredListing[]> {
   const whole = await searchListings(db, { query: question.slice(0, 100) }, now, lang)
-  if (whole.length >= 3) return whole.slice(0, MAX_LISTINGS)
+  if (whole.length >= 3) return whole.slice(0, max)
   const meaningful = words(question)
   const hits = new Map<string, { listing: StoredListing; score: number; first: number }>()
   whole.forEach((listing, index) => {
@@ -120,7 +125,7 @@ async function findListings(db: Database, question: string, now: Date, lang: Lan
       })
   return [...hits.values()]
     .sort((a, b) => b.score - a.score || a.first - b.first)
-    .slice(0, MAX_LISTINGS)
+    .slice(0, max)
     .map(hit => hit.listing)
 }
 
@@ -130,8 +135,14 @@ const words = (text: string) =>
 // An alert is shown from a day before it starts, as on the pages.
 const ALERT_LEAD = 24 * 60 * 60 * 1000
 
-export async function gatherContext(db: Database, question: string, now: Date, lang: Lang): Promise<ChatContext> {
-  const listings = await findListings(db, question, now, lang)
+export async function gatherContext(
+  db: Database,
+  question: string,
+  now: Date,
+  lang: Lang,
+  max = 8,
+): Promise<ChatContext> {
+  const listings = await findListings(db, question, now, lang, max)
   const alerts = (await currentAlerts(db, now)).filter(
     alert => servesAshland(alert.area, alert.coverage) && Date.parse(alert.startsAt) - ALERT_LEAD <= now.getTime(),
   )

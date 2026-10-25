@@ -69,6 +69,16 @@ describe('answerQuestion', () => {
     expect(reply.text).toContain('211')
   })
 
+  it('gives fuller context and asks for a full answer at full depth, for navigators', async () => {
+    const brief = fake({ known: false, answer: '', cited: [] })
+    await ask('food', brief)
+    expect(brief.asked[0]?.detail).toBe('brief')
+    const full = fake({ known: false, answer: '', cited: [] })
+    await answerQuestion({ db, answerer: full, question: 'food', lang: 'en', now, depth: 'full' })
+    expect(full.asked[0]?.detail).toBe('full')
+    expect((await gatherContext(db, 'food', now, 'en', 2)).listings).toHaveLength(2)
+  })
+
   it('treats an answer citing anything it wasn’t given as not known', async () => {
     const reply = await ask(
       'shower',

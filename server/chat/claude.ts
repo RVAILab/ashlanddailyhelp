@@ -15,7 +15,7 @@ export type ModelAnswer = z.infer<typeof ModelAnswer>
 
 export interface Answerer {
   answer: (
-    input: ChatContext & { question: string; language: string },
+    input: ChatContext & { question: string; language: string; detail: 'brief' | 'full' },
   ) => Promise<ModelAnswer & { usage: { inputTokens: number; outputTokens: number } }>
 }
 
@@ -27,12 +27,13 @@ Rules:
 - Never guess or fill in hours, days, eligibility, requirements, cost or addresses. If an entry says "Unknown" or "Not confirmed", or doesn't say, say it isn't confirmed.
 - Say where a fact comes from, the way the entry does: "Their website lists…", "The county packet lists…". If an entry is marked as having a schedule that needs checking or not confirmed by the provider, say so.
 - If an alert closes or changes a place, say that first. If an event or window is canceled or may be canceled, say so.
-- Keep it short: two to five plain sentences. Give the name, then when and where, then the phone number if there is one.
+- When "detail" is "brief", keep it short: two to five plain sentences. Give the name, then when and where, then the phone number if there is one.
+- When "detail" is "full", the reader is a caseworker or outreach worker helping someone. Cover every relevant entry: who it is for, what to bring or requirements, when, where, cost and how to get in, each with where it comes from, and say plainly what isn't confirmed. Up to ten sentences, one entry after another.
 - Answer in the language you are told to use, in plain everyday words.
 - Set "cited" to the ids of every listing, event or alert your answer uses. Cite only ids you were given.
 - If the entries don't answer the question, set "known" to false and "answer" to an empty string. Do not suggest places that aren't in the entries.
 
-You get a JSON object: the question, the language, the time the listings are from ("asOf", and "now"), the entries ("listings"), and current "alerts" and upcoming "events".`
+You get a JSON object: the question, the language, the level of "detail", the time the listings are from ("asOf", and "now"), the entries ("listings"), and current "alerts" and upcoming "events".`
 
 export function claudeAnswerer(client: Pick<Anthropic['beta']['messages'], 'create'>): Answerer {
   return {

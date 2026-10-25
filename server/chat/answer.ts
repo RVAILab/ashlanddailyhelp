@@ -22,14 +22,23 @@ interface AskInput {
   question: string
   lang: Lang
   now: Date
+  // "full" is for navigators: more listings, and every relevant detail with its source.
+  depth?: 'brief' | 'full'
 }
 
 // One answer for every channel. The model answers only from what Postgres holds for this question; the rules that
 // keep people safe are enforced here rather than trusted to it. Nothing about the question is stored or logged.
-export async function answerQuestion({ db, answerer, question, lang, now }: AskInput): Promise<ChatAnswer> {
+export async function answerQuestion({
+  db,
+  answerer,
+  question,
+  lang,
+  now,
+  depth = 'brief',
+}: AskInput): Promise<ChatAnswer> {
   const t = messagesFor(lang).chat
   const crisis = isCrisis(question)
-  const context = await gatherContext(db, question, now, lang)
+  const context = await gatherContext(db, question, now, lang, depth === 'full' ? 12 : 8)
   const started = Date.now()
   const reply = (known: boolean, body: string, citations: ChatAnswer['citations'] = []): ChatAnswer => ({
     text: [crisis ? t.crisis : null, body].filter(Boolean).join('\n\n'),
@@ -44,7 +53,7 @@ export async function answerQuestion({ db, answerer, question, lang, now }: AskI
     return reply(false, t.unknown)
   }
   try {
-    const answer = await answerer.answer({ ...context, question, language: LANGUAGE_NAMES[lang] })
+    const answer = await answerer.answer({ ...context, question, language: LANGUAGE_NAMES[lang], detail: depth })
     const given = new Map<string, ChatAnswer['citations'][number]>([
       ...context.listings.map(
         listing =>

@@ -4,7 +4,7 @@ metadata:
   activated_at: 2026-10-25T12:12:31-07:00
   planned_at:   2026-10-25T12:12:31-07:00
   finished_at:
-  updated_at:   2026-10-25T12:12:31-07:00
+  updated_at:   2026-10-25T12:13:48-07:00
 -->
 
 # Story: Request an Events Feed from the Steward
@@ -25,6 +25,7 @@ SO THAT /today can show scheduled events
 
 ## Notes
 
+- Filed as [RVAILab/daily-help-steward#40](https://github.com/RVAILab/daily-help-steward/issues/40) on 2026-10-25.
 - Blocks `13-today-events`.
 
 ## Implementation Plan
@@ -47,5 +48,5 @@ None: this story produces a request, not code.
 
 ### Risks and open questions
 
-- Whether recurring occurrences belong in the file at all, or only one-off events; the proposal includes both with `kind` so the site can choose, and the steward may decide otherwise.
+- Settled while filing: recurring windows are listing `openings` with a per-window `status` (#39), so `events.json` holds only one-off events.
 - "Accepted by the steward's owner" stays open on the issue.

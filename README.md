@@ -126,7 +126,7 @@ npm run check       # lint, typecheck and tests: the pre-push hook runs it
 
 Before the first `npm run e2e`, run `npx playwright install chromium`. The journeys use the database in `.dev.vars`, so start it first (`npm run db:start`). Their setup applies migrations to that database and replaces its listings with the live snapshot.
 
-Both suites start by refreshing `test/fixtures/feed-live/`, a copy of the steward's live feed, when its `snapshot.json` is more than a day old; if the steward can't be reached or a file doesn't match the contract, they keep the old copy. Commit the refreshed snapshot. After that, nothing in a run reaches the network: in Vitest `fetch` refuses anything but localhost, the journeys' browser resolves only localhost, and the preview server sends chat calls to a closed local port.
+Locally, both suites start by refreshing `test/fixtures/feed-live/`, a copy of the steward's live feed, when its `snapshot.json` is more than a day old; if the steward can't be reached or a file doesn't match the contract, they keep the old copy. Commit the refreshed snapshot. CI (`CI` set) never refreshes it: it tests the committed copy, however old, so a build never depends on the steward. After that, nothing in a run reaches the network: in Vitest `fetch` refuses anything but localhost, the journeys' browser resolves only localhost, and the preview server sends chat calls to a closed local port.
 
 ### Database migrations
 

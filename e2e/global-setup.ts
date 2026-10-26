@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process'
-import refreshFixtures from '../test/global-setup.ts'
+import { refreshFixtures } from '../test/global-setup.ts'
 import { LIVE_FEED_DIR } from '../test/live-feed.ts'
 
 export default async function prepareDatabase() {

@@ -62,3 +62,15 @@ test.describe('in text-only mode', () => {
     await expect(page.getByRole('article', { name: 'A shower and a fresh start' })).toBeVisible()
   })
 })
+
+test('going back after switching shows the page in the new mode', async ({ page }) => {
+  await page.goto('/about')
+  await page.getByRole('link', { name: 'Text-only version (uses less data)' }).click()
+  await expect(page.locator('html')).toHaveClass(/text-only/)
+  await page.goto('/today')
+  await page.getByRole('link', { name: 'Full version, with pictures' }).click()
+  await expect(page.locator('html')).not.toHaveClass(/text-only/)
+  await page.goBack()
+  await page.goBack()
+  await expect(page.locator('html')).not.toHaveClass(/text-only/)
+})

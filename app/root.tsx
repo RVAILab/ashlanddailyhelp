@@ -21,9 +21,9 @@ export const shipsJavaScript = (handles: unknown[]) => handles.every(handle => !
 const hasHydrateFalse = (handle: unknown) =>
   typeof handle === 'object' && handle !== null && 'hydrate' in handle && handle.hydrate === false
 
-// After "Clear this device", the old worker can still be answering this first page and save its fonts again, so the
+// A page restored by the back button reloads if text-only mode changed since it was shown. After "Clear this device", the old worker can still be answering this first page and save its fonts again, so the
 // page clears whatever is left once it has loaded.
-const OFFLINE_SCRIPT = `(function(){var n=document.getElementById('offline-notice');function u(){if(n)n.hidden=navigator.onLine}u();addEventListener('online',u);addEventListener('offline',u);if(!('serviceWorker' in navigator))return;if(location.search.indexOf('cleared')<0){navigator.serviceWorker.register('/sw.js');addEventListener('load',function(){navigator.serviceWorker.ready.then(function(r){r.active&&r.active.postMessage('save-pages')})})}else addEventListener('load',function(){navigator.serviceWorker.getRegistrations().then(function(rs){rs.forEach(function(r){r.unregister()})});caches.keys().then(function(ks){ks.forEach(function(k){caches.delete(k)})})})})()`
+const OFFLINE_SCRIPT = `(function(){var n=document.getElementById('offline-notice');function u(){if(n)n.hidden=navigator.onLine}u();addEventListener('online',u);addEventListener('offline',u);addEventListener('pageshow',function(e){var m=document.cookie.match(/(?:^|; )text=(on|off)/);if(e.persisted&&m&&(m[1]==='on')!==document.documentElement.classList.contains('text-only'))location.reload()});if(!('serviceWorker' in navigator))return;if(location.search.indexOf('cleared')<0){navigator.serviceWorker.register('/sw.js');addEventListener('load',function(){navigator.serviceWorker.ready.then(function(r){r.active&&r.active.postMessage('save-pages')})})}else{var c=function(){navigator.serviceWorker.getRegistrations().then(function(rs){rs.forEach(function(r){r.unregister()})});caches.keys().then(function(ks){ks.forEach(function(k){caches.delete(k)})})};addEventListener('load',function(){c();setTimeout(c,2000)})}})()`
 
 // Online state for hydrated pages; on pages without JavaScript the inline script shows the notice instead.
 const subscribeOnline = (change: () => void) => {

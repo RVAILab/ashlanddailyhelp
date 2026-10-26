@@ -74,12 +74,19 @@ test.describe('pages added since listings were translated, in Spanish', () => {
       await expect(page.getByRole('contentinfo')).toContainText('Línea de Crisis de Salud Mental')
     })
 
-  test('a crisis question in Spanish gets the crisis numbers first, in Spanish', async ({ page }) => {
+  test('a crisis question in Spanish gets the crisis numbers first, in Spanish', async ({ browser }) => {
+    const context = await browser.newContext({
+      extraHTTPHeaders: {
+        'CF-Connecting-IP': `2001:db8::${crypto.randomUUID().slice(0, 4)}:${crypto.randomUUID().slice(0, 4)}`,
+      },
+    })
+    const page = await context.newPage()
     await page.goto('/es/ask')
     await page.getByRole('textbox', { name: 'Su pregunta' }).fill('quiero morir')
     await page.getByRole('button', { name: 'Preguntar' }).click()
     const answer = page.getByRole('region', { name: /Usted preguntó/ })
     await expect(answer.locator('p').first()).toContainText('Si usted u otra persona está en peligro, llame al 911')
     await expect(answer.getByRole('link', { name: '988' })).toHaveAttribute('href', 'tel:988')
+    await context.close()
   })
 })

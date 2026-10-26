@@ -14,7 +14,8 @@ export function loader({ request }: Route.LoaderArgs) {
     status: 302,
     headers: {
       Location: back,
-      'Set-Cookie': `${TEXT_COOKIE}=${to}; Path=/; Max-Age=${YEAR}; SameSite=Lax; HttpOnly${secure}`,
+      // Readable by the page (it holds only on or off), so a page restored from the back button can see the mode changed.
+      'Set-Cookie': `${TEXT_COOKIE}=${to}; Path=/; Max-Age=${YEAR}; SameSite=Lax${secure}`,
     },
   })
 }

@@ -9,7 +9,7 @@ describe('/text', () => {
     const response = go('?to=on&return=%2Fresources%3Fq%3Dmeal')
     expect(response.status).toBe(302)
     expect(response.headers.get('Location')).toBe('/resources?q=meal')
-    expect(response.headers.get('Set-Cookie')).toBe('text=on; Path=/; Max-Age=31536000; SameSite=Lax; HttpOnly; Secure')
+    expect(response.headers.get('Set-Cookie')).toBe('text=on; Path=/; Max-Age=31536000; SameSite=Lax; Secure')
     expect(go('?to=off&return=%2Fes').headers.get('Set-Cookie')).toContain('text=off;')
   })
 

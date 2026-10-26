@@ -118,6 +118,7 @@ Twilio handles STOP and START for the number itself. In the number's Advanced Op
 
 ```sh
 npm test            # unit and integration tests (Vitest; database tests run on PGlite, no server needed)
+npm run coverage    # the same, with a coverage summary here and a report in coverage/index.html
 npm run e2e         # end-to-end journeys in a mobile browser against the built Worker (Playwright)
 npm run lint        # Biome
 npm run typecheck   # generated Worker and route types, then tsc

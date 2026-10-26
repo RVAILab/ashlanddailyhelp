@@ -7,6 +7,13 @@ export default defineConfig({
     testTimeout: 20_000,
     hookTimeout: 20_000,
     globalSetup: ['test/global-setup.ts'],
+    // Reported only, with no thresholds, until we know the baseline (npm run coverage).
+    coverage: {
+      provider: 'v8',
+      include: ['app/**', 'server/**', 'workers/**', 'db/**'],
+      exclude: ['**/*.test.{ts,tsx}', 'db/migrations/**'],
+      reporter: ['text-summary', 'html'],
+    },
     projects: [
       {
         extends: true,

@@ -38,7 +38,7 @@ It reads the steward's feed, keeps its current state in Postgres, and serves the
 - TypeScript 7 strict with `noUncheckedIndexedAccess` and no `any`. Validate everything that crosses a boundary (feed files, requests, environment) where it enters, and trust the types inside.
 - Biome for lint and format (single quotes, no semicolons, 120 columns).
 
-Commands: `npm run dev`, `npm run check` (lint, typecheck, tests; the pre-push hook runs it), `npm test`, `npm run e2e`, `npm run lint`, `npm run typecheck`, `npm run db:start` (a private Postgres on port 5433), `npm run db:generate`, `npm run db:migrate`, `npm run feed:ingest`, `npm run feed:sync`, `npm run chat:eval`. The scripts behind them are in `scripts/`. Local secrets go in `.dev.vars` (see `.dev.vars.example`).
+Commands: `npm run dev`, `npm run check` (lint, typecheck, tests; the pre-push hook runs it), `npm test`, `npm run coverage`, `npm run e2e`, `npm run lint`, `npm run typecheck`, `npm run db:start` (a private Postgres on port 5433), `npm run db:generate`, `npm run db:migrate`, `npm run feed:ingest`, `npm run feed:sync`, `npm run chat:eval`. The scripts behind them are in `scripts/`. Local secrets go in `.dev.vars` (see `.dev.vars.example`).
 
 ## How we work
 

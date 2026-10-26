@@ -7,6 +7,7 @@ build/
 .dev.vars
 worker-configuration.d.ts
 test-results/
+coverage/
 playwright-report/
 .postgres/
 .playwright-mcp/

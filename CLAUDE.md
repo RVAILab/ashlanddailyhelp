@@ -48,7 +48,8 @@ We work in the eXtreme Programming tradition of Pivotal Labs.
 - A story's acceptance criteria become tests. A story is done when they pass, not when the code is written.
 - Test at the lowest level that proves the behaviour: unit tests for pure logic; integration tests against a real Postgres, not mocks, for queries and migrations; React component tests that find elements by role and label, as people and assistive technology do; and a few end-to-end journeys in a real browser.
 - Vitest runs `*.test.ts` in Node and `*.test.tsx` in happy-dom (Testing Library). Database tests use PGlite through `test/db.ts`.
-- Don't mock what we don't own. Stand in for the steward with its sample feed (`test/fixtures/feed-sample/`).
+- Don't mock what we don't own. Stand in for the steward with its sample feed (`test/fixtures/feed-sample/`), whose listings tests may name. The end-to-end journeys and real-data tests use `test/fixtures/feed-live/`, a snapshot of the live feed that each test run refreshes when it's over a day old (`test/live-feed.ts`); commit it when it changes.
+- Tests never reach the network once setup is done: the Vitest `fetch` refuses it (`test/no-network.ts`), and the journeys block it in the browser and the server.
 - Small steps and small commits. Commit to `main` whenever the tests pass. `main` deploys on every push, so it must always be releasable.
 - Trunk-based: everything happens on `main`, with no feature or story branches. This overrides the `/stories` skill: `activate` moves the story to `current/` on `main` without creating a `story/<name>` branch, and `review` diffs from the commit that activated the story.
 - Run the whole suite before every push. CI runs type checks, lint and tests; the Playwright journeys are not in CI for now, so run `npm run e2e` locally before pushing a change to pages.

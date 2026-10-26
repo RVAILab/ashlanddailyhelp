@@ -51,6 +51,7 @@ React Router 8 (framework mode) on a Cloudflare Worker, Drizzle ORM over Postgre
 | `workers/` | The Worker entry: requests and the scheduled feed refresh |
 | `db/` | Tables and migrations |
 | `contract/`, `test/fixtures/feed-sample/` | Copies of the steward's feed contract and sample feed |
+| `test/fixtures/feed-live/` | A daily snapshot of the live feed, for the journeys and real-data tests |
 | `e2e/` | Playwright journeys |
 | `eval/` | The chat evaluation set |
 | `user-stories/` | User stories, managed with `/stories` (board: `user-stories/index.html`) |
@@ -123,7 +124,9 @@ npm run typecheck   # generated Worker and route types, then tsc
 npm run check       # lint, typecheck and tests: the pre-push hook runs it
 ```
 
-Before the first `npm run e2e`, run `npx playwright install chromium`. The journeys use the database in `.dev.vars`, so start it first (`npm run db:start`). Their setup applies migrations to that database and replaces its listings with the sample feed.
+Before the first `npm run e2e`, run `npx playwright install chromium`. The journeys use the database in `.dev.vars`, so start it first (`npm run db:start`). Their setup applies migrations to that database and replaces its listings with the live snapshot.
+
+Both suites start by refreshing `test/fixtures/feed-live/`, a copy of the steward's live feed, when its `snapshot.json` is more than a day old; if the steward can't be reached or a file doesn't match the contract, they keep the old copy. Commit the refreshed snapshot. After that, nothing in a run reaches the network: in Vitest `fetch` refuses anything but localhost, the journeys' browser resolves only localhost, and the preview server sends chat calls to a closed local port.
 
 ### Database migrations
 

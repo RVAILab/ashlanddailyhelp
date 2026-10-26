@@ -1,0 +1,4977 @@
+{
+  "schemaVersion": "1.4",
+  "generatedAt": "2026-10-26T23:15:07.607Z",
+  "dataset": "LIVE",
+  "listings": [
+    {
+      "id": "ohra-navigation",
+      "name": "A little help with the next step",
+      "provider": "OHRA Resource Center",
+      "categories": [
+        "essentials",
+        "housing",
+        "health"
+      ],
+      "area": "Ashland",
+      "coverage": [
+        "Ashland"
+      ],
+      "description": "Resource navigators can help connect you with housing, benefits, identification, mail and other support.",
+      "address": "2350 Ashland Street, Ashland",
+      "schedule": "Website lists weekdays, 9 a.m.–2 p.m. Confirm before visiting.",
+      "access": "Call to ask about a navigator appointment.",
+      "requirements": "Requirements vary by service; ask a navigator.",
+      "cost": "Not confirmed",
+      "phone": "541-631-2235",
+      "source": "https://ohrahelps.org/get-help/program-services/",
+      "tags": [
+        "Navigation",
+        "Documents",
+        "Benefits"
+      ],
+      "reviewedDate": "2026-10-23",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenance": {
+        "hours": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://ohrahelps.org/get-help/program-services/",
+            "span": "Weekdays, 9 a.m. to 2 p.m.",
+            "observedAt": "2026-10-25T22:50:27.574Z"
+          }
+        ],
+        "openings": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://ohrahelps.org/get-help/program-services/",
+            "span": "Weekdays, 9 a.m. to 2 p.m.",
+            "observedAt": "2026-10-25T22:50:27.574Z"
+          }
+        ]
+      },
+      "hours": {
+        "timeZone": "America/Los_Angeles",
+        "textAsPrinted": "Weekdays, 9 a.m. to 2 p.m.",
+        "rules": [
+          {
+            "days": [
+              "mon",
+              "tue",
+              "wed",
+              "thu",
+              "fri"
+            ],
+            "weeks": "every",
+            "start": "09:00",
+            "end": "14:00"
+          }
+        ],
+        "include": [],
+        "exclude": [],
+        "conditions": []
+      },
+      "openings": [
+        {
+          "startsAt": "2026-10-26T09:00:00-07:00",
+          "endsAt": "2026-10-26T14:00:00-07:00"
+        },
+        {
+          "startsAt": "2026-10-27T09:00:00-07:00",
+          "endsAt": "2026-10-27T14:00:00-07:00"
+        },
+        {
+          "startsAt": "2026-10-28T09:00:00-07:00",
+          "endsAt": "2026-10-28T14:00:00-07:00"
+        },
+        {
+          "startsAt": "2026-10-29T09:00:00-07:00",
+          "endsAt": "2026-10-29T14:00:00-07:00"
+        },
+        {
+          "startsAt": "2026-10-30T09:00:00-07:00",
+          "endsAt": "2026-10-30T14:00:00-07:00"
+        }
+      ]
+    },
+    {
+      "id": "access-pantries",
+      "name": "Groceries for the week ahead",
+      "provider": "ACCESS food pantry network",
+      "categories": [
+        "food"
+      ],
+      "area": "Jackson County",
+      "coverage": [
+        "Ashland",
+        "Medford",
+        "Jackson County"
+      ],
+      "description": "Find a pantry in the county through ACCESS. Each location has its own schedule.",
+      "address": "Multiple locations; use the provider’s pantry finder.",
+      "schedule": "Check the provider’s current pantry list and closure updates.",
+      "access": "Choose a pantry on the provider’s website.",
+      "requirements": "The website describes a basic registration form. Check eligibility with the pantry.",
+      "cost": "Check the pantry’s current guidance",
+      "phone": null,
+      "source": "https://accesshelps.org/food-pantries/",
+      "tags": [
+        "Groceries",
+        "Pantry finder"
+      ],
+      "reviewedDate": "2026-10-23",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs."
+    },
+    {
+      "id": "ohra-showers",
+      "name": "A shower and a fresh start",
+      "provider": "OHRA Laundry & Shower Trailer",
+      "categories": [
+        "hygiene"
+      ],
+      "area": "Ashland",
+      "coverage": [
+        "Ashland"
+      ],
+      "description": "Shower and laundry services at the OHRA Center.",
+      "address": "2350 Ashland Street, Ashland",
+      "schedule": "Website lists Tuesday and Thursday, 10 a.m.–2 p.m. Confirm before visiting.",
+      "access": "Website describes first-come, first-served access.",
+      "requirements": "What to bring has not been confirmed.",
+      "cost": "Not confirmed",
+      "phone": "541-631-2235",
+      "source": "https://ohrahelps.org/get-help/program-services/",
+      "tags": [
+        "Showers",
+        "Laundry"
+      ],
+      "reviewedDate": "2026-10-23",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs."
+    },
+    {
+      "id": "uncle-foods",
+      "name": "A seat at the community table",
+      "provider": "Uncle Food’s Diner · Peace House",
+      "categories": [
+        "food"
+      ],
+      "area": "Ashland",
+      "coverage": [
+        "Ashland"
+      ],
+      "description": "A free community meal organized by Peace House in Ashland.",
+      "address": "Website names Trinity Episcopal Church Parish Hall; alley entrance behind the church.",
+      "schedule": "Tuesday meal. The provider page and calendar show different end times; confirm directly.",
+      "access": "Check the current meal details with Peace House.",
+      "requirements": "Additional requirements have not been confirmed.",
+      "cost": "Free, according to the provider’s website",
+      "phone": "541-482-9625",
+      "source": "https://peacehouse.net/uncle-foods-diner/",
+      "tags": [
+        "Community meal",
+        "Schedule needs checking"
+      ],
+      "conflict": true,
+      "reviewedDate": "2026-10-23",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs."
+    },
+    {
+      "id": "ohra-shelter",
+      "name": "Talk through shelter options",
+      "provider": "OHRA Shelter navigation",
+      "categories": [
+        "housing"
+      ],
+      "area": "Ashland",
+      "coverage": [
+        "Ashland"
+      ],
+      "description": "Start the shelter application process with an OHRA resource navigator. Availability is not known here.",
+      "address": "Resource Center: 2350 Ashland Street, Ashland",
+      "schedule": "Arrange an appointment with a navigator.",
+      "access": "A navigator appointment starts the application process; admission is not guaranteed.",
+      "requirements": "Website describes an adult shelter. Households with children can ask a navigator about other options.",
+      "cost": "Not confirmed",
+      "phone": "541-631-2235",
+      "source": "https://ohrahelps.org/get-help/program-services/",
+      "tags": [
+        "Shelter navigation",
+        "Appointment"
+      ],
+      "reviewedDate": "2026-10-23",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenance": {
+        "hours": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://ohrahelps.org/get-help/program-services/",
+            "span": "Nightly shelter (demo time)",
+            "observedAt": "2026-10-25T22:50:27.574Z"
+          }
+        ],
+        "openings": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://ohrahelps.org/get-help/program-services/",
+            "span": "Nightly shelter (demo time)",
+            "observedAt": "2026-10-25T22:50:27.574Z"
+          }
+        ]
+      },
+      "hours": {
+        "timeZone": "America/Los_Angeles",
+        "textAsPrinted": "Nightly shelter (demo time)",
+        "rules": [
+          {
+            "days": [
+              "sun",
+              "mon",
+              "tue",
+              "wed",
+              "thu",
+              "fri",
+              "sat"
+            ],
+            "weeks": "every",
+            "start": "18:00",
+            "end": "07:00"
+          }
+        ],
+        "include": [],
+        "exclude": [],
+        "conditions": []
+      },
+      "openings": [
+        {
+          "startsAt": "2026-10-25T18:00:00-07:00",
+          "endsAt": "2026-10-26T07:00:00-07:00"
+        },
+        {
+          "startsAt": "2026-10-26T18:00:00-07:00",
+          "endsAt": "2026-10-27T07:00:00-07:00"
+        },
+        {
+          "startsAt": "2026-10-27T18:00:00-07:00",
+          "endsAt": "2026-10-28T07:00:00-07:00"
+        },
+        {
+          "startsAt": "2026-10-28T18:00:00-07:00",
+          "endsAt": "2026-10-29T07:00:00-07:00"
+        },
+        {
+          "startsAt": "2026-10-29T18:00:00-07:00",
+          "endsAt": "2026-10-30T07:00:00-07:00"
+        },
+        {
+          "startsAt": "2026-10-30T18:00:00-07:00",
+          "endsAt": "2026-10-31T07:00:00-07:00"
+        },
+        {
+          "startsAt": "2026-10-31T18:00:00-07:00",
+          "endsAt": "2026-11-01T07:00:00-08:00"
+        },
+        {
+          "startsAt": "2026-11-01T18:00:00-08:00",
+          "endsAt": "2026-11-02T07:00:00-08:00"
+        }
+      ]
+    },
+    {
+      "id": "jcls-resources",
+      "name": "Find your way with library support",
+      "provider": "Jackson County Library District",
+      "categories": [
+        "essentials",
+        "housing",
+        "health"
+      ],
+      "area": "Jackson County",
+      "coverage": [
+        "Ashland",
+        "Medford",
+        "Jackson County"
+      ],
+      "description": "The community resources team offers referrals for food, housing, benefits and health care connections.",
+      "address": "Contact the community resources team through the library website.",
+      "schedule": "Team availability has not been confirmed.",
+      "access": "Use the community resources contact form on the provider’s website.",
+      "requirements": "Not confirmed",
+      "cost": "Not confirmed",
+      "phone": null,
+      "source": "https://jcls.org/services/community-resources/",
+      "tags": [
+        "Referrals",
+        "Benefits",
+        "Library support"
+      ],
+      "reviewedDate": "2026-10-23",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs."
+    },
+    {
+      "id": "rogue-retreat",
+      "name": "Explore supportive shelter programs",
+      "provider": "Rogue Retreat",
+      "categories": [
+        "housing"
+      ],
+      "area": "Medford",
+      "coverage": [
+        "Medford",
+        "Jackson County"
+      ],
+      "description": "Learn about community living programs and ask the provider about intake and eligibility.",
+      "address": "Program locations vary; contact the provider before traveling.",
+      "schedule": "Intake hours have not been confirmed.",
+      "access": "Use the provider’s Get Help information.",
+      "requirements": "Program-specific; confirm directly.",
+      "cost": "Not confirmed",
+      "phone": null,
+      "source": "https://rogueretreat.org/community-living/",
+      "tags": [
+        "Shelter programs",
+        "Intake information"
+      ],
+      "reviewedDate": "2026-10-23",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs."
+    },
+    {
+      "id": "211-directory",
+      "name": "More places to turn",
+      "provider": "211info resource database",
+      "categories": [
+        "essentials",
+        "food",
+        "housing",
+        "health"
+      ],
+      "area": "Oregon",
+      "coverage": [
+        "Ashland",
+        "Medford",
+        "Jackson County"
+      ],
+      "description": "Search a broader directory of community resources and services.",
+      "address": "Online resource search",
+      "schedule": "Individual service hours vary.",
+      "access": "Open the resource database to search.",
+      "requirements": "Each listed service has its own requirements.",
+      "cost": "Service costs vary",
+      "phone": null,
+      "source": "https://www.211info.org/resource-database/",
+      "tags": [
+        "Resource search",
+        "Regional support"
+      ],
+      "reviewedDate": "2026-10-23",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs."
+    },
+    {
+      "id": "max-s-mission-community-outreach-at-hawthorne-park",
+      "name": "Community Outreach at Hawthorne Park",
+      "provider": "Max's Mission",
+      "categories": [
+        "health"
+      ],
+      "area": "Rogue Valley",
+      "coverage": [
+        "Rogue Valley"
+      ],
+      "description": "Community Outreach at Hawthorne Park from Max's Mission, as described on maxsmission.org. Confirm before visiting.",
+      "address": "501 E. Main Street, Medford, OR",
+      "schedule": "Mondays and Thursdays, 11:30 AM - 1:30 PM",
+      "access": "Full-service outreach",
+      "requirements": "Not confirmed",
+      "cost": "Not confirmed",
+      "phone": "541-499-8485 (Medford office)",
+      "source": "https://maxsmission.org/",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from maxsmission.org",
+      "provenance": {
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://maxsmission.org/",
+            "span": "1117 East Main Street Suite 3, Medford | 541-499-8485",
+            "observedAt": "2026-10-25T19:23:31.019Z"
+          }
+        ],
+        "access": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://maxsmission.org/",
+            "span": "Full-service outreach",
+            "observedAt": "2026-10-25T19:23:31.019Z"
+          }
+        ],
+        "address": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://maxsmission.org/",
+            "span": "501 E. Main Street, Medford, OR",
+            "observedAt": "2026-10-25T19:23:31.019Z"
+          }
+        ],
+        "schedule": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://maxsmission.org/",
+            "span": "11:30 AM - 1:30 PM",
+            "observedAt": "2026-10-25T19:23:31.019Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://maxsmission.org/",
+            "span": "Full-service outreach",
+            "observedAt": "2026-10-25T19:23:31.019Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "max-s-mission-community-outreach-at-jackson-county-community",
+      "name": "Community Outreach at Jackson County Community Justice",
+      "provider": "Max's Mission",
+      "categories": [
+        "health"
+      ],
+      "area": "Rogue Valley",
+      "coverage": [
+        "Rogue Valley"
+      ],
+      "description": "Community Outreach at Jackson County Community Justice from Max's Mission, as described on maxsmission.org. Confirm before visiting.",
+      "address": "1101 W. Main Street, Ste #101, Medford, OR",
+      "schedule": "Mondays and Wednesdays, 12:30 PM - 3:00 PM",
+      "access": "Naloxone handouts and training only",
+      "requirements": "Not confirmed",
+      "cost": "Not confirmed",
+      "phone": "541-499-8485 (Medford office)",
+      "source": "https://maxsmission.org/",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from maxsmission.org",
+      "provenance": {
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://maxsmission.org/",
+            "span": "1117 East Main Street Suite 3, Medford | 541-499-8485",
+            "observedAt": "2026-10-25T19:23:31.019Z"
+          }
+        ],
+        "access": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://maxsmission.org/",
+            "span": "Naloxone distribution and training only",
+            "observedAt": "2026-10-25T19:23:31.019Z"
+          }
+        ],
+        "address": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://maxsmission.org/",
+            "span": "1101 W. Main Street, Ste #101, Medford, OR",
+            "observedAt": "2026-10-25T19:23:31.019Z"
+          }
+        ],
+        "schedule": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://maxsmission.org/",
+            "span": "12:30 PM - 3:00 PM",
+            "observedAt": "2026-10-25T19:23:31.019Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://maxsmission.org/",
+            "span": "Naloxone distribution and training only",
+            "observedAt": "2026-10-25T19:23:31.019Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "max-s-mission-mobile-outreach",
+      "name": "Mobile Outreach",
+      "provider": "Max's Mission",
+      "categories": [
+        "health"
+      ],
+      "area": "Rogue Valley",
+      "coverage": [
+        "Rogue Valley"
+      ],
+      "description": "Mobile Outreach from Max's Mission, as described on maxsmission.org. Confirm before visiting.",
+      "address": "Starts at 1995 Elm Avenue, Medford, OR",
+      "schedule": "Tuesdays, 12:00 PM - 2:30 PM",
+      "access": "Full-service outreach",
+      "requirements": "Not confirmed",
+      "cost": "Not confirmed",
+      "phone": "541-499-8485 (Medford office)",
+      "source": "https://maxsmission.org/",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from maxsmission.org",
+      "provenance": {
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://maxsmission.org/",
+            "span": "1117 East Main Street Suite 3, Medford | 541-499-8485",
+            "observedAt": "2026-10-25T19:23:31.019Z"
+          }
+        ],
+        "access": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://maxsmission.org/",
+            "span": "Full-service outreach",
+            "observedAt": "2026-10-25T19:23:31.019Z"
+          }
+        ],
+        "address": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://maxsmission.org/",
+            "span": "1995 Elm Avenue, Medford, OR (Starting Location)",
+            "observedAt": "2026-10-25T19:23:31.019Z"
+          }
+        ],
+        "schedule": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://maxsmission.org/",
+            "span": "Tuesday\nMobile Outreach\n1995 Elm Avenue, Medford, OR (Starting Location)\n12:00 PM - 2:30 PM",
+            "observedAt": "2026-10-25T19:23:31.019Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://maxsmission.org/",
+            "span": "Full-service outreach",
+            "observedAt": "2026-10-25T19:23:31.019Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "max-s-mission-white-city-outreach",
+      "name": "White City Outreach",
+      "provider": "Max's Mission",
+      "categories": [
+        "health"
+      ],
+      "area": "Rogue Valley",
+      "coverage": [
+        "Rogue Valley"
+      ],
+      "description": "White City Outreach from Max's Mission, as described on maxsmission.org. Confirm before visiting.",
+      "address": "Division Rd & Ave G, White City, OR",
+      "schedule": "2nd and 4th Wednesday of each month, 12:00 PM - 1:30 PM",
+      "access": "Full-service outreach",
+      "requirements": "Not confirmed",
+      "cost": "Not confirmed",
+      "phone": "541-499-8485 (Medford office)",
+      "source": "https://maxsmission.org/",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from maxsmission.org",
+      "provenance": {
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://maxsmission.org/",
+            "span": "1117 East Main Street Suite 3, Medford | 541-499-8485",
+            "observedAt": "2026-10-25T19:23:31.019Z"
+          }
+        ],
+        "access": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://maxsmission.org/",
+            "span": "Full-service outreach",
+            "observedAt": "2026-10-25T19:23:31.019Z"
+          }
+        ],
+        "address": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://maxsmission.org/",
+            "span": "Division Rd & Ave G, White City, OR",
+            "observedAt": "2026-10-25T19:23:31.019Z"
+          }
+        ],
+        "schedule": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://maxsmission.org/",
+            "span": "12:00 PM - 1:30 PM (2nd/4th Wednesday each month)",
+            "observedAt": "2026-10-25T19:23:31.019Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://maxsmission.org/",
+            "span": "Full-service outreach",
+            "observedAt": "2026-10-25T19:23:31.019Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "max-s-mission-community-outreach-at-rogue-food-unites",
+      "name": "Community Outreach at Rogue Food Unites",
+      "provider": "Max's Mission",
+      "categories": [
+        "health"
+      ],
+      "area": "Rogue Valley",
+      "coverage": [
+        "Rogue Valley"
+      ],
+      "description": "Community Outreach at Rogue Food Unites from Max's Mission, as described on maxsmission.org. Confirm before visiting.",
+      "address": "11175 OR-62, Eagle Point, OR",
+      "schedule": "2nd Wednesday of each month, 3:00 PM - 5:00 PM",
+      "access": "Naloxone handouts and training only",
+      "requirements": "Not confirmed",
+      "cost": "Not confirmed",
+      "phone": "541-499-8485 (Medford office)",
+      "source": "https://maxsmission.org/",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from maxsmission.org",
+      "provenance": {
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://maxsmission.org/",
+            "span": "1117 East Main Street Suite 3, Medford | 541-499-8485",
+            "observedAt": "2026-10-25T19:23:31.019Z"
+          }
+        ],
+        "access": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://maxsmission.org/",
+            "span": "Naloxone distribution and training only",
+            "observedAt": "2026-10-25T19:23:31.019Z"
+          }
+        ],
+        "address": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://maxsmission.org/",
+            "span": "11175 OR-62, Eagle Point, OR",
+            "observedAt": "2026-10-25T19:23:31.019Z"
+          }
+        ],
+        "schedule": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://maxsmission.org/",
+            "span": "3:00 PM - 5:00 PM (2nd Wednesday each month)",
+            "observedAt": "2026-10-25T19:23:31.019Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://maxsmission.org/",
+            "span": "Naloxone distribution and training only",
+            "observedAt": "2026-10-25T19:23:31.019Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "max-s-mission-community-outreach-at-lithia-park",
+      "name": "Community Outreach at Lithia Park",
+      "provider": "Max's Mission",
+      "categories": [
+        "health"
+      ],
+      "area": "Rogue Valley",
+      "coverage": [
+        "Rogue Valley"
+      ],
+      "description": "Community Outreach at Lithia Park from Max's Mission, as described on maxsmission.org. Confirm before visiting.",
+      "address": "59 Winburn Way, Ashland, OR",
+      "schedule": "Thursdays, 3:30 PM - 4:30 PM",
+      "access": "Full-service outreach, held with the Jobs for Justice Feed",
+      "requirements": "Not confirmed",
+      "cost": "Not confirmed",
+      "phone": "541-499-8485 (Medford office)",
+      "source": "https://maxsmission.org/",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from maxsmission.org",
+      "provenance": {
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://maxsmission.org/",
+            "span": "1117 East Main Street Suite 3, Medford | 541-499-8485",
+            "observedAt": "2026-10-25T19:23:31.019Z"
+          }
+        ],
+        "access": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://maxsmission.org/",
+            "span": "In conjunction with Jobs for Justice Feed",
+            "observedAt": "2026-10-25T19:23:31.019Z"
+          }
+        ],
+        "address": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://maxsmission.org/",
+            "span": "59 Winburn Way, Ashland, OR",
+            "observedAt": "2026-10-25T19:23:31.019Z"
+          }
+        ],
+        "schedule": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://maxsmission.org/",
+            "span": "3:30 PM - 4:30 PM",
+            "observedAt": "2026-10-25T19:23:31.019Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://maxsmission.org/",
+            "span": "Full-service outreach",
+            "observedAt": "2026-10-25T19:23:31.019Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "max-s-mission-community-outreach-at-set-free-ministries",
+      "name": "Community Outreach at Set Free Ministries",
+      "provider": "Max's Mission",
+      "categories": [
+        "health"
+      ],
+      "area": "Rogue Valley",
+      "coverage": [
+        "Rogue Valley"
+      ],
+      "description": "Community Outreach at Set Free Ministries from Max's Mission, as described on maxsmission.org. Confirm before visiting.",
+      "address": "1032 W. Main Street, Medford, OR",
+      "schedule": "Fridays, 10:00 AM - 12:30 PM",
+      "access": "Naloxone and test strips only",
+      "requirements": "Not confirmed",
+      "cost": "Not confirmed",
+      "phone": "541-499-8485 (Medford office)",
+      "source": "https://maxsmission.org/",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from maxsmission.org",
+      "provenance": {
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://maxsmission.org/",
+            "span": "1117 East Main Street Suite 3, Medford | 541-499-8485",
+            "observedAt": "2026-10-25T19:23:31.019Z"
+          }
+        ],
+        "access": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://maxsmission.org/",
+            "span": "Naloxone distribution and testing strips only",
+            "observedAt": "2026-10-25T19:23:31.019Z"
+          }
+        ],
+        "address": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://maxsmission.org/",
+            "span": "1032 W. Main Street, Medford, OR",
+            "observedAt": "2026-10-25T19:23:31.019Z"
+          }
+        ],
+        "schedule": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://maxsmission.org/",
+            "span": "Friday\nSet Free Ministries\n1032 W. Main Street, Medford, OR\n10:00 AM - 12:30 PM",
+            "observedAt": "2026-10-25T19:23:31.019Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://maxsmission.org/",
+            "span": "Naloxone distribution and testing strips only",
+            "observedAt": "2026-10-25T19:23:31.019Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "st-vincent-de-paul-dining-room",
+      "name": "Dining Room",
+      "provider": "St. Vincent de Paul",
+      "categories": [
+        "food"
+      ],
+      "area": "Medford",
+      "coverage": [
+        "Medford"
+      ],
+      "description": "Dining Room from St. Vincent de Paul, as described on stvincentdepaulmedford.info. Confirm before visiting.",
+      "address": "2424 N. Pacific Highway (Hwy 99), Medford, Oregon 97501",
+      "schedule": "Hot lunches Monday through Friday",
+      "access": "Not confirmed",
+      "requirements": "Not confirmed",
+      "cost": "Not confirmed",
+      "phone": "541-772-3828",
+      "source": "https://www.stvincentdepaulmedford.info/",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from stvincentdepaulmedford.info",
+      "provenance": {
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.stvincentdepaulmedford.info/",
+            "span": "541-772-3828",
+            "observedAt": "2026-10-25T19:27:09.223Z"
+          }
+        ],
+        "address": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.stvincentdepaulmedford.info/",
+            "span": "2424 N. Pacific Highway (Hwy 99), Medford, Oregon 97501",
+            "observedAt": "2026-10-25T19:27:09.223Z"
+          }
+        ],
+        "schedule": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.stvincentdepaulmedford.info/",
+            "span": "served Monday through Friday",
+            "observedAt": "2026-10-25T19:27:09.223Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.stvincentdepaulmedford.info/",
+            "span": "35 volunteers provided over 25,550 hot lunches, served Monday through Friday.",
+            "observedAt": "2026-10-25T19:27:09.223Z"
+          }
+        ],
+        "hours": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.stvincentdepaulmedford.info/",
+            "span": "Hot lunches Monday through Friday (demo time)",
+            "observedAt": "2026-10-25T22:50:27.574Z"
+          }
+        ],
+        "openings": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.stvincentdepaulmedford.info/",
+            "span": "Hot lunches Monday through Friday (demo time)",
+            "observedAt": "2026-10-25T22:50:27.574Z"
+          }
+        ]
+      },
+      "hours": {
+        "timeZone": "America/Los_Angeles",
+        "textAsPrinted": "Hot lunches Monday through Friday (demo time)",
+        "rules": [
+          {
+            "days": [
+              "mon",
+              "tue",
+              "wed",
+              "thu",
+              "fri"
+            ],
+            "weeks": "every",
+            "start": "11:00",
+            "end": "13:00"
+          }
+        ],
+        "include": [],
+        "exclude": [],
+        "conditions": []
+      },
+      "openings": [
+        {
+          "startsAt": "2026-10-26T11:00:00-07:00",
+          "endsAt": "2026-10-26T13:00:00-07:00"
+        },
+        {
+          "startsAt": "2026-10-27T11:00:00-07:00",
+          "endsAt": "2026-10-27T13:00:00-07:00"
+        },
+        {
+          "startsAt": "2026-10-28T11:00:00-07:00",
+          "endsAt": "2026-10-28T13:00:00-07:00"
+        },
+        {
+          "startsAt": "2026-10-29T11:00:00-07:00",
+          "endsAt": "2026-10-29T13:00:00-07:00"
+        },
+        {
+          "startsAt": "2026-10-30T11:00:00-07:00",
+          "endsAt": "2026-10-30T13:00:00-07:00"
+        }
+      ]
+    },
+    {
+      "id": "st-vincent-de-paul-homeless-family-shelter",
+      "name": "Homeless Family Shelter",
+      "provider": "St. Vincent de Paul",
+      "categories": [
+        "housing"
+      ],
+      "area": "Medford",
+      "coverage": [
+        "Medford"
+      ],
+      "description": "Homeless Family Shelter from St. Vincent de Paul, as described on stvincentdepaulmedford.info. Confirm before visiting.",
+      "address": "2424 N. Pacific Highway (Hwy 99), Medford, Oregon 97501",
+      "schedule": "Not confirmed",
+      "access": "Focuses on emergency needs of parents with children",
+      "requirements": "Not confirmed",
+      "cost": "Not confirmed",
+      "phone": "541-772-3828",
+      "source": "https://www.stvincentdepaulmedford.info/",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from stvincentdepaulmedford.info",
+      "provenance": {
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.stvincentdepaulmedford.info/",
+            "span": "541-772-3828",
+            "observedAt": "2026-10-25T19:27:09.223Z"
+          }
+        ],
+        "access": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.stvincentdepaulmedford.info/",
+            "span": "Emphasis is on emergency needs of parents with children.",
+            "observedAt": "2026-10-25T19:27:09.223Z"
+          }
+        ],
+        "address": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.stvincentdepaulmedford.info/",
+            "span": "2424 N. Pacific Highway (Hwy 99), Medford, Oregon 97501",
+            "observedAt": "2026-10-25T19:27:09.223Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.stvincentdepaulmedford.info/",
+            "span": "Homeless Family shelter - We provided 5,731 bed nights.",
+            "observedAt": "2026-10-25T19:27:09.223Z"
+          }
+        ],
+        "hours": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.stvincentdepaulmedford.info/",
+            "span": "Nightly family shelter (demo time)",
+            "observedAt": "2026-10-25T22:50:27.574Z"
+          }
+        ],
+        "openings": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.stvincentdepaulmedford.info/",
+            "span": "Nightly family shelter (demo time)",
+            "observedAt": "2026-10-25T22:50:27.574Z"
+          }
+        ]
+      },
+      "hours": {
+        "timeZone": "America/Los_Angeles",
+        "textAsPrinted": "Nightly family shelter (demo time)",
+        "rules": [
+          {
+            "days": [
+              "sun",
+              "mon",
+              "tue",
+              "wed",
+              "thu",
+              "fri",
+              "sat"
+            ],
+            "weeks": "every",
+            "start": "17:00",
+            "end": "08:00"
+          }
+        ],
+        "include": [],
+        "exclude": [],
+        "conditions": []
+      },
+      "openings": [
+        {
+          "startsAt": "2026-10-25T17:00:00-07:00",
+          "endsAt": "2026-10-26T08:00:00-07:00"
+        },
+        {
+          "startsAt": "2026-10-26T17:00:00-07:00",
+          "endsAt": "2026-10-27T08:00:00-07:00"
+        },
+        {
+          "startsAt": "2026-10-27T17:00:00-07:00",
+          "endsAt": "2026-10-28T08:00:00-07:00"
+        },
+        {
+          "startsAt": "2026-10-28T17:00:00-07:00",
+          "endsAt": "2026-10-29T08:00:00-07:00"
+        },
+        {
+          "startsAt": "2026-10-29T17:00:00-07:00",
+          "endsAt": "2026-10-30T08:00:00-07:00"
+        },
+        {
+          "startsAt": "2026-10-30T17:00:00-07:00",
+          "endsAt": "2026-10-31T08:00:00-07:00"
+        },
+        {
+          "startsAt": "2026-10-31T17:00:00-07:00",
+          "endsAt": "2026-11-01T08:00:00-08:00"
+        },
+        {
+          "startsAt": "2026-11-01T17:00:00-08:00",
+          "endsAt": "2026-11-02T08:00:00-08:00"
+        }
+      ]
+    },
+    {
+      "id": "st-vincent-de-paul-pantry",
+      "name": "Pantry",
+      "provider": "St. Vincent de Paul",
+      "categories": [
+        "food"
+      ],
+      "area": "Medford",
+      "coverage": [
+        "Medford"
+      ],
+      "description": "Pantry from St. Vincent de Paul, as described on stvincentdepaulmedford.info. Confirm before visiting.",
+      "address": "2424 N. Pacific Highway (Hwy 99), Medford, Oregon 97501",
+      "schedule": "Bagged groceries on the second to last Friday of each month",
+      "access": "Also gives \"no-cook\" bags to homeless clients who have no cooking facilities",
+      "requirements": "Not confirmed",
+      "cost": "Not confirmed",
+      "phone": "541-772-3828",
+      "source": "https://www.stvincentdepaulmedford.info/",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from stvincentdepaulmedford.info",
+      "provenance": {
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.stvincentdepaulmedford.info/",
+            "span": "541-772-3828",
+            "observedAt": "2026-10-25T19:27:09.223Z"
+          }
+        ],
+        "access": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.stvincentdepaulmedford.info/",
+            "span": "2,065 \"no-cook\" bags to our homeless clients who lack cooking facilities",
+            "observedAt": "2026-10-25T19:27:09.223Z"
+          }
+        ],
+        "address": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.stvincentdepaulmedford.info/",
+            "span": "2424 N. Pacific Highway (Hwy 99), Medford, Oregon 97501",
+            "observedAt": "2026-10-25T19:27:09.223Z"
+          }
+        ],
+        "schedule": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.stvincentdepaulmedford.info/",
+            "span": "supply bagged groceries on the second to last Friday of each month",
+            "observedAt": "2026-10-25T19:27:09.223Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.stvincentdepaulmedford.info/",
+            "span": "The Pantry volunteers (7) supply bagged groceries on the second to last Friday of each month.",
+            "observedAt": "2026-10-25T19:27:09.223Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "st-vincent-de-paul-urban-rest-stop",
+      "name": "Urban Rest Stop",
+      "provider": "St. Vincent de Paul",
+      "categories": [
+        "hygiene"
+      ],
+      "area": "Medford",
+      "coverage": [
+        "Medford"
+      ],
+      "description": "Urban Rest Stop from St. Vincent de Paul, as described on stvincentdepaulmedford.info. Confirm before visiting.",
+      "address": "2424 N. Pacific Highway (Hwy 99), Medford, Oregon 97501",
+      "schedule": "Not confirmed",
+      "access": "Showers and laundry for people experiencing homelessness; has a waiting room",
+      "requirements": "Not confirmed",
+      "cost": "Not confirmed",
+      "phone": "541-772-3828",
+      "source": "https://www.stvincentdepaulmedford.info/",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from stvincentdepaulmedford.info",
+      "provenance": {
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.stvincentdepaulmedford.info/",
+            "span": "541-772-3828",
+            "observedAt": "2026-10-25T19:27:09.223Z"
+          }
+        ],
+        "access": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.stvincentdepaulmedford.info/",
+            "span": "Attached to this building is the Urban Rest Stop which includes a waiting room, shower and laundry area.",
+            "observedAt": "2026-10-25T19:27:09.223Z"
+          }
+        ],
+        "address": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.stvincentdepaulmedford.info/",
+            "span": "2424 N. Pacific Highway (Hwy 99), Medford, Oregon 97501",
+            "observedAt": "2026-10-25T19:27:09.223Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.stvincentdepaulmedford.info/",
+            "span": "Urban Rest Stop – 18 Volunteers provided over 2,615 showers and 2,155 loads of laundry for the homeless.",
+            "observedAt": "2026-10-25T19:27:09.223Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "st-vincent-de-paul-advocacy-social-services",
+      "name": "Advocacy/Social Services",
+      "provider": "St. Vincent de Paul",
+      "categories": [
+        "housing",
+        "essentials"
+      ],
+      "area": "Medford",
+      "coverage": [
+        "Medford"
+      ],
+      "description": "Advocacy/Social Services from St. Vincent de Paul, as described on stvincentdepaulmedford.info. Confirm before visiting.",
+      "address": "2424 N. Pacific Highway (Hwy 99), Medford, Oregon 97501",
+      "schedule": "Not confirmed",
+      "access": "Trained counselors help with job training, utility bills, rental assistance, shelter and other needs",
+      "requirements": "Not confirmed",
+      "cost": "Not confirmed",
+      "phone": "541-772-3828",
+      "source": "https://www.stvincentdepaulmedford.info/",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from stvincentdepaulmedford.info",
+      "provenance": {
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.stvincentdepaulmedford.info/",
+            "span": "541-772-3828",
+            "observedAt": "2026-10-25T19:27:09.223Z"
+          }
+        ],
+        "access": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.stvincentdepaulmedford.info/",
+            "span": "16 trained counselors helped 9,120 individuals with job training, utility bills, rental assistance, shelter and other necessities.",
+            "observedAt": "2026-10-25T19:27:09.223Z"
+          }
+        ],
+        "address": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.stvincentdepaulmedford.info/",
+            "span": "2424 N. Pacific Highway (Hwy 99), Medford, Oregon 97501",
+            "observedAt": "2026-10-25T19:27:09.223Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.stvincentdepaulmedford.info/",
+            "span": "helped 9,120 individuals with job training, utility bills, rental assistance, shelter and other necessities",
+            "observedAt": "2026-10-25T19:27:09.223Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "rogue-retreat-case-management",
+      "name": "Case Management",
+      "provider": "Rogue Retreat",
+      "categories": [
+        "health"
+      ],
+      "area": "Medford",
+      "coverage": [
+        "Medford"
+      ],
+      "description": "Case Management from Rogue Retreat, as described on rogueretreat.org. Confirm before visiting.",
+      "address": "Rogue Retreat office: 711 East Main St. #25, Medford, Oregon 97504",
+      "schedule": "Not confirmed",
+      "access": "Not confirmed",
+      "requirements": "For participants dealing with addiction. Staff help connect them to recovery programs and other resources.",
+      "cost": "Not confirmed",
+      "phone": "(541) 499-0880",
+      "source": "https://rogueretreat.org/",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from rogueretreat.org",
+      "provenance": {
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://rogueretreat.org/",
+            "span": "(541) 499-0880",
+            "observedAt": "2026-10-25T19:26:30.059Z"
+          }
+        ],
+        "address": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://rogueretreat.org/",
+            "span": "711 East Main St. #25 Medford Oregon, 97504",
+            "observedAt": "2026-10-25T19:26:30.059Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://rogueretreat.org/",
+            "span": "Rogue Retreat supports participants dealing with addiction by facilitating access to specialized recovery programs.",
+            "observedAt": "2026-10-25T19:26:30.059Z"
+          }
+        ],
+        "requirements": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://rogueretreat.org/",
+            "span": "Rogue Retreat supports participants dealing with addiction by facilitating access to specialized recovery programs.",
+            "observedAt": "2026-10-25T19:26:30.059Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "rogue-retreat-peer-support",
+      "name": "Peer Support",
+      "provider": "Rogue Retreat",
+      "categories": [
+        "health"
+      ],
+      "area": "Medford",
+      "coverage": [
+        "Medford"
+      ],
+      "description": "Peer Support from Rogue Retreat, as described on rogueretreat.org. Confirm before visiting.",
+      "address": "Rogue Retreat office: 711 East Main St. #25, Medford, Oregon 97504",
+      "schedule": "Not confirmed",
+      "access": "Not confirmed",
+      "requirements": "Not confirmed",
+      "cost": "Not confirmed",
+      "phone": "(541) 499-0880",
+      "source": "https://rogueretreat.org/",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from rogueretreat.org",
+      "provenance": {
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://rogueretreat.org/",
+            "span": "(541) 499-0880",
+            "observedAt": "2026-10-25T19:26:30.059Z"
+          }
+        ],
+        "address": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://rogueretreat.org/",
+            "span": "711 East Main St. #25 Medford Oregon, 97504",
+            "observedAt": "2026-10-25T19:26:30.059Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://rogueretreat.org/",
+            "span": "People with lived experiences support others facing similar challenges, fostering a supportive and recovery-oriented environment.",
+            "observedAt": "2026-10-25T19:26:30.059Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "rogue-retreat-medical-respite",
+      "name": "Medical Respite",
+      "provider": "Rogue Retreat",
+      "categories": [
+        "health",
+        "housing"
+      ],
+      "area": "Medford",
+      "coverage": [
+        "Medford"
+      ],
+      "description": "Medical Respite from Rogue Retreat, as described on rogueretreat.org. Confirm before visiting.",
+      "address": "At the Kelly Shelter",
+      "schedule": "Not confirmed",
+      "access": "Not confirmed",
+      "requirements": "Not confirmed",
+      "cost": "Not confirmed",
+      "phone": "(541) 499-0880",
+      "source": "https://rogueretreat.org/about-us/",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from rogueretreat.org",
+      "provenance": {
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://rogueretreat.org/about-us/",
+            "span": "(541) 499-0880",
+            "observedAt": "2026-10-25T19:26:49.699Z"
+          }
+        ],
+        "address": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://rogueretreat.org/about-us/",
+            "span": "Medical Respite room opens at the Kelly Shelter with 18 beds",
+            "observedAt": "2026-10-25T19:26:49.699Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://rogueretreat.org/about-us/",
+            "span": "Medical Respite room opens at the Kelly Shelter with 18 beds",
+            "observedAt": "2026-10-25T19:26:49.699Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "rogue-community-health-ashland-health-center",
+      "name": "Ashland Health Center",
+      "provider": "Rogue Community Health",
+      "categories": [
+        "health"
+      ],
+      "area": "Jackson County",
+      "coverage": [
+        "Jackson County"
+      ],
+      "description": "Ashland Health Center from Rogue Community Health, as described on roguecommunityhealth.org. Confirm before visiting.",
+      "address": "99 Central Ave, Ashland, OR 97520",
+      "schedule": "Monday–Friday, 7:30 a.m.–6:00 p.m.",
+      "access": "Call 541-773-3863 to make an appointment and for all questions.",
+      "requirements": "Not confirmed",
+      "cost": "Not confirmed",
+      "phone": "541-773-3863",
+      "source": "https://roguecommunityhealth.org/locations/",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from roguecommunityhealth.org",
+      "provenance": {
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "541-773-3863",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ],
+        "access": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "Call 541-773-3863 to make an appointment and for all questions",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ],
+        "address": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "99 Central Ave\nAshland, OR 97520",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ],
+        "schedule": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "Health Center Hours:\nMonday – Friday\n7:30 a.m. – 6:00 p.m.",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "Primary Medical Care",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "rogue-community-health-ashland-pharmacy",
+      "name": "Ashland Pharmacy",
+      "provider": "Rogue Community Health",
+      "categories": [
+        "health"
+      ],
+      "area": "Jackson County",
+      "coverage": [
+        "Jackson County"
+      ],
+      "description": "Ashland Pharmacy from Rogue Community Health, as described on roguecommunityhealth.org. Confirm before visiting.",
+      "address": "99 Central Ave, Ashland, OR 97520",
+      "schedule": "Monday–Friday, 8:30 a.m.–12:30 p.m. and 1:00 p.m.–5:30 p.m.",
+      "access": "Call 541-773-3863 for questions, including prescriptions.",
+      "requirements": "Not confirmed",
+      "cost": "Not confirmed",
+      "phone": "541-773-3863",
+      "source": "https://roguecommunityhealth.org/locations/",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from roguecommunityhealth.org",
+      "provenance": {
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "541-773-3863",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ],
+        "access": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "Call 541-773-3863 to make an appointment and for all questions (labs, prescriptions, contacting staff, etc.).",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ],
+        "address": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "99 Central Ave\nAshland, OR 97520",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ],
+        "schedule": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "Pharmacy Hours:\nMonday – Friday\n8:30 a.m. – 12:30 p.m., 1:00 p.m. – 5:30 p.m.",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "Pharmacy",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "rogue-community-health-butte-falls-health-center",
+      "name": "Butte Falls Health Center",
+      "provider": "Rogue Community Health",
+      "categories": [
+        "health"
+      ],
+      "area": "Jackson County",
+      "coverage": [
+        "Jackson County"
+      ],
+      "description": "Butte Falls Health Center from Rogue Community Health, as described on roguecommunityhealth.org. Confirm before visiting.",
+      "address": "722 Laurel Ave, Butte Falls, OR 97522",
+      "schedule": "Monday–Thursday, 7:30 a.m.–12:30 p.m. and 1:00 p.m.–6:00 p.m.",
+      "access": "Call 541-773-3863 to make an appointment and for all questions.",
+      "requirements": "Not confirmed",
+      "cost": "Not confirmed",
+      "phone": "541-773-3863",
+      "source": "https://roguecommunityhealth.org/locations/",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from roguecommunityhealth.org",
+      "provenance": {
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "541-773-3863",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ],
+        "access": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "Call 541-773-3863 to make an appointment and for all questions",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ],
+        "address": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "722 Laurel Ave\nButte Falls, Oregon 97522",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ],
+        "schedule": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "Monday – Thursday\n7:30 a.m. – 12:30 p.m.\n1:00 p.m. – 6:00 p.m.",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "Primary Medical Care",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "rogue-community-health-eagle-point-health-center",
+      "name": "Eagle Point Health Center",
+      "provider": "Rogue Community Health",
+      "categories": [
+        "health"
+      ],
+      "area": "Jackson County",
+      "coverage": [
+        "Jackson County"
+      ],
+      "description": "Eagle Point Health Center from Rogue Community Health, as described on roguecommunityhealth.org. Confirm before visiting.",
+      "address": "11160 Crater Lake Hwy Suite A, Eagle Point, OR 97524",
+      "schedule": "Monday–Thursday, 7:30 a.m.–6:00 p.m.",
+      "access": "Call 541-773-3863 to make an appointment and for all questions.",
+      "requirements": "Not confirmed",
+      "cost": "Not confirmed",
+      "phone": "541-773-3863",
+      "source": "https://roguecommunityhealth.org/locations/",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from roguecommunityhealth.org",
+      "provenance": {
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "541-773-3863",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ],
+        "access": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "Call 541-773-3863 to make an appointment and for all questions",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ],
+        "address": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "11160 Crater Lake Hwy Suite A\nEagle Point, OR 97524",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ],
+        "schedule": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "Monday – Thursday 7:30 a.m. – 6:00 p.m.",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "Primary Medical Care",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "rogue-community-health-medford-health-center",
+      "name": "Medford Health Center",
+      "provider": "Rogue Community Health",
+      "categories": [
+        "health"
+      ],
+      "area": "Jackson County",
+      "coverage": [
+        "Jackson County"
+      ],
+      "description": "Medford Health Center from Rogue Community Health, as described on roguecommunityhealth.org. Confirm before visiting.",
+      "address": "19 Myrtle Street, Medford, OR 97504",
+      "schedule": "Monday–Friday, 7:30 a.m.–6:00 p.m.",
+      "access": "The Medford Campus entrance is now on Portland Ave.",
+      "requirements": "Not confirmed",
+      "cost": "Not confirmed",
+      "phone": "541-773-3863",
+      "source": "https://roguecommunityhealth.org/locations/",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from roguecommunityhealth.org",
+      "provenance": {
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "541-773-3863",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ],
+        "access": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "Please note that the entrance for our Medford Campus, which includes the Medford Health Center, is now located on Portland Ave.",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ],
+        "address": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "19 Myrtle Street\nMedford, Oregon 97504",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ],
+        "schedule": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "Monday – Friday 7:30 a.m. – 6:00 p.m.",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "Primary Medical Care",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "rogue-community-health-talent-health-center",
+      "name": "Talent Health Center",
+      "provider": "Rogue Community Health",
+      "categories": [
+        "health"
+      ],
+      "area": "Jackson County",
+      "coverage": [
+        "Jackson County"
+      ],
+      "description": "Talent Health Center from Rogue Community Health, as described on roguecommunityhealth.org. Confirm before visiting.",
+      "address": "49 Talent Ave, Talent, OR 97540",
+      "schedule": "Monday–Friday, 7:30 a.m.–6:00 p.m.",
+      "access": "Call 541-773-3863 to make an appointment and for all questions.",
+      "requirements": "Not confirmed",
+      "cost": "Not confirmed",
+      "phone": "541-773-3863",
+      "source": "https://roguecommunityhealth.org/locations/",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from roguecommunityhealth.org",
+      "provenance": {
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "541-773-3863",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ],
+        "access": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "Call 541-773-3863 to make an appointment and for all questions",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ],
+        "address": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "49 Talent Ave\nTalent, OR 97540",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ],
+        "schedule": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "Open Monday – Friday, 7:30 a.m. to 6:00 p.m.",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "Primary Medical Care",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "rogue-community-health-white-city-health-center",
+      "name": "White City Health Center",
+      "provider": "Rogue Community Health",
+      "categories": [
+        "health"
+      ],
+      "area": "Jackson County",
+      "coverage": [
+        "Jackson County"
+      ],
+      "description": "White City Health Center from Rogue Community Health, as described on roguecommunityhealth.org. Confirm before visiting.",
+      "address": "8385 Division Rd, White City, OR 97503",
+      "schedule": "Monday–Friday, 7:30 a.m.–6:00 p.m.",
+      "access": "Call 541-773-3863 to make an appointment and for all questions.",
+      "requirements": "Not confirmed",
+      "cost": "Not confirmed",
+      "phone": "541-773-3863",
+      "source": "https://roguecommunityhealth.org/locations/",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from roguecommunityhealth.org",
+      "provenance": {
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "541-773-3863",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ],
+        "access": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "Call 541-773-3863 to make an appointment and for all questions",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ],
+        "address": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "8385 Division Rd\nWhite City, OR 97503",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ],
+        "schedule": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "Monday – Friday 7:30 a.m. – 6:00 p.m.",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "Primary Medical Care",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "rogue-community-health-medford-behavioral-health",
+      "name": "Medford Behavioral Health",
+      "provider": "Rogue Community Health",
+      "categories": [
+        "health"
+      ],
+      "area": "Jackson County",
+      "coverage": [
+        "Jackson County"
+      ],
+      "description": "Medford Behavioral Health from Rogue Community Health, as described on roguecommunityhealth.org. Confirm before visiting.",
+      "address": "1000 East Main St, Medford, OR 97504",
+      "schedule": "Monday–Friday, 7:30 a.m.–6:00 p.m.",
+      "access": "Call 541-773-3863 to make an appointment and for all questions.",
+      "requirements": "Not confirmed",
+      "cost": "Not confirmed",
+      "phone": "541-773-3863",
+      "source": "https://roguecommunityhealth.org/locations/",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from roguecommunityhealth.org",
+      "provenance": {
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "541-773-3863",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ],
+        "access": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "Call 541-773-3863 to make an appointment and for all questions",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ],
+        "address": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "1000 East Main St\nMedford, OR 97504",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ],
+        "schedule": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "Monday – Friday, 7:30 a.m. – 6:00 p.m.",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "Behavioral Health Centers",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "rogue-community-health-south-ashland-behavioral-health",
+      "name": "South Ashland Behavioral Health",
+      "provider": "Rogue Community Health",
+      "categories": [
+        "health"
+      ],
+      "area": "Jackson County",
+      "coverage": [
+        "Jackson County"
+      ],
+      "description": "South Ashland Behavioral Health from Rogue Community Health, as described on roguecommunityhealth.org. Confirm before visiting.",
+      "address": "2265 Ashland St., Ashland, OR 97520",
+      "schedule": "Tuesday–Friday, 7:30 a.m.–12:00 p.m. and 1–6 p.m.; Monday virtual only",
+      "access": "Call 541-773-3863 to make an appointment and for all questions.",
+      "requirements": "Not confirmed",
+      "cost": "Not confirmed",
+      "phone": "541-773-3863",
+      "source": "https://roguecommunityhealth.org/locations/",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from roguecommunityhealth.org",
+      "provenance": {
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "541-773-3863",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ],
+        "access": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "Call 541-773-3863 to make an appointment and for all questions",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ],
+        "address": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "2265 Ashland St.\nAshland, OR 97520",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ],
+        "schedule": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "Tuesday – Friday,\n7:30 a.m. – 12:00 p.m., 1 p.m. – 6 p.m.\nMonday Virtual Only",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "Behavioral Health Centers",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "rogue-community-health-butte-falls-dental",
+      "name": "Butte Falls Dental",
+      "provider": "Rogue Community Health",
+      "categories": [
+        "health"
+      ],
+      "area": "Jackson County",
+      "coverage": [
+        "Jackson County"
+      ],
+      "description": "Butte Falls Dental from Rogue Community Health, as described on roguecommunityhealth.org. Confirm before visiting.",
+      "address": "722 Laurel Ave., Butte Falls, OR 97522",
+      "schedule": "One Tuesday per month",
+      "access": "Not confirmed",
+      "requirements": "Not confirmed",
+      "cost": "Not confirmed",
+      "phone": "541-842-7799",
+      "source": "https://roguecommunityhealth.org/locations/",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from roguecommunityhealth.org",
+      "provenance": {
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "541-842-7799",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ],
+        "address": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "722 Laurel Ave.\nButte Falls, OR 97522",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ],
+        "schedule": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "One Tuesday per month",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "Dental Care",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "rogue-community-health-eagle-point-dental",
+      "name": "Eagle Point Dental",
+      "provider": "Rogue Community Health",
+      "categories": [
+        "health"
+      ],
+      "area": "Jackson County",
+      "coverage": [
+        "Jackson County"
+      ],
+      "description": "Eagle Point Dental from Rogue Community Health, as described on roguecommunityhealth.org. Confirm before visiting.",
+      "address": "11160 Crater Lake Hwy., Eagle Point, OR 97524",
+      "schedule": "Monday–Thursday, 7:30 a.m.–6:30 p.m.",
+      "access": "Not confirmed",
+      "requirements": "Not confirmed",
+      "cost": "Not confirmed",
+      "phone": "541-500-0763",
+      "source": "https://roguecommunityhealth.org/locations/",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from roguecommunityhealth.org",
+      "provenance": {
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "541-500-0763",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ],
+        "address": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "11160 Crater Lake Hwy.\nEagle Point, OR 97524",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ],
+        "schedule": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "Monday – Thursday, 7:30 a.m. – 6:30 p.m.",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "Dental Care",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "rogue-community-health-medford-main-st-dental",
+      "name": "Medford Main St. Dental",
+      "provider": "Rogue Community Health",
+      "categories": [
+        "health"
+      ],
+      "area": "Jackson County",
+      "coverage": [
+        "Jackson County"
+      ],
+      "description": "Medford Main St. Dental from Rogue Community Health, as described on roguecommunityhealth.org. Confirm before visiting.",
+      "address": "922 E Main St., Medford, OR 97504",
+      "schedule": "Monday–Thursday, 7:30 a.m.–6:30 p.m.",
+      "access": "Not confirmed",
+      "requirements": "Not confirmed",
+      "cost": "Not confirmed",
+      "phone": "541-500-2521",
+      "source": "https://roguecommunityhealth.org/locations/",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from roguecommunityhealth.org",
+      "provenance": {
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "541-500-2521",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ],
+        "address": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "922 E Main St.\nMedford, OR 97504",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ],
+        "schedule": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "Monday – Thursday, 7:30 a.m. – 6:30 p.m.",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "Dental Care",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "rogue-community-health-medford-royal-ct-dental",
+      "name": "Medford Royal Ct. Dental",
+      "provider": "Rogue Community Health",
+      "categories": [
+        "health"
+      ],
+      "area": "Jackson County",
+      "coverage": [
+        "Jackson County"
+      ],
+      "description": "Medford Royal Ct. Dental from Rogue Community Health, as described on roguecommunityhealth.org. Confirm before visiting.",
+      "address": "906 Royal Ct., Medford, OR 97504",
+      "schedule": "Monday–Friday, 7:30 a.m.–6:30 p.m.",
+      "access": "Not confirmed",
+      "requirements": "Not confirmed",
+      "cost": "Not confirmed",
+      "phone": "541-500-0959",
+      "source": "https://roguecommunityhealth.org/locations/",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from roguecommunityhealth.org",
+      "provenance": {
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "541-500-0959",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ],
+        "address": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "906 Royal Ct.\nMedford, OR 97504",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ],
+        "schedule": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "Monday – Friday, 7:30 a.m. – 6:30 p.m.",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://roguecommunityhealth.org/locations/",
+            "span": "Dental Care",
+            "observedAt": "2026-10-25T19:25:44.788Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "medford-gospel-mission-live-in-discipleship-program",
+      "name": "Live-in discipleship program",
+      "provider": "Medford Gospel Mission",
+      "categories": [
+        "housing"
+      ],
+      "area": "Medford",
+      "coverage": [
+        "Medford"
+      ],
+      "description": "Live-in discipleship program from Medford Gospel Mission, as described on medfordgospelmission.org. Confirm before visiting.",
+      "address": "Jackson Campus, 125 W Jackson, Medford",
+      "schedule": "Jackson Campus is open weekdays, 10:00am to 4:00pm",
+      "access": "Not a drop-in shelter or emergency relief. Stop by the Jackson Campus or call to ask about the program.",
+      "requirements": "For people ready for long-term change. This is a Christ-centered, live-in program that moves from crisis to stability to long-term growth in Christ.",
+      "cost": "Not confirmed",
+      "phone": "541-779-1597",
+      "source": "https://www.medfordgospelmission.org",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from medfordgospelmission.org",
+      "provenance": {
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.medfordgospelmission.org",
+            "span": "give us a call at 541-779-1597",
+            "observedAt": "2026-10-25T19:10:43.171Z"
+          }
+        ],
+        "access": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.medfordgospelmission.org",
+            "span": "we don’t operate as a relief agency or drop-in shelter",
+            "observedAt": "2026-10-25T19:10:43.171Z"
+          }
+        ],
+        "address": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.medfordgospelmission.org",
+            "span": "Drop on by our Jackson Campus located at 125 W Jackson in Medford",
+            "observedAt": "2026-10-25T19:10:43.171Z"
+          }
+        ],
+        "schedule": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.medfordgospelmission.org",
+            "span": "we are open weekdays 10:00am – 4:00pm",
+            "observedAt": "2026-10-25T19:10:43.171Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.medfordgospelmission.org",
+            "span": "we invite them into a live-in discipleship process",
+            "observedAt": "2026-10-25T19:10:43.171Z"
+          }
+        ],
+        "requirements": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.medfordgospelmission.org",
+            "span": "When someone is ready for change, we invite them into a live-in discipleship process that moves from crisis to stability to long-term growth in Christ.",
+            "observedAt": "2026-10-25T19:10:43.171Z"
+          }
+        ],
+        "hours": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.medfordgospelmission.org",
+            "span": "Jackson Campus is open weekdays, 10:00am to 4:00pm",
+            "observedAt": "2026-10-25T22:50:27.574Z"
+          }
+        ],
+        "openings": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.medfordgospelmission.org",
+            "span": "Jackson Campus is open weekdays, 10:00am to 4:00pm",
+            "observedAt": "2026-10-25T22:50:27.574Z"
+          }
+        ]
+      },
+      "hours": {
+        "timeZone": "America/Los_Angeles",
+        "textAsPrinted": "Jackson Campus is open weekdays, 10:00am to 4:00pm",
+        "rules": [
+          {
+            "days": [
+              "mon",
+              "tue",
+              "wed",
+              "thu",
+              "fri"
+            ],
+            "weeks": "every",
+            "start": "10:00",
+            "end": "16:00"
+          }
+        ],
+        "include": [],
+        "exclude": [],
+        "conditions": []
+      },
+      "openings": [
+        {
+          "startsAt": "2026-10-26T10:00:00-07:00",
+          "endsAt": "2026-10-26T16:00:00-07:00"
+        },
+        {
+          "startsAt": "2026-10-27T10:00:00-07:00",
+          "endsAt": "2026-10-27T16:00:00-07:00"
+        },
+        {
+          "startsAt": "2026-10-28T10:00:00-07:00",
+          "endsAt": "2026-10-28T16:00:00-07:00"
+        },
+        {
+          "startsAt": "2026-10-29T10:00:00-07:00",
+          "endsAt": "2026-10-29T16:00:00-07:00"
+        },
+        {
+          "startsAt": "2026-10-30T10:00:00-07:00",
+          "endsAt": "2026-10-30T16:00:00-07:00"
+        }
+      ]
+    },
+    {
+      "id": "stabbin-wagon-stabbin-wagon-mfr-a-mobile-harm-reduction-unit",
+      "name": "Stabbin Wagon MFR, a mobile harm reduction unit",
+      "provider": "Stabbin' Wagon",
+      "categories": [
+        "health"
+      ],
+      "area": "Jackson County",
+      "coverage": [
+        "Jackson County"
+      ],
+      "description": "Stabbin Wagon MFR, a mobile harm reduction unit from Stabbin' Wagon, as described on nasen.org. Confirm before visiting.",
+      "address": "Hawthorne Park, 501 E Main St, Medford, OR 97504",
+      "schedule": "Tuesday and Thursday, 11am to 2pm, plus all major holidays",
+      "access": "Judgment-free service. Delivery is also offered.",
+      "requirements": "Not confirmed",
+      "cost": "Not confirmed",
+      "phone": "(541) 316-0709",
+      "source": "https://nasen.org/sep/stabbin-wagon-mfr-",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from nasen.org",
+      "unconfirmed": true,
+      "provenance": {
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://nasen.org/sep/stabbin-wagon-mfr-",
+            "span": "(541) 316-0709",
+            "observedAt": "2026-10-25T19:11:04.483Z"
+          }
+        ],
+        "access": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://nasen.org/sep/stabbin-wagon-mfr-",
+            "span": "Always a judgment-free zone",
+            "observedAt": "2026-10-25T19:11:04.483Z"
+          }
+        ],
+        "address": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://nasen.org/sep/stabbin-wagon-mfr-",
+            "span": "501 E Main St\nHawthorne Park\nMedford, OR 97504",
+            "observedAt": "2026-10-25T19:11:04.483Z"
+          }
+        ],
+        "schedule": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://nasen.org/sep/stabbin-wagon-mfr-",
+            "span": "Tuesday & Thursday: 11am to 2pm AND all major holidays",
+            "observedAt": "2026-10-25T19:11:04.483Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://nasen.org/sep/stabbin-wagon-mfr-",
+            "span": "Fentanyl Test Strips/Education\nNaloxone Distribution/Overdose Ed.\nSafe Sex Items\nSyringe Services",
+            "observedAt": "2026-10-25T19:11:04.483Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "la-clinica-health-general-medical-care",
+      "name": "General Medical Care",
+      "provider": "La Clinica Health",
+      "categories": [
+        "health"
+      ],
+      "area": "Rogue Valley",
+      "coverage": [
+        "Rogue Valley"
+      ],
+      "description": "General Medical Care from La Clinica Health, as described on 211info.org. Confirm before visiting.",
+      "address": "3617 S Pacific Highway, Medford, OR 97501",
+      "schedule": "Monday-Friday 7:30am-6:30pm",
+      "access": "Call for more information and to schedule an appointment",
+      "requirements": "Bring insurance information, if you have it",
+      "cost": "Accepts OHP, Medicare, and most private insurance. Sliding scale fees based on income and family size if you have no insurance. No one is turned away for inability to pay.",
+      "phone": "(541) 618-1300",
+      "source": "https://www.211info.org/agency/3293/2502",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from 211info.org",
+      "unconfirmed": true,
+      "provenance": {
+        "cost": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.211info.org/agency/3293/2502",
+            "span": "Accepts OHP, Medicare, and most private insurance. Sliding scale\nfees based on income and family size for patients with no health\ninsurance. No one is turned away for inability to pay.",
+            "observedAt": "2026-10-25T19:10:17.712Z"
+          }
+        ],
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.211info.org/agency/3293/2502",
+            "span": "Main phone (541) 618-1300",
+            "observedAt": "2026-10-25T19:10:17.712Z"
+          }
+        ],
+        "access": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.211info.org/agency/3293/2502",
+            "span": "Call for more information and to schedule an appointment",
+            "observedAt": "2026-10-25T19:10:17.712Z"
+          }
+        ],
+        "address": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.211info.org/agency/3293/2502",
+            "span": "3617 S Pacific Highway\nMedford, OR 97501",
+            "observedAt": "2026-10-25T19:10:17.712Z"
+          }
+        ],
+        "schedule": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.211info.org/agency/3293/2502",
+            "span": "Monday-Friday 7:30am-6:30pm",
+            "observedAt": "2026-10-25T19:10:17.712Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.211info.org/agency/3293/2502",
+            "span": "Provides comprehensive health care for the entire family.",
+            "observedAt": "2026-10-25T19:10:17.712Z"
+          }
+        ],
+        "requirements": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.211info.org/agency/3293/2502",
+            "span": "Insurance information, if applicable",
+            "observedAt": "2026-10-25T19:10:17.712Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "hiv-alliance-medford-office",
+      "name": "Medford office",
+      "provider": "HIV Alliance",
+      "categories": [
+        "health"
+      ],
+      "area": "Rogue Valley",
+      "coverage": [
+        "Rogue Valley"
+      ],
+      "description": "Medford office from HIV Alliance, as described on hivalliance.org. Confirm before visiting.",
+      "address": "955 Town Centre Dr. Ste. B, Medford, OR 97504",
+      "schedule": "Monday to Friday, 9am to 5pm",
+      "access": "Not confirmed",
+      "requirements": "Not confirmed",
+      "cost": "Not confirmed",
+      "phone": "541-342-5088, ext. 370",
+      "source": "https://hivalliance.org/?p=252",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from hivalliance.org",
+      "provenance": {
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://hivalliance.org/?p=252",
+            "span": "PHONE: 541-342-5088 , EXT. 370",
+            "observedAt": "2026-10-25T19:10:05.373Z"
+          }
+        ],
+        "address": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://hivalliance.org/?p=252",
+            "span": "955 Town Centre Dr. Ste. B\nMedford, OR 97504",
+            "observedAt": "2026-10-25T19:10:05.373Z"
+          }
+        ],
+        "schedule": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://hivalliance.org/?p=252",
+            "span": "HOURS: Monday - Friday 9am - 5pm\nPHONE: 541-342-5088 , EXT. 370",
+            "observedAt": "2026-10-25T19:10:05.373Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://hivalliance.org/?p=252",
+            "span": "Care Coordination\nDental\nBehavioral Health",
+            "observedAt": "2026-10-25T19:10:05.373Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "addictions-recovery-center-arc-drop-in-engagement-and-mobile",
+      "name": "Drop-In Engagement and Mobile Response Center",
+      "provider": "Addictions Recovery Center (ARC)",
+      "categories": [
+        "health"
+      ],
+      "area": "Medford",
+      "coverage": [
+        "Medford"
+      ],
+      "description": "Drop-In Engagement and Mobile Response Center from Addictions Recovery Center (ARC), as described on addictionsrecovery.org. Confirm before visiting.",
+      "address": "1025 East Main Street, Medford OR 97504",
+      "schedule": "Monday to Friday, 8:00 am to 5:00 pm",
+      "access": "Drop-in center; you can come in. Phone line open 24 hours a day, 7 days a week.",
+      "requirements": "Not confirmed",
+      "cost": "Not confirmed",
+      "phone": "541-779-1282, Option 2 (24/7)",
+      "source": "https://www.addictionsrecovery.org/contact-us/",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from addictionsrecovery.org",
+      "provenance": {
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.addictionsrecovery.org/contact-us/",
+            "span": "Call us 24 hours a day, 7 days a week at 541-779-1282, Option 2",
+            "observedAt": "2026-10-25T19:20:52.954Z"
+          }
+        ],
+        "access": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.addictionsrecovery.org/contact-us/",
+            "span": "Come see us at our Drop-In Engagement and Mobile Response Center",
+            "observedAt": "2026-10-25T19:20:52.954Z"
+          }
+        ],
+        "address": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.addictionsrecovery.org/contact-us/",
+            "span": "1025 East Main Street\nMedford OR 97504",
+            "observedAt": "2026-10-25T19:20:52.954Z"
+          }
+        ],
+        "schedule": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.addictionsrecovery.org/contact-us/",
+            "span": "Monday – Friday\n8:00 am – 5:00 pm",
+            "observedAt": "2026-10-25T19:20:52.954Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.addictionsrecovery.org/contact-us/",
+            "span": "Addictions Recovery Center",
+            "observedAt": "2026-10-25T19:20:52.954Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "hearts-with-a-mission-youth-shelter",
+      "name": "Youth Shelter",
+      "provider": "Hearts with a Mission",
+      "categories": [
+        "housing"
+      ],
+      "area": "Rogue Valley",
+      "coverage": [
+        "Rogue Valley"
+      ],
+      "description": "Youth Shelter from Hearts with a Mission, as described on heartswithamission.org. Confirm before visiting.",
+      "address": "517 Edwards Street, Medford, OR 97501",
+      "schedule": "Not confirmed",
+      "access": "Not confirmed",
+      "requirements": "For youth ages 10 to 17",
+      "cost": "Not confirmed",
+      "phone": "541-646-7385",
+      "source": "https://www.heartswithamission.org/",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from heartswithamission.org",
+      "provenance": {
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.heartswithamission.org/",
+            "span": "Youth Shelter:\n517 Edwards Street\nMedford, OR 97501\n541-646-7385",
+            "observedAt": "2026-10-25T19:21:24.011Z"
+          }
+        ],
+        "address": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.heartswithamission.org/",
+            "span": "517 Edwards Street\nMedford, OR 97501",
+            "observedAt": "2026-10-25T19:21:24.011Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.heartswithamission.org/",
+            "span": "Youth Shelter | Days/Nights Safe Shelter",
+            "observedAt": "2026-10-25T19:21:24.011Z"
+          }
+        ],
+        "requirements": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.heartswithamission.org/",
+            "span": "Youth Shelter | Individuals Served | Ages 10-17",
+            "observedAt": "2026-10-25T19:21:24.011Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "hearts-with-a-mission-transitional-living-program",
+      "name": "Transitional Living Program",
+      "provider": "Hearts with a Mission",
+      "categories": [
+        "housing"
+      ],
+      "area": "Rogue Valley",
+      "coverage": [
+        "Rogue Valley"
+      ],
+      "description": "Transitional Living Program from Hearts with a Mission, as described on heartswithamission.org. Confirm before visiting.",
+      "address": "521 Edwards Street, Medford, OR 97501 (Jackson County)",
+      "schedule": "Not confirmed",
+      "access": "Serves Jackson and Josephine Counties",
+      "requirements": "For young people ages 18 to 21",
+      "cost": "Not confirmed",
+      "phone": "541-646-7385",
+      "source": "https://www.heartswithamission.org/",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from heartswithamission.org",
+      "provenance": {
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.heartswithamission.org/",
+            "span": "Phone: 541-646-7385",
+            "observedAt": "2026-10-25T19:21:24.011Z"
+          }
+        ],
+        "access": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.heartswithamission.org/",
+            "span": "TRANSITIONAL LIVING PROGRAM\nJackson & Josephine Counties",
+            "observedAt": "2026-10-25T19:21:24.011Z"
+          }
+        ],
+        "address": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.heartswithamission.org/",
+            "span": "Jackson County\n521 Edwards Street\nMedford, OR 97501",
+            "observedAt": "2026-10-25T19:21:24.011Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.heartswithamission.org/",
+            "span": "TLP | Days/Nights | with Transitional Support",
+            "observedAt": "2026-10-25T19:21:24.011Z"
+          }
+        ],
+        "requirements": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.heartswithamission.org/",
+            "span": "TLP | Individuals Served | Ages 18-21",
+            "observedAt": "2026-10-25T19:21:24.011Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "maslow-project-medford-resource-center",
+      "name": "Medford Resource Center",
+      "provider": "Maslow Project",
+      "categories": [
+        "food",
+        "hygiene",
+        "essentials"
+      ],
+      "area": "Medford",
+      "coverage": [
+        "Medford"
+      ],
+      "description": "Medford Resource Center from Maslow Project, as described on maslowproject.com. Confirm before visiting.",
+      "address": "500 Monroe St., Medford, OR 97501",
+      "schedule": "Monday to Friday, 10 AM to 5 PM",
+      "access": "Get basic needs help by phone, text or email, or by coming to a resource center. If you have special needs, ask.",
+      "requirements": "Not confirmed",
+      "cost": "Not confirmed",
+      "phone": "(541) 608-6868. Spanish is spoken.",
+      "source": "https://maslowproject.com",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from maslowproject.com",
+      "provenance": {
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://maslowproject.com",
+            "span": "Call (541) 608-6868",
+            "observedAt": "2026-10-25T19:22:54.959Z"
+          }
+        ],
+        "access": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://maslowproject.com",
+            "span": "No matter how you reach us, by phone, text, email or at our resource centers",
+            "observedAt": "2026-10-25T19:22:54.959Z"
+          }
+        ],
+        "address": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://maslowproject.com",
+            "span": "500 Monroe St.",
+            "observedAt": "2026-10-25T19:22:54.959Z"
+          }
+        ],
+        "schedule": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://maslowproject.com",
+            "span": "M-F 10AM to 5PM",
+            "observedAt": "2026-10-25T19:22:54.959Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://maslowproject.com",
+            "span": "food boxes and snacks, hygiene supplies, clothing, school supplies, diapers, laundry & so much more!",
+            "observedAt": "2026-10-25T19:22:54.959Z"
+          }
+        ],
+        "hours": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://maslowproject.com",
+            "span": "Monday to Friday, 10 AM to 5 PM",
+            "observedAt": "2026-10-25T22:50:27.574Z"
+          }
+        ],
+        "openings": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://maslowproject.com",
+            "span": "Monday to Friday, 10 AM to 5 PM",
+            "observedAt": "2026-10-25T22:50:27.574Z"
+          }
+        ]
+      },
+      "hours": {
+        "timeZone": "America/Los_Angeles",
+        "textAsPrinted": "Monday to Friday, 10 AM to 5 PM",
+        "rules": [
+          {
+            "days": [
+              "mon",
+              "tue",
+              "wed",
+              "thu",
+              "fri"
+            ],
+            "weeks": "every",
+            "start": "10:00",
+            "end": "17:00"
+          }
+        ],
+        "include": [],
+        "exclude": [],
+        "conditions": []
+      },
+      "openings": [
+        {
+          "startsAt": "2026-10-26T10:00:00-07:00",
+          "endsAt": "2026-10-26T17:00:00-07:00"
+        },
+        {
+          "startsAt": "2026-10-27T10:00:00-07:00",
+          "endsAt": "2026-10-27T17:00:00-07:00"
+        },
+        {
+          "startsAt": "2026-10-28T10:00:00-07:00",
+          "endsAt": "2026-10-28T17:00:00-07:00"
+        },
+        {
+          "startsAt": "2026-10-29T10:00:00-07:00",
+          "endsAt": "2026-10-29T17:00:00-07:00"
+        },
+        {
+          "startsAt": "2026-10-30T10:00:00-07:00",
+          "endsAt": "2026-10-30T17:00:00-07:00"
+        }
+      ]
+    },
+    {
+      "id": "painted-horse-recovery-archambault-community-center-painted",
+      "name": "Archambault Community Center (Painted Horse Recovery)",
+      "provider": "Painted Horse Recovery",
+      "categories": [
+        "health"
+      ],
+      "area": "Medford",
+      "coverage": [
+        "Medford"
+      ],
+      "description": "Archambault Community Center (Painted Horse Recovery) from Painted Horse Recovery, as described on paintedhorserecovery.org. Confirm before visiting.",
+      "address": "1014 N. Riverside Ave., Medford, OR 97501",
+      "schedule": "Not confirmed",
+      "access": "Drop-in recovery support. It is culturally specific for Native Americans and open to anyone looking for that kind of support.",
+      "requirements": "Open to anyone who wants recovery support.",
+      "cost": "Not confirmed",
+      "phone": "458-226-2120",
+      "source": "https://paintedhorserecovery.org/",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from paintedhorserecovery.org",
+      "provenance": {
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://paintedhorserecovery.org/",
+            "span": "Center Number: 458-226-2120",
+            "observedAt": "2026-10-25T19:24:42.004Z"
+          }
+        ],
+        "access": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://paintedhorserecovery.org/",
+            "span": "Painted Horse Recovery has drop-in support at our recovery center for Native Americans and all who are looking for culturally specific services.",
+            "observedAt": "2026-10-25T19:24:42.004Z"
+          }
+        ],
+        "address": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://paintedhorserecovery.org/",
+            "span": "1014 N. Riverside Ave., Medford, OR 97501",
+            "observedAt": "2026-10-25T19:24:42.004Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://paintedhorserecovery.org/",
+            "span": "These services are open to anyone wanting recovery support and they include 12 step meetings, such as wellberiety, Native based AA, NA, recovery events, skill building groups, and culture nights for Native American families.",
+            "observedAt": "2026-10-25T19:24:42.004Z"
+          }
+        ],
+        "requirements": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://paintedhorserecovery.org/",
+            "span": "These services are open to anyone wanting recovery support",
+            "observedAt": "2026-10-25T19:24:42.004Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "reclaiming-lives-recovery-cafe-recovery-circles-coffee-and-d",
+      "name": "Recovery Circles, coffee and dinner at Recovery Café",
+      "provider": "Reclaiming Lives Recovery Café",
+      "categories": [
+        "food"
+      ],
+      "area": "Medford",
+      "coverage": [
+        "Medford"
+      ],
+      "description": "Recovery Circles, coffee and dinner at Recovery Café from Reclaiming Lives Recovery Café, as described on reclaiming-lives.org. Confirm before visiting.",
+      "address": "226 East Main Street",
+      "schedule": "Sundays starting at 4 pm; Mondays and Tuesdays starting at 5 pm",
+      "access": "Recovery Café invites people who want to be part of a recovery community to become members.",
+      "requirements": "Not confirmed",
+      "cost": "Free",
+      "phone": null,
+      "source": "https://reclaiming-lives.org",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from reclaiming-lives.org",
+      "provenance": {
+        "cost": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://reclaiming-lives.org",
+            "span": "All services are free!",
+            "observedAt": "2026-10-25T19:24:54.536Z"
+          }
+        ],
+        "access": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://reclaiming-lives.org",
+            "span": "Recovery Café invites individuals who want to be a part of a vibrant recovery community to become members.",
+            "observedAt": "2026-10-25T19:24:54.536Z"
+          }
+        ],
+        "address": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://reclaiming-lives.org",
+            "span": "Recovery Café is located at 226 East Main Street.",
+            "observedAt": "2026-10-25T19:24:54.536Z"
+          }
+        ],
+        "schedule": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://reclaiming-lives.org",
+            "span": "start at 4 pm on Sundays and 5 pm on Mondays & Tuesdays",
+            "observedAt": "2026-10-25T19:24:54.536Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://reclaiming-lives.org",
+            "span": "Recovery Circles, coffee and dinner start at 4 pm on Sundays and 5 pm on Mondays & Tuesdays.",
+            "observedAt": "2026-10-25T19:24:54.536Z"
+          }
+        ],
+        "hours": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://reclaiming-lives.org",
+            "span": "Sundays starting at 4 pm; Mondays and Tuesdays starting at 5 pm",
+            "observedAt": "2026-10-25T22:50:27.574Z"
+          }
+        ],
+        "openings": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://reclaiming-lives.org",
+            "span": "Sundays starting at 4 pm; Mondays and Tuesdays starting at 5 pm",
+            "observedAt": "2026-10-25T22:50:27.574Z"
+          }
+        ]
+      },
+      "hours": {
+        "timeZone": "America/Los_Angeles",
+        "textAsPrinted": "Sundays starting at 4 pm; Mondays and Tuesdays starting at 5 pm",
+        "rules": [
+          {
+            "days": [
+              "sun"
+            ],
+            "weeks": "every",
+            "start": "16:00",
+            "end": "19:00"
+          },
+          {
+            "days": [
+              "mon",
+              "tue"
+            ],
+            "weeks": "every",
+            "start": "17:00",
+            "end": "20:00"
+          }
+        ],
+        "include": [],
+        "exclude": [],
+        "conditions": []
+      },
+      "openings": [
+        {
+          "startsAt": "2026-10-26T17:00:00-07:00",
+          "endsAt": "2026-10-26T20:00:00-07:00"
+        },
+        {
+          "startsAt": "2026-10-27T17:00:00-07:00",
+          "endsAt": "2026-10-27T20:00:00-07:00"
+        },
+        {
+          "startsAt": "2026-11-01T16:00:00-08:00",
+          "endsAt": "2026-11-01T19:00:00-08:00"
+        }
+      ]
+    },
+    {
+      "id": "reclaiming-lives-recovery-cafe-recovery-cafe-peer-support-an",
+      "name": "Recovery Café peer support and help with resources",
+      "provider": "Reclaiming Lives Recovery Café",
+      "categories": [
+        "health"
+      ],
+      "area": "Medford",
+      "coverage": [
+        "Medford"
+      ],
+      "description": "Recovery Café peer support and help with resources from Reclaiming Lives Recovery Café, as described on reclaiming-lives.org. Confirm before visiting.",
+      "address": "226 East Main Street",
+      "schedule": "Monday through Thursday, 1 pm to 4 pm",
+      "access": "The offices are open for peer support and help with resources.",
+      "requirements": "Not confirmed",
+      "cost": "Free",
+      "phone": null,
+      "source": "https://reclaiming-lives.org",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from reclaiming-lives.org",
+      "provenance": {
+        "cost": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://reclaiming-lives.org",
+            "span": "All services are free!",
+            "observedAt": "2026-10-25T19:24:54.536Z"
+          }
+        ],
+        "access": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://reclaiming-lives.org",
+            "span": "Our offices are open Monday through Thursday 1 pm to 4 pm for peer support and help with resources.",
+            "observedAt": "2026-10-25T19:24:54.536Z"
+          }
+        ],
+        "address": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://reclaiming-lives.org",
+            "span": "Recovery Café is located at 226 East Main Street.",
+            "observedAt": "2026-10-25T19:24:54.536Z"
+          }
+        ],
+        "schedule": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://reclaiming-lives.org",
+            "span": "Monday through Thursday 1 pm to 4 pm",
+            "observedAt": "2026-10-25T19:24:54.536Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://reclaiming-lives.org",
+            "span": "Our offices are open Monday through Thursday 1 pm to 4 pm for peer support and help with resources.",
+            "observedAt": "2026-10-25T19:24:54.536Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "reclaiming-lives-recovery-cafe-recovery-cafe",
+      "name": "Recovery Café",
+      "provider": "Reclaiming Lives Recovery Café",
+      "categories": [
+        "health"
+      ],
+      "area": "Medford",
+      "coverage": [
+        "Medford"
+      ],
+      "description": "Recovery Café from Reclaiming Lives Recovery Café, as described on reclaiming-lives.org. Confirm before visiting.",
+      "address": "226 East Main St., Medford, OR 97501",
+      "schedule": "Not confirmed",
+      "access": "The page invites people to come to the café.",
+      "requirements": "Not confirmed",
+      "cost": "Not confirmed",
+      "phone": "541-326-1233",
+      "source": "https://reclaiming-lives.org/contact-us/",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from reclaiming-lives.org",
+      "provenance": {
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://reclaiming-lives.org/contact-us/",
+            "span": "541-326-1233",
+            "observedAt": "2026-10-25T19:25:12.869Z"
+          }
+        ],
+        "access": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://reclaiming-lives.org/contact-us/",
+            "span": "Great things happen at the Recovery Café – come join us and be welcomed home!",
+            "observedAt": "2026-10-25T19:25:12.869Z"
+          }
+        ],
+        "address": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://reclaiming-lives.org/contact-us/",
+            "span": "226 East Main St.\nMedford, OR 97501",
+            "observedAt": "2026-10-25T19:25:12.869Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://reclaiming-lives.org/contact-us/",
+            "span": "help individuals make the next steps for recovery, community resource support",
+            "observedAt": "2026-10-25T19:25:12.869Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "compass-house-compass-house-clubhouse",
+      "name": "Compass House Clubhouse",
+      "provider": "Compass House",
+      "categories": [
+        "health"
+      ],
+      "area": "Rogue Valley",
+      "coverage": [
+        "Rogue Valley"
+      ],
+      "description": "Compass House Clubhouse from Compass House, as described on socompasshouse.org. Confirm before visiting.",
+      "address": "37 N Ivy Street, Medford, OR 97501",
+      "schedule": "Weekdays, 8:00 am – 4:00 pm",
+      "access": "Membership is by referral only. Ask your mental health provider, case manager, counselor, or another qualified referral partner.",
+      "requirements": "Adults 18 and older with a diagnosed mental illness in Jackson and Josephine Counties",
+      "cost": "Free, and membership is voluntary",
+      "phone": "(541) 973-2840",
+      "source": "https://socompasshouse.org",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from socompasshouse.org",
+      "provenance": {
+        "cost": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://socompasshouse.org",
+            "span": "Membership is free and voluntary",
+            "observedAt": "2026-10-25T19:29:03.927Z"
+          }
+        ],
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://socompasshouse.org",
+            "span": "(541) 973-2840",
+            "observedAt": "2026-10-25T19:29:03.927Z"
+          }
+        ],
+        "access": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://socompasshouse.org",
+            "span": "Compass House membership is available by referral. Encourage your family member or friend to speak with their mental health provider, case manager, counselor, or other qualified referral partner.",
+            "observedAt": "2026-10-25T19:29:03.927Z"
+          }
+        ],
+        "address": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://socompasshouse.org",
+            "span": "37 N Ivy Street\nMedford, OR 97501",
+            "observedAt": "2026-10-25T19:29:03.927Z"
+          }
+        ],
+        "schedule": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://socompasshouse.org",
+            "span": "Weekday Hours\n8:00 am – 4:00 pm",
+            "observedAt": "2026-10-25T19:29:03.927Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://socompasshouse.org",
+            "span": "We are a welcoming community where adults living with mental health conditions work side-by-side with staff, build practical skills, form meaningful relationships, and move toward personal goals.",
+            "observedAt": "2026-10-25T19:29:03.927Z"
+          }
+        ],
+        "requirements": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://socompasshouse.org",
+            "span": "We serve adults (18+) with a diagnosed mental illness in Jackson and Josephine Counties",
+            "observedAt": "2026-10-25T19:29:03.927Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "columbiacare-veterans-resource-center",
+      "name": "Veterans Resource Center",
+      "provider": "ColumbiaCare",
+      "categories": [
+        "hygiene",
+        "housing",
+        "essentials"
+      ],
+      "area": "Rogue Valley",
+      "coverage": [
+        "Rogue Valley"
+      ],
+      "description": "Veterans Resource Center from ColumbiaCare, as described on 211info.org. Confirm before visiting.",
+      "address": "601 N Grape Street, Medford, OR 97501",
+      "schedule": "Monday-Friday 8am-noon and 1pm-5pm",
+      "access": "Walk in, call, or email for more information",
+      "requirements": "For veterans and their families",
+      "cost": "Free",
+      "phone": "(541) 779-8564",
+      "source": "https://211info.org/agency/16041/12044",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from 211info.org",
+      "unconfirmed": true,
+      "provenance": {
+        "cost": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://211info.org/agency/16041/12044",
+            "span": "FEES:\nNone",
+            "observedAt": "2026-10-25T19:11:23.124Z"
+          }
+        ],
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://211info.org/agency/16041/12044",
+            "span": "(541) 779-8564",
+            "observedAt": "2026-10-25T19:11:23.124Z"
+          }
+        ],
+        "access": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://211info.org/agency/16041/12044",
+            "span": "Walk in, call, or email for more information",
+            "observedAt": "2026-10-25T19:11:23.124Z"
+          }
+        ],
+        "address": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://211info.org/agency/16041/12044",
+            "span": "601 N Grape Street\nMedford, OR 97501",
+            "observedAt": "2026-10-25T19:11:23.124Z"
+          }
+        ],
+        "schedule": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://211info.org/agency/16041/12044",
+            "span": "Monday-Friday 8am-noon and 1pm-5pm",
+            "observedAt": "2026-10-25T19:11:23.124Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://211info.org/agency/16041/12044",
+            "span": "Provides hygiene items, a temproary mailing address, telephone and\ncomputer use, housing assistance",
+            "observedAt": "2026-10-25T19:11:23.124Z"
+          }
+        ],
+        "requirements": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://211info.org/agency/16041/12044",
+            "span": "Veterans and their families",
+            "observedAt": "2026-10-25T19:11:23.124Z"
+          }
+        ],
+        "hours": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://211info.org/agency/16041/12044",
+            "span": "Monday-Friday 8am-noon and 1pm-5pm",
+            "observedAt": "2026-10-25T22:50:27.574Z"
+          }
+        ],
+        "openings": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://211info.org/agency/16041/12044",
+            "span": "Monday-Friday 8am-noon and 1pm-5pm",
+            "observedAt": "2026-10-25T22:50:27.574Z"
+          }
+        ]
+      },
+      "hours": {
+        "timeZone": "America/Los_Angeles",
+        "textAsPrinted": "Monday-Friday 8am-noon and 1pm-5pm",
+        "rules": [
+          {
+            "days": [
+              "mon",
+              "tue",
+              "wed",
+              "thu",
+              "fri"
+            ],
+            "weeks": "every",
+            "start": "08:00",
+            "end": "12:00"
+          },
+          {
+            "days": [
+              "mon",
+              "tue",
+              "wed",
+              "thu",
+              "fri"
+            ],
+            "weeks": "every",
+            "start": "13:00",
+            "end": "17:00"
+          }
+        ],
+        "include": [],
+        "exclude": [],
+        "conditions": []
+      },
+      "openings": [
+        {
+          "startsAt": "2026-10-26T08:00:00-07:00",
+          "endsAt": "2026-10-26T12:00:00-07:00"
+        },
+        {
+          "startsAt": "2026-10-26T13:00:00-07:00",
+          "endsAt": "2026-10-26T17:00:00-07:00"
+        },
+        {
+          "startsAt": "2026-10-27T08:00:00-07:00",
+          "endsAt": "2026-10-27T12:00:00-07:00"
+        },
+        {
+          "startsAt": "2026-10-27T13:00:00-07:00",
+          "endsAt": "2026-10-27T17:00:00-07:00"
+        },
+        {
+          "startsAt": "2026-10-28T08:00:00-07:00",
+          "endsAt": "2026-10-28T12:00:00-07:00"
+        },
+        {
+          "startsAt": "2026-10-28T13:00:00-07:00",
+          "endsAt": "2026-10-28T17:00:00-07:00"
+        },
+        {
+          "startsAt": "2026-10-29T08:00:00-07:00",
+          "endsAt": "2026-10-29T12:00:00-07:00"
+        },
+        {
+          "startsAt": "2026-10-29T13:00:00-07:00",
+          "endsAt": "2026-10-29T17:00:00-07:00"
+        },
+        {
+          "startsAt": "2026-10-30T08:00:00-07:00",
+          "endsAt": "2026-10-30T12:00:00-07:00"
+        },
+        {
+          "startsAt": "2026-10-30T13:00:00-07:00",
+          "endsAt": "2026-10-30T17:00:00-07:00"
+        }
+      ]
+    },
+    {
+      "id": "jackson-county-health-and-human-services-mental-health",
+      "name": "Mental Health",
+      "provider": "Jackson County Health and Human Services",
+      "categories": [
+        "health"
+      ],
+      "area": "Jackson County",
+      "coverage": [
+        "Jackson County"
+      ],
+      "description": "Mental Health from Jackson County Health and Human Services, as described on jacksoncountyor.gov. Confirm before visiting.",
+      "address": "Not confirmed",
+      "schedule": "Crisis intervention and stabilization services are available 24/7.",
+      "access": "Call the crisis line at 988.",
+      "requirements": "Not confirmed",
+      "cost": "Not confirmed",
+      "phone": "988 (Crisis Line)",
+      "source": "https://jacksoncountyor.gov/departments/health___human_services/index.php",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from jacksoncountyor.gov",
+      "provenance": {
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://jacksoncountyor.gov/departments/health___human_services/index.php",
+            "span": "Crisis Line: 988",
+            "observedAt": "2026-10-25T19:21:50.629Z"
+          }
+        ],
+        "access": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://jacksoncountyor.gov/departments/health___human_services/index.php",
+            "span": "Crisis Line: 988",
+            "observedAt": "2026-10-25T19:21:50.629Z"
+          }
+        ],
+        "schedule": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://jacksoncountyor.gov/departments/health___human_services/index.php",
+            "span": "24/7 Crisis Intervention and Stabilization Services",
+            "observedAt": "2026-10-25T19:21:50.629Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://jacksoncountyor.gov/departments/health___human_services/index.php",
+            "span": "24/7 Crisis Intervention and Stabilization Services, Forensic and Court Mandated Services for adults, and several outpatient and specialty programs.",
+            "observedAt": "2026-10-25T19:21:50.629Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "jackson-county-hhs-crisis-hotline-walk-in-crisis-services",
+      "name": "Walk-In Crisis Services",
+      "provider": "Jackson County HHS Crisis Hotline",
+      "categories": [
+        "health"
+      ],
+      "area": "Jackson County",
+      "coverage": [
+        "Jackson County"
+      ],
+      "description": "Walk-In Crisis Services from Jackson County HHS Crisis Hotline, as described on jacksoncountyor.gov. Confirm before visiting.",
+      "address": "Health & Human Services building, 140 S. Holly St., Medford, OR",
+      "schedule": "Monday–Friday, 8 a.m.–5 p.m.; closed 12–1 p.m. for lunch",
+      "access": "Walk in during business hours for crisis assessment and intervention",
+      "requirements": "Not confirmed",
+      "cost": "Free for all ages, regardless of insurance",
+      "phone": "541-774-8201",
+      "source": "https://jacksoncountyor.gov/departments/health___human_services/programs_and_services/mental_health/crisis_services.php",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from jacksoncountyor.gov",
+      "provenance": {
+        "cost": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://jacksoncountyor.gov/departments/health___human_services/programs_and_services/mental_health/crisis_services.php",
+            "span": "Crisis services are available for all ages at no cost to the individual, regardless of insurance coverage.",
+            "observedAt": "2026-10-25T19:46:06.168Z"
+          }
+        ],
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://jacksoncountyor.gov/departments/health___human_services/programs_and_services/mental_health/crisis_services.php",
+            "span": "541‑774‑8201",
+            "observedAt": "2026-10-25T19:46:06.168Z"
+          }
+        ],
+        "access": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://jacksoncountyor.gov/departments/health___human_services/programs_and_services/mental_health/crisis_services.php",
+            "span": "Walk‑in help is available during business hours",
+            "observedAt": "2026-10-25T19:46:06.168Z"
+          }
+        ],
+        "address": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://jacksoncountyor.gov/departments/health___human_services/programs_and_services/mental_health/crisis_services.php",
+            "span": "140 S. Holly St. in Medford, OR",
+            "observedAt": "2026-10-25T19:46:06.168Z"
+          }
+        ],
+        "schedule": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://jacksoncountyor.gov/departments/health___human_services/programs_and_services/mental_health/crisis_services.php",
+            "span": "Monday–Friday, 8 a.m.–5 p.m.; closed 12–1 p.m. for lunch",
+            "observedAt": "2026-10-25T19:46:06.168Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://jacksoncountyor.gov/departments/health___human_services/programs_and_services/mental_health/crisis_services.php",
+            "span": "Jackson County Mental Health serves community members in crisis at our Health & Human Services building",
+            "observedAt": "2026-10-25T19:46:06.168Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "jackson-county-hhs-crisis-hotline-mobile-crisis-response",
+      "name": "Mobile Crisis Response",
+      "provider": "Jackson County HHS Crisis Hotline",
+      "categories": [
+        "health"
+      ],
+      "area": "Jackson County",
+      "coverage": [
+        "Jackson County"
+      ],
+      "description": "Mobile Crisis Response from Jackson County HHS Crisis Hotline, as described on jacksoncountyor.gov. Confirm before visiting.",
+      "address": "Not confirmed",
+      "schedule": "24/7",
+      "access": "Call the crisis line; the team comes to meet you where you are",
+      "requirements": "Not confirmed",
+      "cost": "Free for all ages, regardless of insurance",
+      "phone": "541-774-8201",
+      "source": "https://jacksoncountyor.gov/departments/health___human_services/programs_and_services/mental_health/crisis_services.php",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from jacksoncountyor.gov",
+      "provenance": {
+        "cost": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://jacksoncountyor.gov/departments/health___human_services/programs_and_services/mental_health/crisis_services.php",
+            "span": "Crisis services are available for all ages at no cost to the individual, regardless of insurance coverage.",
+            "observedAt": "2026-10-25T19:46:06.168Z"
+          }
+        ],
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://jacksoncountyor.gov/departments/health___human_services/programs_and_services/mental_health/crisis_services.php",
+            "span": "541‑774‑8201",
+            "observedAt": "2026-10-25T19:46:06.168Z"
+          }
+        ],
+        "access": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://jacksoncountyor.gov/departments/health___human_services/programs_and_services/mental_health/crisis_services.php",
+            "span": "The JCMH Crisis Team responds to community members in crisis where they are. Dispatched through our crisis line",
+            "observedAt": "2026-10-25T19:46:06.168Z"
+          }
+        ],
+        "schedule": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://jacksoncountyor.gov/departments/health___human_services/programs_and_services/mental_health/crisis_services.php",
+            "span": "our 24/7 Crisis Team",
+            "observedAt": "2026-10-25T19:46:06.168Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://jacksoncountyor.gov/departments/health___human_services/programs_and_services/mental_health/crisis_services.php",
+            "span": "our specially trained Mobile Crisis Team meets youth and adults face‑to‑face to provide trauma‑informed, compassionate crisis intervention and stabilization",
+            "observedAt": "2026-10-25T19:46:06.168Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "kairos-nw-jackson-services-medford",
+      "name": "Jackson Services – Medford",
+      "provider": "Kairos NW",
+      "categories": [
+        "health"
+      ],
+      "area": "Rogue Valley",
+      "coverage": [
+        "Rogue Valley"
+      ],
+      "description": "Jackson Services – Medford from Kairos NW, as described on kairosnw.org. Confirm before visiting.",
+      "address": "10 Crater Lake Avenue, Medford, OR 97504",
+      "schedule": "Not confirmed",
+      "access": "Not confirmed",
+      "requirements": "Not confirmed",
+      "cost": "Not confirmed",
+      "phone": "(541) 772-0127",
+      "source": "https://kairosnw.org/contact/",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from kairosnw.org",
+      "provenance": {
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://kairosnw.org/contact/",
+            "span": "Phone: (541) 772-0127",
+            "observedAt": "2026-10-25T19:30:53.211Z"
+          }
+        ],
+        "address": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://kairosnw.org/contact/",
+            "span": "10 Crater Lake Avenue\nMedford, OR 97504",
+            "observedAt": "2026-10-25T19:30:53.211Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://kairosnw.org/contact/",
+            "span": "Outpatient Clinic, Treatment Foster Care, Respite Care",
+            "observedAt": "2026-10-25T19:30:53.211Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "siskiyou-community-health-center-grants-pass-clinic",
+      "name": "Grants Pass Clinic",
+      "provider": "Siskiyou Community Health Center",
+      "categories": [
+        "health"
+      ],
+      "area": "Josephine County / Grants Pass",
+      "coverage": [
+        "Josephine County / Grants Pass"
+      ],
+      "description": "Grants Pass Clinic from Siskiyou Community Health Center, as described on siskiyouhealthcenter.com. Confirm before visiting.",
+      "address": "1701 NW Hawthorne Ave, Grants Pass, OR 97526",
+      "schedule": "Not confirmed",
+      "access": "You can contact the clinic 24 hours a day, 7 days a week. For medical emergencies, dial 911.",
+      "requirements": "Not confirmed",
+      "cost": "Serves patients with private insurance, Medicaid or Medicare, and patients without insurance.",
+      "phone": "(541) 472-4777",
+      "source": "https://siskiyouhealthcenter.com",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from siskiyouhealthcenter.com",
+      "provenance": {
+        "cost": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://siskiyouhealthcenter.com",
+            "span": "Siskiyou Community Health Center provides services for patients with private insurance, Medicaid, Medicare, and for those who are uninsured.",
+            "observedAt": "2026-10-25T19:32:15.958Z"
+          }
+        ],
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://siskiyouhealthcenter.com",
+            "span": "Grants Pass Clinic (541) 472-4777",
+            "observedAt": "2026-10-25T19:32:15.958Z"
+          }
+        ],
+        "access": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://siskiyouhealthcenter.com",
+            "span": "24 hours a day, 7 days a week",
+            "observedAt": "2026-10-25T19:32:15.958Z"
+          }
+        ],
+        "address": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://siskiyouhealthcenter.com",
+            "span": "1701 NW Hawthorne Ave",
+            "observedAt": "2026-10-25T19:32:15.958Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://siskiyouhealthcenter.com",
+            "span": "Siskiyou Community Health Center is proud to offer primary medical care for the entire family.",
+            "observedAt": "2026-10-25T19:32:15.958Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "siskiyou-community-health-center-cave-junction-clinic",
+      "name": "Cave Junction Clinic",
+      "provider": "Siskiyou Community Health Center",
+      "categories": [
+        "health"
+      ],
+      "area": "Josephine County / Grants Pass",
+      "coverage": [
+        "Josephine County / Grants Pass"
+      ],
+      "description": "Cave Junction Clinic from Siskiyou Community Health Center, as described on siskiyouhealthcenter.com. Confirm before visiting.",
+      "address": "25647 Redwood Hwy, Cave Junction, OR 97523",
+      "schedule": "Not confirmed",
+      "access": "You can contact the clinic 24 hours a day, 7 days a week. For medical emergencies, dial 911.",
+      "requirements": "Not confirmed",
+      "cost": "Serves patients with private insurance, Medicaid or Medicare, and patients without insurance.",
+      "phone": "(541) 592-4111",
+      "source": "https://siskiyouhealthcenter.com",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from siskiyouhealthcenter.com",
+      "provenance": {
+        "cost": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://siskiyouhealthcenter.com",
+            "span": "Siskiyou Community Health Center provides services for patients with private insurance, Medicaid, Medicare, and for those who are uninsured.",
+            "observedAt": "2026-10-25T19:32:15.958Z"
+          }
+        ],
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://siskiyouhealthcenter.com",
+            "span": "Cave Junction Clinic (541) 592-4111",
+            "observedAt": "2026-10-25T19:32:15.958Z"
+          }
+        ],
+        "access": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://siskiyouhealthcenter.com",
+            "span": "24 hours a day, 7 days a week",
+            "observedAt": "2026-10-25T19:32:15.958Z"
+          }
+        ],
+        "address": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://siskiyouhealthcenter.com",
+            "span": "25647 Redwood Hwy",
+            "observedAt": "2026-10-25T19:32:15.958Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://siskiyouhealthcenter.com",
+            "span": "Siskiyou Community Health Center is proud to offer primary medical care for the entire family.",
+            "observedAt": "2026-10-25T19:32:15.958Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "lines-for-life-988-suicide-crisis-lifeline",
+      "name": "988 Suicide & Crisis Lifeline",
+      "provider": "Lines for Life",
+      "categories": [
+        "health"
+      ],
+      "area": "Oregon statewide",
+      "coverage": [
+        "Oregon statewide"
+      ],
+      "description": "988 Suicide & Crisis Lifeline from Lines for Life, as described on linesforlife.org. Confirm before visiting.",
+      "address": "Not confirmed",
+      "schedule": "24/7",
+      "access": "Call or text 988 for mental health support by phone, text or chat.",
+      "requirements": "Not confirmed",
+      "cost": "Free and confidential",
+      "phone": "988",
+      "source": "https://www.linesforlife.org/",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from linesforlife.org",
+      "provenance": {
+        "cost": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.linesforlife.org/",
+            "span": "Free, Confidential Support 24/7",
+            "observedAt": "2026-10-25T19:46:45.812Z"
+          }
+        ],
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.linesforlife.org/",
+            "span": "Get Help: Call or Text 988",
+            "observedAt": "2026-10-25T19:46:45.812Z"
+          }
+        ],
+        "access": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.linesforlife.org/",
+            "span": "Get Help: Call or Text 988",
+            "observedAt": "2026-10-25T19:46:45.812Z"
+          }
+        ],
+        "schedule": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.linesforlife.org/",
+            "span": "We’re here to listen and help you get through today with free, 24/7 mental health support over phone, text, or chat.",
+            "observedAt": "2026-10-25T19:46:45.812Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.linesforlife.org/",
+            "span": "We’re here to listen and help you get through today with free, 24/7 mental health support over phone, text, or chat.",
+            "observedAt": "2026-10-25T19:46:45.812Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "youthline-lines-for-life-youthline",
+      "name": "YouthLine",
+      "provider": "YouthLine (Lines for Life)",
+      "categories": [
+        "health"
+      ],
+      "area": "Oregon statewide",
+      "coverage": [
+        "Oregon statewide"
+      ],
+      "description": "YouthLine from YouthLine (Lines for Life), as described on linesforlife.org. Confirm before visiting.",
+      "address": "Not confirmed",
+      "schedule": "Teen volunteers answer every day from 4 to 10 p.m. Pacific Time. Adults answer at all other hours.",
+      "access": "Call, or text teen2teen to 839863. Chat is also available.",
+      "requirements": "Anyone 24 or younger",
+      "cost": "Not confirmed",
+      "phone": "1-877-968-8491",
+      "source": "https://www.linesforlife.org/get-help-now/services-and-crisis-lines/",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from linesforlife.org",
+      "unconfirmed": true,
+      "provenance": {
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.linesforlife.org/get-help-now/services-and-crisis-lines/",
+            "span": "1-877-968-8491",
+            "observedAt": "2026-10-25T19:44:46.481Z"
+          }
+        ],
+        "access": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.linesforlife.org/get-help-now/services-and-crisis-lines/",
+            "span": "or text teen2teen to 839863",
+            "observedAt": "2026-10-25T19:44:46.481Z"
+          }
+        ],
+        "schedule": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.linesforlife.org/get-help-now/services-and-crisis-lines/",
+            "span": "Trained teen volunteers are available to help between 4 p.m. and 10 p.m. Pacific Time. Calls are answered by adults at all other hours.",
+            "observedAt": "2026-10-25T19:44:46.481Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.linesforlife.org/get-help-now/services-and-crisis-lines/",
+            "span": "YouthLine is a teen-to-teen helpline which answers calls, texts, and chats from anyone 24 or under.",
+            "observedAt": "2026-10-25T19:44:46.481Z"
+          }
+        ],
+        "requirements": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.linesforlife.org/get-help-now/services-and-crisis-lines/",
+            "span": "anyone 24 or under",
+            "observedAt": "2026-10-25T19:44:46.481Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "youthline-lines-for-life-ayuda-en-espan-ol",
+      "name": "Ayuda En Español",
+      "provider": "YouthLine (Lines for Life)",
+      "categories": [
+        "health"
+      ],
+      "area": "Oregon statewide",
+      "coverage": [
+        "Oregon statewide"
+      ],
+      "description": "Ayuda En Español from YouthLine (Lines for Life), as described on linesforlife.org. Confirm before visiting.",
+      "address": "Not confirmed",
+      "schedule": "24/7",
+      "access": "Help in Spanish; you do not need to speak English",
+      "requirements": "Not confirmed",
+      "cost": "Free",
+      "phone": "1-888-628-9454",
+      "source": "https://www.linesforlife.org/get-help-now/services-and-crisis-lines/",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from linesforlife.org",
+      "unconfirmed": true,
+      "provenance": {
+        "cost": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.linesforlife.org/get-help-now/services-and-crisis-lines/",
+            "span": "gratuito servicios en español",
+            "observedAt": "2026-10-25T19:44:46.481Z"
+          }
+        ],
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.linesforlife.org/get-help-now/services-and-crisis-lines/",
+            "span": "1-888-628-9454",
+            "observedAt": "2026-10-25T19:44:46.481Z"
+          }
+        ],
+        "access": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.linesforlife.org/get-help-now/services-and-crisis-lines/",
+            "span": "no es necesario hablar ingles si usted necesita ayuda.",
+            "observedAt": "2026-10-25T19:44:46.481Z"
+          }
+        ],
+        "schedule": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.linesforlife.org/get-help-now/services-and-crisis-lines/",
+            "span": "Lifeline ofrece 24/7",
+            "observedAt": "2026-10-25T19:44:46.481Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.linesforlife.org/get-help-now/services-and-crisis-lines/",
+            "span": "Lifeline ofrece 24/7, gratuito servicios en español, no es necesario hablar ingles si usted necesita ayuda.",
+            "observedAt": "2026-10-25T19:44:46.481Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "youthline-lines-for-life-alcohol-drug-helpline",
+      "name": "Alcohol & Drug Helpline",
+      "provider": "YouthLine (Lines for Life)",
+      "categories": [
+        "health"
+      ],
+      "area": "Oregon statewide",
+      "coverage": [
+        "Oregon statewide"
+      ],
+      "description": "Alcohol & Drug Helpline from YouthLine (Lines for Life), as described on linesforlife.org. Confirm before visiting.",
+      "address": "Not confirmed",
+      "schedule": "24/7",
+      "access": "Gives referrals for treatment and counseling services",
+      "requirements": "For anyone using substances or dealing with addiction, or someone who knows a person who is",
+      "cost": "Not confirmed",
+      "phone": "1-800-923-4357",
+      "source": "https://www.linesforlife.org/get-help-now/services-and-crisis-lines/",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from linesforlife.org",
+      "unconfirmed": true,
+      "provenance": {
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.linesforlife.org/get-help-now/services-and-crisis-lines/",
+            "span": "1-800-923-4357",
+            "observedAt": "2026-10-25T19:44:46.481Z"
+          }
+        ],
+        "access": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.linesforlife.org/get-help-now/services-and-crisis-lines/",
+            "span": "Lines for Life provides referrals for treatment and counseling services, and can help you access providers that match your needs.",
+            "observedAt": "2026-10-25T19:44:46.481Z"
+          }
+        ],
+        "schedule": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.linesforlife.org/get-help-now/services-and-crisis-lines/",
+            "span": "Learn more about the Alcohol & Drug Helpline – available 24/7",
+            "observedAt": "2026-10-25T19:44:46.481Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.linesforlife.org/get-help-now/services-and-crisis-lines/",
+            "span": "Get Help for Alcohol & Drug Use",
+            "observedAt": "2026-10-25T19:44:46.481Z"
+          }
+        ],
+        "requirements": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.linesforlife.org/get-help-now/services-and-crisis-lines/",
+            "span": "If you or someone you know is using substances or dealing with addiction",
+            "observedAt": "2026-10-25T19:44:46.481Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "youthline-lines-for-life-the-oregon-hopeline",
+      "name": "The Oregon Hopeline",
+      "provider": "YouthLine (Lines for Life)",
+      "categories": [
+        "health"
+      ],
+      "area": "Oregon statewide",
+      "coverage": [
+        "Oregon statewide"
+      ],
+      "description": "The Oregon Hopeline from YouthLine (Lines for Life), as described on linesforlife.org. Confirm before visiting.",
+      "address": "Not confirmed",
+      "schedule": "24/7",
+      "access": "They listen and connect you with services that fit your needs",
+      "requirements": "Anyone struggling with substance use, and the people who care about them",
+      "cost": "Not confirmed",
+      "phone": "1-833-975-0505",
+      "source": "https://www.linesforlife.org/get-help-now/services-and-crisis-lines/",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from linesforlife.org",
+      "unconfirmed": true,
+      "provenance": {
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.linesforlife.org/get-help-now/services-and-crisis-lines/",
+            "span": "1-833-975-0505",
+            "observedAt": "2026-10-25T19:44:46.481Z"
+          }
+        ],
+        "access": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.linesforlife.org/get-help-now/services-and-crisis-lines/",
+            "span": "connect you with services that meet your needs",
+            "observedAt": "2026-10-25T19:44:46.481Z"
+          }
+        ],
+        "schedule": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.linesforlife.org/get-help-now/services-and-crisis-lines/",
+            "span": "We’re here 24/7",
+            "observedAt": "2026-10-25T19:44:46.481Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.linesforlife.org/get-help-now/services-and-crisis-lines/",
+            "span": "compassionate, judgment-free support for anyone struggling with substance use",
+            "observedAt": "2026-10-25T19:44:46.481Z"
+          }
+        ],
+        "requirements": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.linesforlife.org/get-help-now/services-and-crisis-lines/",
+            "span": "for anyone struggling with substance use — and for the people who care about them",
+            "observedAt": "2026-10-25T19:44:46.481Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "david-romprey-oregon-warmline-oregon-warmline",
+      "name": "Oregon Warmline",
+      "provider": "David Romprey Oregon Warmline",
+      "categories": [
+        "health"
+      ],
+      "area": "Oregon statewide",
+      "coverage": [
+        "Oregon statewide"
+      ],
+      "description": "Oregon Warmline from David Romprey Oregon Warmline, as described on oregon.gov. Confirm before visiting.",
+      "address": "Not confirmed",
+      "schedule": "Every day",
+      "access": "Call (800) 698-2392 for confidential, nonjudgmental peer support.",
+      "requirements": "Not confirmed",
+      "cost": "Not confirmed",
+      "phone": "(800) 698-2392",
+      "source": "https://www.oregon.gov/oya/Pages/OregonResources.aspx",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from oregon.gov",
+      "unconfirmed": true,
+      "provenance": {
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.oregon.gov/oya/Pages/OregonResources.aspx",
+            "span": "Call: (800) 698-2392",
+            "observedAt": "2026-10-25T19:13:27.599Z"
+          }
+        ],
+        "access": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.oregon.gov/oya/Pages/OregonResources.aspx",
+            "span": "Nonjudgmental and confidential peer support every day.\nCall: (800) 698-2392",
+            "observedAt": "2026-10-25T19:13:27.599Z"
+          }
+        ],
+        "schedule": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.oregon.gov/oya/Pages/OregonResources.aspx",
+            "span": "Nonjudgmental and confidential peer support every day.",
+            "observedAt": "2026-10-25T19:13:27.599Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.oregon.gov/oya/Pages/OregonResources.aspx",
+            "span": "Nonjudgmental and confidential peer support every day.",
+            "observedAt": "2026-10-25T19:13:27.599Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "david-romprey-oregon-warmline-oregon-warmline-linea-de-esper",
+      "name": "Oregon Warmline / Linea de Esperanza",
+      "provider": "David Romprey Oregon Warmline",
+      "categories": [
+        "health"
+      ],
+      "area": "Oregon statewide",
+      "coverage": [
+        "Oregon statewide"
+      ],
+      "description": "Oregon Warmline / Linea de Esperanza from David Romprey Oregon Warmline, as described on gethelp.211info.org. Confirm before visiting.",
+      "address": "550 W Sperry Street, Heppner, OR 97836 (agency address; the service is by phone and covers the whole State of Oregon)",
+      "schedule": "24 hours a day, 7 days a week",
+      "access": "Peer support by phone. Call the warmline. If you ask for a callback, confirm your phone number and a peer usually calls back within 5-55 minutes. Calls are confidential. Available in English and Spanish.",
+      "requirements": "Open to anyone. No documents needed.",
+      "cost": "Free",
+      "phone": "(800) 698-2392",
+      "source": "https://gethelp.211info.org/agency/5922/4282",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from gethelp.211info.org",
+      "unconfirmed": true,
+      "provenance": {
+        "cost": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://gethelp.211info.org/agency/5922/4282",
+            "span": "FEES:\nNone",
+            "observedAt": "2026-10-25T19:13:12.838Z"
+          }
+        ],
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://gethelp.211info.org/agency/5922/4282",
+            "span": "Warmline (800) 698-2392",
+            "observedAt": "2026-10-25T19:13:12.838Z"
+          }
+        ],
+        "access": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://gethelp.211info.org/agency/5922/4282",
+            "span": "To request a callback,\nconfirm the phone number, and a peer will usually respond within\n5-55 minutes.",
+            "observedAt": "2026-10-25T19:13:12.838Z"
+          }
+        ],
+        "address": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://gethelp.211info.org/agency/5922/4282",
+            "span": "550 W Sperry Street\nHeppner, OR 97836",
+            "observedAt": "2026-10-25T19:13:12.838Z"
+          }
+        ],
+        "schedule": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://gethelp.211info.org/agency/5922/4282",
+            "span": "24 hours per day / 7 days per week",
+            "observedAt": "2026-10-25T19:13:12.838Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://gethelp.211info.org/agency/5922/4282",
+            "span": "Offers a telephone peer support service. Trained peers have both\nmental health and addiction recovery experience to emotionally\nsupport callers. All calls are confidential.",
+            "observedAt": "2026-10-25T19:13:12.838Z"
+          }
+        ],
+        "requirements": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://gethelp.211info.org/agency/5922/4282",
+            "span": "Eligibility:\nUnrestricted",
+            "observedAt": "2026-10-25T19:13:12.838Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "community-works-24-7-helpline",
+      "name": "24/7 HelpLine",
+      "provider": "Community Works",
+      "categories": [
+        "housing"
+      ],
+      "area": "Jackson County",
+      "coverage": [
+        "Jackson County"
+      ],
+      "description": "24/7 HelpLine from Community Works, as described on community-works.org. Confirm before visiting.",
+      "address": "Location not published. Call the provider.",
+      "schedule": "24 hours a day, 7 days a week",
+      "access": "Call the free, confidential HelpLine any time to speak with a professional advocate. Spanish is spoken, and free interpreters are available in over 200 languages, including ASL.",
+      "requirements": "For survivors of domestic and sexual violence, stalking, and trafficking",
+      "cost": "Free and confidential",
+      "phone": "(541) 779-4357",
+      "source": "https://www.community-works.org/",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from community-works.org",
+      "provenance": {
+        "cost": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.community-works.org/",
+            "span": "Our services are free, confidential, and available",
+            "observedAt": "2026-10-25T19:21:06.390Z"
+          }
+        ],
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.community-works.org/",
+            "span": "HelpLine (541) 779-4357",
+            "observedAt": "2026-10-25T19:21:06.390Z"
+          }
+        ],
+        "access": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.community-works.org/",
+            "span": "Call our free & confidential HelpLine, 24/7, at 541.779.4357, to speak to a professional advocate.",
+            "observedAt": "2026-10-25T19:21:06.390Z"
+          }
+        ],
+        "schedule": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.community-works.org/",
+            "span": "24 hours a day, 7 days a week.",
+            "observedAt": "2026-10-25T19:21:06.390Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.community-works.org/",
+            "span": "For survivors of domestic and sexual violence, stalking, and trafficking, we provide more than shelter—we offer safety, dignity, and a path toward healing.",
+            "observedAt": "2026-10-25T19:21:06.390Z"
+          }
+        ],
+        "requirements": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.community-works.org/",
+            "span": "For survivors of domestic and sexual violence, stalking, and trafficking",
+            "observedAt": "2026-10-25T19:21:06.390Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "continuum-behavioral-health-recovery-services-outpatient-ser",
+      "name": "Outpatient Services (Medford)",
+      "provider": "Continuum Behavioral Health & Recovery Services",
+      "categories": [
+        "health"
+      ],
+      "area": "Rogue Valley",
+      "coverage": [
+        "Rogue Valley"
+      ],
+      "description": "Outpatient Services (Medford) from Continuum Behavioral Health & Recovery Services, as described on ontrackroguevalley.org. Confirm before visiting.",
+      "address": "300 W. Main Street, Medford, Oregon 97501",
+      "schedule": "Mon-Thurs 8:00 am - 7:00 pm; Fri-Sat 8:00 am - 5:00 pm; UA testing during the same hours",
+      "access": "Walk-ins welcome Mon-Fri starting 8:00 am",
+      "requirements": "Not confirmed",
+      "cost": "Not confirmed",
+      "phone": "(541) 772-1777",
+      "source": "https://ontrackroguevalley.org/contact/",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from ontrackroguevalley.org",
+      "provenance": {
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://ontrackroguevalley.org/contact/",
+            "span": "Office: (541) 772-1777",
+            "observedAt": "2026-10-25T19:29:22.596Z"
+          }
+        ],
+        "access": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://ontrackroguevalley.org/contact/",
+            "span": "Walk-ins Welcome, Mon-Fri: 8:00 am",
+            "observedAt": "2026-10-25T19:29:22.596Z"
+          }
+        ],
+        "address": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://ontrackroguevalley.org/contact/",
+            "span": "300 W. Main Street\nMedford, Oregon 97501",
+            "observedAt": "2026-10-25T19:29:22.596Z"
+          }
+        ],
+        "schedule": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://ontrackroguevalley.org/contact/",
+            "span": "Mon-Thurs: 8:00 am - 7:00 pm\nFri-Sat: 8:00 am - 5:00 pm\nUA Testing: same hours as above.",
+            "observedAt": "2026-10-25T19:29:22.596Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://ontrackroguevalley.org/contact/",
+            "span": "OUTPATIENT SERVICES",
+            "observedAt": "2026-10-25T19:29:22.596Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "mid-rogue-foundation-mobile-navigation-program",
+      "name": "Mobile Navigation Program",
+      "provider": "Mid Rogue Foundation",
+      "categories": [
+        "housing",
+        "essentials"
+      ],
+      "area": "Josephine County / Grants Pass",
+      "coverage": [
+        "Josephine County / Grants Pass"
+      ],
+      "description": "Mobile Navigation Program from Mid Rogue Foundation, as described on 211info.org. Confirm before visiting.",
+      "address": "The address is confidential. Mobile Navigators meet people in public places.",
+      "schedule": "Monday to Friday, 8:30am to 4:30pm",
+      "access": "Call or email for more information. Mobile Navigators meet you in a public place that works best for you.",
+      "requirements": "Open to everyone. The page lists the area served as Josephine County.",
+      "cost": "Free",
+      "phone": "(541) 295-5706",
+      "source": "https://www.211info.org/agency/28225/24413",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from 211info.org",
+      "unconfirmed": true,
+      "provenance": {
+        "cost": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.211info.org/agency/28225/24413",
+            "span": "FEES:\nNone",
+            "observedAt": "2026-10-25T19:11:57.607Z"
+          }
+        ],
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.211info.org/agency/28225/24413",
+            "span": "(541) 295-5706",
+            "observedAt": "2026-10-25T19:11:57.607Z"
+          }
+        ],
+        "access": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.211info.org/agency/28225/24413",
+            "span": "Mobile Navigators meet clients in public spaces that work best for the\nclient.",
+            "observedAt": "2026-10-25T19:11:57.607Z"
+          }
+        ],
+        "address": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.211info.org/agency/28225/24413",
+            "span": "Confidential Address",
+            "observedAt": "2026-10-25T19:11:57.607Z"
+          }
+        ],
+        "schedule": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.211info.org/agency/28225/24413",
+            "span": "Monday-Friday 8:30am-4:30pm",
+            "observedAt": "2026-10-25T19:11:57.607Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.211info.org/agency/28225/24413",
+            "span": "Provides outreach assistance with housing and job search help,\nidentification assistance (ID and Social Security cards),",
+            "observedAt": "2026-10-25T19:11:57.607Z"
+          }
+        ],
+        "requirements": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.211info.org/agency/28225/24413",
+            "span": "Eligibility:\nUnrestricted",
+            "observedAt": "2026-10-25T19:11:57.607Z"
+          }
+        ],
+        "hours": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.211info.org/agency/28225/24413",
+            "span": "Monday to Friday, 8:30am to 4:30pm",
+            "observedAt": "2026-10-25T22:50:27.574Z"
+          }
+        ],
+        "openings": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://www.211info.org/agency/28225/24413",
+            "span": "Monday to Friday, 8:30am to 4:30pm",
+            "observedAt": "2026-10-25T22:50:27.574Z"
+          }
+        ]
+      },
+      "hours": {
+        "timeZone": "America/Los_Angeles",
+        "textAsPrinted": "Monday to Friday, 8:30am to 4:30pm",
+        "rules": [
+          {
+            "days": [
+              "mon",
+              "tue",
+              "wed",
+              "thu",
+              "fri"
+            ],
+            "weeks": "every",
+            "start": "08:30",
+            "end": "16:30"
+          }
+        ],
+        "include": [],
+        "exclude": [],
+        "conditions": []
+      },
+      "openings": [
+        {
+          "startsAt": "2026-10-26T08:30:00-07:00",
+          "endsAt": "2026-10-26T16:30:00-07:00"
+        },
+        {
+          "startsAt": "2026-10-27T08:30:00-07:00",
+          "endsAt": "2026-10-27T16:30:00-07:00"
+        },
+        {
+          "startsAt": "2026-10-28T08:30:00-07:00",
+          "endsAt": "2026-10-28T16:30:00-07:00"
+        },
+        {
+          "startsAt": "2026-10-29T08:30:00-07:00",
+          "endsAt": "2026-10-29T16:30:00-07:00"
+        },
+        {
+          "startsAt": "2026-10-30T08:30:00-07:00",
+          "endsAt": "2026-10-30T16:30:00-07:00"
+        }
+      ]
+    },
+    {
+      "id": "southern-oregon-head-start-southern-oregon-child-and-family",
+      "name": "Head Start",
+      "provider": "Southern Oregon Head Start (Southern Oregon Child and Family Council)",
+      "categories": [
+        "health",
+        "food"
+      ],
+      "area": "Rogue Valley",
+      "coverage": [
+        "Rogue Valley"
+      ],
+      "description": "Head Start from Southern Oregon Head Start (Southern Oregon Child and Family Council), as described on gethelp.211info.org. Confirm before visiting.",
+      "address": "1001 Beall Lane, Central Point, OR 97502. Head Start also has sites in Ashland, Cave Junction, Central Point, Eagle Point, Grants Pass, Medford, Phoenix, and White City.",
+      "schedule": "Office hours are Monday to Friday, 8am to 5pm. Class hours are different at each location.",
+      "access": "You can walk in, call, or visit the website for more information. Email is the preferred way to contact them.",
+      "requirements": "For families with children ages 3 to 5. Families with incomes at or below 100% of the federal poverty level qualify. Children in foster care, homeless children, and children from families on TANF, SNAP, or SSI qualify whatever their income. Some higher-income families with specific needs may also qualify.",
+      "cost": "Free",
+      "phone": "(541) 734-5150",
+      "source": "https://gethelp.211info.org/agency/11141/8335",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from gethelp.211info.org",
+      "unconfirmed": true,
+      "provenance": {
+        "cost": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://gethelp.211info.org/agency/11141/8335",
+            "span": "FEES:\nNone",
+            "observedAt": "2026-10-25T19:18:30.349Z"
+          }
+        ],
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://gethelp.211info.org/agency/11141/8335",
+            "span": "Main phone (541) 734-5150",
+            "observedAt": "2026-10-25T19:18:30.349Z"
+          }
+        ],
+        "access": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://gethelp.211info.org/agency/11141/8335",
+            "span": "Walk in, call, or visit website for more information",
+            "observedAt": "2026-10-25T19:18:30.349Z"
+          }
+        ],
+        "address": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://gethelp.211info.org/agency/11141/8335",
+            "span": "1001 Beall Lane\nCentral Point, OR 97502",
+            "observedAt": "2026-10-25T19:18:30.349Z"
+          }
+        ],
+        "schedule": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://gethelp.211info.org/agency/11141/8335",
+            "span": "Office hours: Monday-Friday 8am-5pm\nClass hours vary by location",
+            "observedAt": "2026-10-25T19:18:30.349Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://gethelp.211info.org/agency/11141/8335",
+            "span": "providing educational, health,\nnutritional, social, and other services to children and families",
+            "observedAt": "2026-10-25T19:18:30.349Z"
+          }
+        ],
+        "requirements": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://gethelp.211info.org/agency/11141/8335",
+            "span": "Families with children ages 3-5. Families with incomes at or below\n100% FPL are eligible. Children in foster care, homeless children,\nand children from families receiving public assistance (Temporary\nAssistance for Needy Families (TANF), SNAP, or Supplemental\nSecurity Income (SSI)) are eligible regardless of income.",
+            "observedAt": "2026-10-25T19:18:30.349Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "mid-rogue-foundation-mobile-navigation-program-2",
+      "name": "Mobile Navigation Program",
+      "provider": "Mid Rogue Foundation",
+      "categories": [
+        "housing",
+        "essentials"
+      ],
+      "area": "Josephine County / Grants Pass",
+      "coverage": [
+        "Josephine County / Grants Pass"
+      ],
+      "description": "Mobile Navigation Program from Mid Rogue Foundation, as described on 211info.org. Confirm before visiting.",
+      "address": "Mailing address only: PO Box 1972, Grants Pass, OR 97528. Navigators meet you in public places.",
+      "schedule": "Monday to Friday, 8:30am to 4:30pm",
+      "access": "Mobile navigators come to meet you in a public place that works best for you.",
+      "requirements": "Open to everyone",
+      "cost": "Not confirmed",
+      "phone": "(541) 295-5706",
+      "source": "https://211info.org/get-help/housing-shelter/housing-search-assistance-homelessness-issues",
+      "tags": [],
+      "reviewedDate": "2026-10-25",
+      "verification": "Source reviewed",
+      "providerConfirmedAt": null,
+      "capacity": "Unknown",
+      "accessibility": "Not confirmed. Ask the provider about your access needs.",
+      "provenanceLabel": "Added by Daily Help from 211info.org",
+      "unconfirmed": true,
+      "provenance": {
+        "phone": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://211info.org/get-help/housing-shelter/housing-search-assistance-homelessness-issues",
+            "span": "(541) 295-5706",
+            "observedAt": "2026-10-25T19:12:09.354Z"
+          }
+        ],
+        "access": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://211info.org/get-help/housing-shelter/housing-search-assistance-homelessness-issues",
+            "span": "Mobile\nNavigators meet clients in public spaces that work best for the\nclient.",
+            "observedAt": "2026-10-25T19:12:09.354Z"
+          }
+        ],
+        "address": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://211info.org/get-help/housing-shelter/housing-search-assistance-homelessness-issues",
+            "span": "PO Box 1972\nGrants Pass, OR 97528",
+            "observedAt": "2026-10-25T19:12:09.354Z"
+          }
+        ],
+        "schedule": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://211info.org/get-help/housing-shelter/housing-search-assistance-homelessness-issues",
+            "span": "Monday-Friday 8:30am-4:30pm",
+            "observedAt": "2026-10-25T19:12:09.354Z"
+          }
+        ],
+        "categories": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://211info.org/get-help/housing-shelter/housing-search-assistance-homelessness-issues",
+            "span": "Provides outreach assistance with housing and job search help,\nidentification assistance (ID and Social Security cards),\nreplacement birth certificate help with application and fee,\ngeneral mail delivery, credit report requests, and SNAP and OHP\napplication assistance.",
+            "observedAt": "2026-10-25T19:12:09.354Z"
+          }
+        ],
+        "requirements": [
+          {
+            "sourceType": "website",
+            "sourceRef": "https://211info.org/get-help/housing-shelter/housing-search-assistance-homelessness-issues",
+            "span": "Eligibility:\nUnrestricted",
+            "observedAt": "2026-10-25T19:12:09.354Z"
+          }
+        ]
+      }
+    }
+  ]
+}

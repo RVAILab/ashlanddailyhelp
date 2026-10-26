@@ -16,6 +16,5 @@ for (const path of ['/', '/no-such-page']) {
     const response = await page.goto(path)
     expect(response?.status()).toBe(path === '/' ? 200 : 404)
     await expect(page.getByRole('contentinfo')).toContainText(/Listings as of \w{3}, \w{3} \d+, \d{4}/)
-    await expect(page.getByRole('contentinfo')).toContainText('This is demonstration data.')
   })
 }

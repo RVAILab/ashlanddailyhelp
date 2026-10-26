@@ -18,7 +18,7 @@ node --input-type=module -e "import { filterResources } from './legacy/core.js';
 
 ## The steward's feed
 
-The site reads the steward's feed (`listings.json`, `pulse.json`; contract in the steward's `docs/FEED.md`) from `FEED_BASE` in `app.js` (default `./feed/`, overridable with `<meta name="feed-base">`). With no valid feed it falls back to the bundled `data.js` and the built-in sample week. Feed checks live in `core.js` (`checkListingsFeed`, `checkPulseFeed`). The service worker caches `listings.json` but never `pulse.json`. "Sample"/"fictional" copy is tagged `data-demo` / `data-live` in `index.html` (or passed through `plain()` in `app.js`) and follows `pulse.json`'s `dataset`. See the README's "With the steward feed". Keep field names and enum values in `data.js` and `core.js` aligned with the steward's contract; when you change them here, flag that the steward needs the same change.
+The site reads the steward's feed (`listings.json`, `pulse.json`; contract in the steward's `docs/FEED.md`) from `FEED_BASE` in `app.js` (default `./feed/`, overridable with `<meta name="feed-base">`). With no valid feed it falls back to the bundled `data.js` and the built-in sample week. Feed checks live in `core.js` (`checkListingsFeed`, `checkPulseFeed`). The service worker caches `listings.json` but never `pulse.json`. "Sample"/"fictional" copy is tagged `data-demo` / `data-live` in `index.html` (or passed through `plain()` in `app.js`) and follows `pulse.json`'s `dataset`. See "With the steward feed" in `README.md` here. Keep field names and enum values in `data.js` and `core.js` aligned with the steward's contract; when you change them here, flag that the steward needs the same change.
 
 ## Scripts
 

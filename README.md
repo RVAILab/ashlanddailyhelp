@@ -5,7 +5,7 @@ A community resource hub for Ashland and Jackson County, Oregon: food, showers, 
 This repo holds two things:
 
 - **The new app** (repo root): a full-stack TypeScript app on Cloudflare Workers, with React rendered on the server and Postgres. It reads curated data from the steward and serves it to the public. Its user stories are in [`user-stories/`](user-stories/).
-- **The static site** ([`legacy/`](legacy/)): the original installable, offline-capable site built at Rogue Raise. It stays live until the new app replaces it.
+- **The static site** ([`legacy/`](legacy/)): the original installable, offline-capable site built at Rogue Raise. It stays live until the new app replaces it. See [`legacy/README.md`](legacy/README.md).
 
 ## Origin
 
@@ -104,43 +104,6 @@ GitHub Actions (`.github/workflows/deploy.yml`) runs lint, type checks, tests an
 - the new app to the `ashlanddailyhelp-app` Worker, once `DATABASE_URL` is set. The app serves the live domain, ashlanddailyhelp.com and www (custom domains in `wrangler.jsonc`), and also <https://ashlanddailyhelp-app.kitchenlab.workers.dev>.
 
  The workflow needs the repository secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`, and `DATABASE_URL` for the app's migrations. Only `main` deploys, including manual runs.
-
-## The static site
-
-The static site in `legacy/` is plain HTML, CSS and ES modules with no build step or dependencies. Serve the folder over HTTP (the service worker needs `http(s):`, not `file:`):
-
-```sh
-python3 -m http.server 8000 --directory legacy
-```
-
-### With the steward feed
-
-The site reads listings and Community Pulse from the steward's `listings.json` and `pulse.json`. Their location is the `FEED_BASE` constant at the top of `legacy/app.js`, defaulting to `./feed/`. To point at another host without editing code, add `<meta name="feed-base" content="https://feed.example.org/">` to `legacy/index.html`.
-
-With no feed, the site uses `legacy/data.js` and the built-in fictional sample week. No feed is committed (`feed/` is ignored). To try it locally, either:
-
-- copy the steward's sample feed into `legacy/feed/` and serve the site:
-
-  ```sh
-  mkdir -p legacy/feed && cp ../daily-help-steward/fixtures/feed-sample/*.json legacy/feed/
-  python3 -m http.server 8000 --directory legacy
-  ```
-
-- or run the steward's reference feed server (`npm run steward -- serve` in `../daily-help-steward`) and set the `feed-base` meta tag to its URL.
-
-How it behaves:
-
-- **Find help** loads `listings.json` at startup: network first, then the copy cached on this device, then `data.js`. The service worker keeps the last good copy for offline use. The directory footer shows "Listings as of" the feed's `generatedAt`. Invalid JSON, a failed check or an unknown major version counts as a failed fetch.
-- **Listing labels** come from the feed: `provenanceLabel`, `unconfirmed`, `mayBeCanceled`, `conflict` and `endsAt` (shown as an end time; the listing hides once it has passed).
-- **Community Pulse** fetches `pulse.json` once at startup and every 30 seconds while Pulse is open and the tab is visible, with `If-None-Match` when the server sends an ETag. On errors it keeps what's on screen, marks it "Last updated", and backs off. `pulse.json` is never cached for offline use.
-- **Sample wording** follows `pulse.json`'s `dataset`: `FICTIONAL_DEMONSTRATION` keeps every "sample" and "fictional" label; `LIVE` removes them, and the CSV download carries the real label.
-
-### Static site deploys
-
-- Files are served as committed. `legacy/.assetsignore` keeps `feed/`, Markdown, dotfiles and the deploy files out of the upload.
-- Cloudflare sends `Cache-Control: public, max-age=0, must-revalidate` with an ETag for every file, so browsers check for updates on each visit. Returning visitors still pick up new shell files only when the cache name in `legacy/sw.js` changes.
-- `legacy/worker.js` serves `/index.html` directly (Cloudflare would otherwise redirect it to `/`, which breaks the offline copy `sw.js` keeps). Every other path comes straight from the static files.
-- To deploy by hand: `npx wrangler deploy -c legacy/wrangler.jsonc` (log in first with `npx wrangler login`).
 
 ## Data and accuracy
 

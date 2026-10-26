@@ -2,6 +2,9 @@ import type { Messages } from './en.ts'
 
 // Needs review by a native Spanish speaker before launch (story 29-spanish-pass). Formal "usted", plain everyday words,
 // Mexican Spanish ("regadera"), and the glossary in server/translate/claude.ts.
+// "a la 1:00", "a las 5:00": the article follows the hour.
+const las = (time: string) => `${/^1:/.test(time) ? 'la' : 'las'} ${time}`
+
 export const es = {
   siteName: 'Ashland Daily Help',
   language: { name: 'Español', switchTo: 'English' },
@@ -17,11 +20,11 @@ export const es = {
       crisis: 'Línea de Crisis de Salud Mental',
       services: 'Ayuda para encontrar servicios',
     },
-    eyebrow: 'Ashland, Oregon · Aquí para apoyarnos',
+    eyebrow: 'Ashland, Oregon · Aquí nos apoyamos unos a otros',
     hero: { first: 'Un poco de ayuda.', second: 'Toda una', emphasis: 'comunidad.' },
     searchLabel: 'Buscar ayuda',
     find: 'Buscar ayuda',
-    belonging: ['Comida en la mesa.', 'Un lugar a dónde ir.', 'Una comunidad a su lado.'],
+    belonging: ['Comida en la mesa.', 'Un lugar adonde ir.', 'Una comunidad a su lado.'],
     kinds: '¿Qué necesita?',
     hints: {
       food: 'Comidas y despensas',
@@ -102,7 +105,7 @@ export const es = {
     sort: 'Ordenar por distancia desde donde estoy',
     asking: 'Buscando dónde está…',
     failed: 'No se pudo obtener su ubicación. Los resultados siguen en el orden de siempre.',
-    sorted: 'Ordenado por distancia desde donde está. Su ubicación no sale de este teléfono.',
+    sorted: 'Ordenado por distancia desde donde está. Su ubicación no sale de este dispositivo.',
     usual: 'Volver al orden de siempre',
     unsorted: 'De nuevo en el orden de siempre.',
     unknown: 'Distancia desconocida',
@@ -124,17 +127,19 @@ export const es = {
     link: 'Solo la próxima comida y el próximo lugar para dormir',
     meal: 'Próxima comida',
     sleep: 'Próximo lugar para dormir',
-    openUntil: (time: string) => `Abierto ahora, hasta ${time}`,
+    openUntil: (end: string) => `Abierto ahora, hasta ${end}`,
     starts: (start: string) => `Empieza ${start}`,
     startsUntil: (start: string, end: string) => `Empieza ${start}, hasta ${end}`,
-    startAt: (time: string, day: string | null) => (day ? `${day} a las ${time}` : `a las ${time}`),
-    endAt: (time: string, day: string | null) => (day ? `${time} del ${day}` : time),
+    startAt: (time: string, day: string | null) =>
+      day === null ? `a ${las(time)}` : day === 'mañana' ? `mañana a ${las(time)}` : `el ${day} a ${las(time)}`,
+    endAt: (time: string, day: string | null) =>
+      day === null ? las(time) : day === 'mañana' ? `${las(time)} de mañana` : `${las(time)} del ${day}`,
     tomorrow: 'mañana',
     call: (phone: string) => `Llamar al ${phone}`,
     details: 'Detalles',
     about: (name: string) => `sobre ${name}`,
     workedOut: (time: string, day: string) =>
-      `Calculado a las ${time} del ${day}. Los horarios cambian; si puede, llame antes de ir.`,
+      `Calculado el ${day} a ${las(time)}. Los horarios cambian; si puede, llame antes de ir.`,
     noMeal: 'No sabemos de ninguna comida en los próximos siete días.',
     noSleep: 'No sabemos de ningún lugar para dormir en los próximos siete días.',
     more: 'Todo lo que abre hoy',
@@ -177,7 +182,7 @@ export const es = {
     smallTotal: 'Todas las cifras de esta semana son de menos de 10, así que no se muestra ninguna.',
     totalOnly: (total: number, unit: string) => `${total} ${unit}.`,
     unmetHeading: 'Dónde faltó ayuda',
-    unmetNone: 'No se informó necesidad sin atender.',
+    unmetNone: 'Nadie informó que faltara ayuda.',
     unmet: (count: number) => (count === 1 ? '1 servicio' : `${count} servicios`),
     reasons: {
       capacity: 'No había suficiente espacio o personal',
@@ -192,9 +197,9 @@ export const es = {
   },
   chat: {
     crisis:
-      'Si usted u otra persona está en peligro, llame al 911. Para hablar con alguien ahora: 988, o la Línea de Crisis de Salud Mental al 541-774-8201.',
+      'Si usted u otra persona está en peligro, llame al 911. Para hablar con alguien ahora: 988 (marque 2 para español), o la Línea de Crisis de Salud Mental al 541-774-8201.',
     unknown:
-      'No encontré eso en el directorio de Daily Help, y no voy a adivinar. Para ayuda para encontrar servicios, llame al 211.',
+      'No encontré eso en el directorio de Daily Help, y no voy a adivinar. Si necesita ayuda para encontrar servicios, llame al 211.',
     confirm: 'Los horarios y las reglas cambian. Confirme antes de ir.',
     asOf: (time: string) => `Según la lista del ${time}.`,
   },
@@ -217,7 +222,7 @@ export const es = {
     again: 'Haga otra pregunta',
   },
   sms: {
-    help: 'Daily Help responde preguntas sobre ayuda gratis en Ashland con su directorio. Emergencia: 911. Crisis: 988 o 541-774-8201. Servicios: 211. Responda STOP para dejar de recibir mensajes.',
+    help: 'Daily Help responde preguntas sobre ayuda gratis en Ashland con su directorio. Emergencia: 911. Crisis: 988 (marque 2 para español) o 541-774-8201. Servicios: 211. Responda STOP para dejar de recibir mensajes.',
     start:
       'Puede volver a escribirle a Daily Help. Pregunte por comida, albergue, regaderas, atención médica o artículos básicos. Responda AYUDA para recibir ayuda.',
     limited: 'Son muchos mensajes en poco tiempo. Espere un minuto, o llame al 211.',
@@ -230,21 +235,21 @@ export const es = {
     use: 'Usar estos lugares',
     share: 'Abrir como lista para compartir',
     print: 'Imprimir una hoja',
-    save: 'Guardar estos en mi lista',
+    save: 'Guardar estos lugares en mi lista',
   },
   today: {
     title: 'Abierto hoy',
     link: 'Abierto ahora y más tarde hoy',
-    workedOut: (time: string) => `Calculado a las ${time}. Los horarios cambian; si puede, llame antes de ir.`,
+    workedOut: (time: string) => `Calculado a ${las(time)}. Los horarios cambian; si puede, llame antes de ir.`,
     openNow: 'Abierto ahora',
     later: 'Más tarde hoy',
     closed: 'Cerrado por el resto del día',
     notConfirmed: 'Horario no confirmado',
     notConfirmedHint:
       'Estos lugares no publican un horario que Daily Help pueda leer, o hay que verificar su horario. Vea el horario de cada uno.',
-    until: (time: string) => `Abierto hasta ${time}`,
-    opensAt: (time: string) => `Abre a las ${time}`,
-    opensFromTo: (start: string, end: string) => `Abre a las ${start}, hasta ${end}`,
+    until: (time: string) => `Abierto hasta ${las(time)}`,
+    opensAt: (time: string) => `Abre a ${las(time)}`,
+    opensFromTo: (start: string, end: string) => `Abre a ${las(start)}, hasta ${las(end)}`,
     canceled: (note: string) => (note ? `Cancelado hoy: ${note}` : 'Cancelado hoy'),
     none: 'Nada en este momento.',
     hours: (spans: string) => `Hoy: ${spans}`,
@@ -252,7 +257,8 @@ export const es = {
   events: {
     title: 'Eventos programados',
     today: 'Hoy',
-    finished: (count: number) => (count === 1 ? '1 evento más temprano hoy' : `${count} eventos más temprano hoy`),
+    finished: (count: number) =>
+      count === 1 ? '1 evento que ya terminó hoy' : `${count} eventos que ya terminaron hoy`,
     tomorrow: 'Mañana',
     thisWeek: 'Más adelante esta semana',
     none: 'No hay eventos programados para hoy.',
@@ -265,7 +271,7 @@ export const es = {
     label: 'Avisos',
     urgent: 'Urgente',
     notice: 'Aviso',
-    window: (start: string, end: string) => `Desde ${start} hasta ${end}`,
+    window: (start: string, end: string) => `Del ${start} al ${end}`,
     canceled: 'Cancelado',
     mayBeCanceled: 'Podría cancelarse',
     affects: 'Vea',
@@ -299,7 +305,7 @@ export const es = {
     remove: 'Quitar de mi lista',
     saved: 'En mi lista',
     empty: 'Todavía no ha guardado nada. Use “Agregar a mi lista” en cualquier servicio para guardarlo aquí.',
-    intro: 'Guardada solo en este aparato. El sitio de Daily Help no guarda nada de ella.',
+    intro: 'Guardada solo en este dispositivo. El sitio de Daily Help no guarda nada de ella.',
     sharedIntro: 'Alguien compartió estos servicios con usted. La información está al día.',
     missing: (count: number) =>
       count === 1
@@ -308,7 +314,7 @@ export const es = {
     share: 'Compartir esta lista',
     text: 'Enviar esta lista por mensaje',
     textBody: (url: string) => `Lugares de Ashland Daily Help: ${url}`,
-    save: 'Guardar esta lista en mi aparato',
+    save: 'Guardar esta lista en mi dispositivo',
   },
   print: {
     title: 'Hoja para imprimir',
@@ -320,7 +326,7 @@ export const es = {
     bring: 'Qué saber',
     back: 'Para lo más reciente, escanee el código o visite',
     qr: 'Código QR de esta página de Ashland Daily Help',
-    help: 'Emergencias 911 · Línea de Crisis de Salud Mental 988 o 541-774-8201 · Ayuda para encontrar servicios 211',
+    help: 'Emergencias 911 · Crisis 988 (marque 2 para español) · Línea de Crisis de Salud Mental 541-774-8201 · Ayuda para encontrar servicios 211',
   },
   detail: {
     backToSearch: 'Volver a la búsqueda',
@@ -377,8 +383,8 @@ export const es = {
     demonstration: 'Estos son datos de demostración. Algunos lugares de la lista son ficticios.',
     none: 'La lista todavía no se ha cargado.',
     offline:
-      'Está sin conexión. Estas son las copias guardadas en este aparato, con la fecha de abajo, y para buscar se necesita conexión; si puede, llame antes de ir.',
-    clearDevice: 'Borrar los datos de este aparato',
+      'Está sin conexión. Estas son las copias guardadas en este dispositivo, con la fecha de abajo, y para buscar se necesita conexión; si puede, llame antes de ir.',
+    clearDevice: 'Borrar los datos de este dispositivo',
     unavailable: 'La información no está disponible en este momento. Para encontrar ayuda, llame al',
   },
   errors: {

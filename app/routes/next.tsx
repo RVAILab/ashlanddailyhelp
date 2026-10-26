@@ -68,10 +68,12 @@ export async function loader({ url, context }: Route.LoaderArgs) {
   const lang = langFromPath(url.pathname)
   const now = new Date()
   const db = context.get(services).database()
+  // Spanish reads more easily with full names ("domingo, 25 de octubre") than abbreviations.
+  const length = lang === 'es' ? 'long' : 'short'
   const day = new Intl.DateTimeFormat(locales[lang], {
     timeZone: 'America/Los_Angeles',
-    weekday: 'short',
-    month: 'short',
+    weekday: length,
+    month: length,
     day: 'numeric',
   }).format(now)
   // A copy saved for offline says which day it was worked out, so it isn't mistaken for today's.

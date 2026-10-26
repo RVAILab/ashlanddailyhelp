@@ -14,6 +14,14 @@ const dayLabel = (lang: Lang, date: string) =>
     new Date(`${date}T12:00:00Z`),
   )
 
+// "Week of Oct 19", "Semana del 19 de octubre": the Monday's date without its weekday.
+const weekLabel = (lang: Lang, date: string) =>
+  new Intl.DateTimeFormat(locales[lang], {
+    timeZone: 'UTC',
+    month: lang === 'es' ? 'long' : 'short',
+    day: 'numeric',
+  }).format(new Date(`${date}T12:00:00Z`))
+
 export async function loader({ url, context }: Route.LoaderArgs) {
   const lang = langFromPath(url.pathname)
   const t = messagesFor(lang)
@@ -23,7 +31,7 @@ export async function loader({ url, context }: Route.LoaderArgs) {
   const stored = await storedPulseWeek(db, asked)
   const weeks = (await pulseWeeksList(db)).map(week => ({
     ...week,
-    label: week.live ? t.pulse.thisWeek : t.pulse.weekOf(dayLabel(lang, week.weekStart)),
+    label: week.live ? t.pulse.thisWeek : t.pulse.weekOf(weekLabel(lang, week.weekStart)),
     href: week.live ? '/pulse' : `/pulse?week=${week.weekStart}`,
     current: stored ? week.live === stored.live && week.weekStart === stored.weekStart : false,
   }))

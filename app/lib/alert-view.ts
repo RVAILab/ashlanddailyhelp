@@ -18,7 +18,8 @@ export function alertView(alert: FeedAlert, lang: Lang): AlertView {
   const time = (iso: string) =>
     new Intl.DateTimeFormat(locales[lang], {
       timeZone: 'America/Los_Angeles',
-      weekday: 'short',
+      // Spanish reads more easily with full day names than abbreviations such as "mar".
+      weekday: lang === 'es' ? 'long' : 'short',
       hour: 'numeric',
       minute: '2-digit',
     })

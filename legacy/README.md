@@ -2,7 +2,7 @@
 
 The original installable, offline-capable site built at Rogue Raise, deployed to <https://ashlanddailyhelp.kitchenlab.workers.dev> (the `ashlanddailyhelp` Worker). New work goes in the app at the repo root; see the [main README](../README.md).
 
-The static site in `legacy/` is plain HTML, CSS and ES modules with no build step or dependencies. Serve the folder over HTTP (the service worker needs `http(s):`, not `file:`):
+It is plain HTML, CSS and ES modules with no build step or dependencies. Serve the folder over HTTP (the service worker needs `http(s):`, not `file:`):
 
 ```sh
 python3 -m http.server 8000 --directory legacy
@@ -10,7 +10,7 @@ python3 -m http.server 8000 --directory legacy
 
 ## With the steward feed
 
-The site reads listings and Community Pulse from the steward's `listings.json` and `pulse.json`. Their location is the `FEED_BASE` constant at the top of `legacy/app.js`, defaulting to `./feed/`. To point at another host without editing code, add `<meta name="feed-base" content="https://feed.example.org/">` to `legacy/index.html`.
+The site reads listings and Community Pulse from the steward's `listings.json` and `pulse.json`. Their location is the `FEED_BASE` constant at the top of `legacy/app.js`, defaulting to `./feed/` and overridden by `<meta name="feed-base">` in `legacy/index.html`, which points at the steward's live feed, `https://steward.ashlanddailyhelp.com/feed/`. To try a local feed, remove or change that meta tag.
 
 With no feed, the site uses `legacy/data.js` and the built-in fictional sample week. No feed is committed (`feed/` is ignored). To try it locally, either:
 

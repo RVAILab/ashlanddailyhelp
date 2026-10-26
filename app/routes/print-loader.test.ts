@@ -1,5 +1,5 @@
 import { readFileSync } from 'node:fs'
-import { describe, expect, it } from 'vitest'
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { alertsFile } from '../../server/feed/alerts.ts'
 import { refreshFeedFile } from '../../server/feed/ingest.ts'
 import { testDatabase } from '../../test/db.ts'
@@ -8,22 +8,31 @@ import { storeListings } from '../../test/listings.ts'
 import { loaderArgs } from '../../test/route.ts'
 import { loader } from './print.tsx'
 
-async function load(
-  path: string,
-  cookie = '',
-  setup?: (db: Awaited<ReturnType<typeof testDatabase>>) => Promise<void>,
-) {
-  const db = await testDatabase()
-  await storeListings(db)
-  await setup?.(db)
+type TestDatabase = Awaited<ReturnType<typeof testDatabase>>
+
+// One database for the plain cases; a case that changes the data gets its own.
+let shared: TestDatabase
+
+async function load(path: string, cookie = '', setup?: (db: TestDatabase) => Promise<void>) {
+  const db = setup ? await testDatabase() : shared
+  if (setup) {
+    await storeListings(db)
+    await setup(db)
+  }
   const data = await loader(
     loaderArgs(`https://ashlanddailyhelp.com${path}`, { database: () => db }, { Cookie: cookie }),
   )
-  await db.close()
+  if (setup) await db.close()
   return data
 }
 
 describe('/print loader', () => {
+  beforeAll(async () => {
+    shared = await testDatabase()
+    await storeListings(shared)
+  })
+  afterAll(() => shared.close())
+
   it('prints a shared or saved list with name, address, phone, hours and requirements', async () => {
     const data = await load('/print?ids=ohra-showers.uncle-foods')
     expect(data.title).toBe('My list')

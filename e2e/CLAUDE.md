@@ -2,7 +2,7 @@
 
 Playwright journeys in a mobile browser (Pixel 7) against the built Worker (`vite preview` on port 4173) and a real Postgres. They are not in CI for now: run `npm run e2e` locally before pushing a change to pages, and before reviewing a visual story.
 
-- Start Postgres first (`npm run db:start`). `global-setup.ts` migrates it and ingests the sample feed from `test/fixtures/feed-sample/`, so journeys can rely on its listings (such as `ohra-showers`).
+- Start Postgres first (`npm run db:start`). `global-setup.ts` migrates it and ingests the sample feed from `test/fixtures/feed-sample/` (not the default live feed), so journeys can rely on its listings (such as `ohra-showers`).
 - Locally, Playwright reuses a server already on port 4173, which may be serving an old build. Stop it if your change doesn't show up.
 - Keep journeys few: one per thing a person does. Prove details in unit and component tests.
 - Find elements by role and label, as in the component tests.

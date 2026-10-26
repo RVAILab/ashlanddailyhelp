@@ -67,7 +67,7 @@ git config core.hooksPath .githooks   # runs npm run check before every push
 npm run db:start                      # a private Postgres cluster in .postgres/ on port 5433 (needs the postgres binaries on PATH)
 cp .dev.vars.example .dev.vars
 npm run db:migrate
-npm run feed:ingest                   # loads the sample feed
+npm run feed:ingest                   # loads the steward's live feed
 npm run dev
 ```
 
@@ -82,9 +82,9 @@ The app keeps a copy of the steward's feed in Postgres. A scheduled Worker refre
 To load a feed by hand:
 
 ```sh
-npm run feed:ingest                                   # the sample feed copied into test/fixtures/feed-sample/
+npm run feed:ingest                                   # the steward's live feed
+npm run feed:ingest -- test/fixtures/feed-sample      # the sample feed the tests use
 npm run feed:ingest -- ../daily-help-steward/fixtures/feed-sample
-npm run feed:ingest -- https://steward.ashlanddailyhelp.com/feed/
 ```
 
 To try the scheduled refresh locally, add `FEED_BASE_URL` to `.dev.vars` (for example a `python3 -m http.server` serving a feed folder), run `npm run dev`, and open `/cdn-cgi/local/scheduled`.

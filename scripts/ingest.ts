@@ -1,10 +1,10 @@
-// Loads the feed into DATABASE_URL by hand: npm run feed:ingest -- <feed URL or folder> (default: the sample feed).
+// Loads the feed into DATABASE_URL by hand: npm run feed:ingest -- <feed URL or folder> (default: the steward's live feed).
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { runIngest } from '../server/feed/run.ts'
 
-const target = process.argv[2] ?? 'test/fixtures/feed-sample'
+const target = process.argv[2] ?? 'https://steward.ashlanddailyhelp.com/feed/'
 const remote = /^https?:\/\//.test(target)
 const baseUrl = remote ? target : pathToFileURL(`${resolve(target)}/`).href
 

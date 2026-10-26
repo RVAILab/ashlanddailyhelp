@@ -1,6 +1,6 @@
 import { execFileSync } from 'node:child_process'
 
 export default function prepareDatabase() {
-  for (const script of ['scripts/migrate.ts', 'scripts/ingest.ts'])
-    execFileSync('node', ['--env-file-if-exists=.dev.vars', script], { stdio: 'inherit' })
+  for (const args of [['scripts/migrate.ts'], ['scripts/ingest.ts', 'test/fixtures/feed-sample']])
+    execFileSync('node', ['--env-file-if-exists=.dev.vars', ...args], { stdio: 'inherit' })
 }

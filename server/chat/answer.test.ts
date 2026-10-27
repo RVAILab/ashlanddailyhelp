@@ -69,6 +69,13 @@ describe('answerQuestion', () => {
     expect(reply.text).toContain('211')
   })
 
+  it('treats a question with no words as matching nothing, without asking the model', async () => {
+    const answerer = fake({ known: true, answer: 'Guessing.', cited: [] })
+    const reply = await ask('?? !!', answerer)
+    expect(answerer.asked).toHaveLength(0)
+    expect(reply).toMatchObject({ known: false, citations: [] })
+  })
+
   it('gives fuller context and asks for a full answer at full depth, for navigators', async () => {
     const brief = fake({ known: false, answer: '', cited: [] })
     await ask('food', brief)
@@ -98,6 +105,14 @@ describe('answerQuestion', () => {
     const bike = fake({ known: true, answer: 'Guessing.', cited: [] })
     await ask('Where can I get my bicycle repaired?', bike)
     expect(bike.asked).toHaveLength(0)
+  })
+
+  it('gives an event with no status or note as simply scheduled', async () => {
+    const answerer = fake({ known: false, answer: '', cited: [] })
+    await ask('is there a pancake breakfast?', answerer)
+    expect(answerer.asked[0]?.events).toEqual([
+      expect.objectContaining({ id: 'breakfast-1', status: null, note: null, notConfirmed: false }),
+    ])
   })
 
   it('gives only alerts in effect or starting within a day', async () => {
@@ -130,8 +145,13 @@ describe('answerQuestion', () => {
     const reply = await ask('private question about showers', fake(new Error('overloaded')))
     expect(reply.known).toBe(false)
     expect(reply.text).toContain('211')
+    const thrown: Answerer = {
+      answer: () => Promise.reject('private question about showers, echoed by a failing client'),
+    }
+    expect((await ask('private question about showers', thrown)).text).toContain('211')
     const logged = JSON.stringify([...errors.mock.calls, ...logs.mock.calls])
     expect(logged).not.toContain('private question')
+    expect(errors).toHaveBeenLastCalledWith('chat: the answer failed', 'unknown error')
     vi.restoreAllMocks()
   })
 

@@ -103,7 +103,9 @@ async function findListings(
   lang: Lang,
   max: number,
 ): Promise<StoredListing[]> {
-  const whole = await searchListings(db, { query: question.slice(0, 100) }, now, lang)
+  // A search with no words lists everything, which is no match at all.
+  const query = question.slice(0, 100)
+  const whole = /[\p{L}\p{N}]/u.test(query) ? await searchListings(db, { query }, now, lang) : []
   if (whole.length >= 3) return whole.slice(0, max)
   const meaningful = words(question)
   const hits = new Map<string, { listing: StoredListing; score: number; first: number }>()

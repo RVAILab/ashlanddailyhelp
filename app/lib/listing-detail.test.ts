@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { sampleListingsFeed } from '../../test/feed.ts'
-import { listingDetail } from './listing-detail.ts'
+import { listingDetail, whereText } from './listing-detail.ts'
 
 const base = sampleListingsFeed().listings.find((listing: { id: string }) => listing.id === 'ohra-showers')
 
@@ -135,6 +135,13 @@ describe('listingDetail', () => {
     })
   })
 
+  it('lists provenance for a field it doesn’t know after every detail it does', () => {
+    const entry = { sourceType: 'website', sourceRef: 'https://ohrahelps.org/a', span: null, observedAt: null }
+    const provenance = { laundry: [entry], coverage: [entry] }
+    const fields = listingDetail({ ...base, provenance }, 'en').provenance.map(item => item.fromFeed)
+    expect(fields).toEqual([false, true])
+  })
+
   it('gives no provenance when the feed has none', () => {
     expect(listingDetail(base, 'en').provenance).toEqual([])
   })
@@ -237,6 +244,41 @@ describe('listingDetail, wording', () => {
     expect(detail.provenance.map(field => field.field)).toEqual(['When', 'Cost'])
   })
 
+  it('lists provenance for other known fields after the details, under their own labels', () => {
+    const seen = {
+      sourceType: 'website',
+      sourceRef: 'https://ohrahelps.org/',
+      span: null,
+      observedAt: '2026-10-23T17:00:00Z',
+    } as const
+    const detail = listingDetail({ ...base, provenance: { phone: [seen], coverage: [seen], cost: [seen] } }, 'en')
+    expect(detail.provenance.map(field => field.field)).toEqual(['Cost', 'Serves', 'Phone'])
+  })
+
+  it('names a field it doesn’t know in the steward’s words, marked as the feed’s text', () => {
+    const seen = {
+      sourceType: 'website',
+      sourceRef: 'https://ohrahelps.org/',
+      span: null,
+      observedAt: '2026-10-23T17:00:00Z',
+    } as const
+    const [field] = listingDetail({ ...base, provenance: { hours_note: [seen] } }, 'en').provenance
+    expect(field).toMatchObject({ field: 'hours_note', fromFeed: true })
+  })
+
+  it('says "Not confirmed" for whom a listing serves when the feed names no places', () => {
+    const detail = listingDetail({ ...base, coverage: [] }, 'en')
+    expect(detail.fields.find(field => field.key === 'coverage')).toMatchObject({
+      text: 'Not confirmed',
+      fromFeed: false,
+    })
+  })
+
+  it('names a source at the root of a site by the site alone', () => {
+    const detail = listingDetail({ ...base, source: 'https://www.ohrahelps.org/', sourceUrls: [] }, 'en')
+    expect(detail.sources).toEqual([{ url: 'https://www.ohrahelps.org/', name: 'ohrahelps.org' }])
+  })
+
   it('gives the review date once: in the labels, or with the sources when a provenance label replaces it', () => {
     const { provenanceLabel: _, ...unlabelled } = base
     expect(listingDetail(unlabelled, 'en').reviewed).toBeNull()
@@ -267,5 +309,16 @@ describe('listingDetail with stored translations', () => {
 
   it('is not translated without translations', () => {
     expect(listingDetail(base, 'es').translated).toBe(false)
+  })
+})
+
+describe('whereText', () => {
+  it('says where to go as a page should: the address, a sensitive place in our words, an unknown one unconfirmed', () => {
+    expect(whereText('  2350 Ashland St  ', 'en')).toBe('2350 Ashland St')
+    expect(whereText('location not published.  call the provider.', 'en')).toBe(
+      'Location not published. Call the provider.',
+    )
+    expect(whereText('Unknown', 'en')).toBe('Not confirmed')
+    expect(whereText('', 'es')).toBe('No confirmado')
   })
 })

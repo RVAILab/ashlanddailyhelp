@@ -108,7 +108,10 @@ export function listingDetail(listing: FeedListing, lang: Lang, translated = new
   const known = Object.keys(t.detail.fields) as DetailKey[]
   const rank = (field: string) => {
     const at = (ORDER as readonly string[]).indexOf(field)
-    return at === -1 ? ORDER.length + known.indexOf(field as DetailKey) : at
+    if (at !== -1) return at
+    const other = known.indexOf(field as DetailKey)
+    // Fields this page doesn't name come last, after every detail it does.
+    return ORDER.length + (other === -1 ? known.length : other)
   }
   const provenance = Object.entries(listing.provenance ?? {})
     .filter(([field, entries]) => entries.length > 0 && !(sensitive && field === 'address'))

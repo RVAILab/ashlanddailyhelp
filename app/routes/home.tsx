@@ -62,14 +62,12 @@ export default function Home({ loaderData }: Route.ComponentProps) {
               </button>
             </form>
           </search>
-          <p>
-            <Link to={path('/today')} className="today-link">
+          <p className="hero-links">
+            <Link to={path('/today')} className="secondary-link">
               {t.today.link} <span aria-hidden="true">→</span>
             </Link>
-          </p>
-          <p>
-            <Link to={path('/next')} className="next-link">
-              {t.next.link}
+            <Link to={path('/next')} className="secondary-link">
+              {t.next.link} <span aria-hidden="true">→</span>
             </Link>
           </p>
         </div>

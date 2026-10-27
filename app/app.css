@@ -312,7 +312,7 @@ main h1[tabindex="-1"]:focus-visible {
 /* Buttons */
 
 .call-211,
-.today-link,
+.secondary-link,
 .search-form button,
 .listing-page .action,
 .next-actions .action {
@@ -329,12 +329,12 @@ main h1[tabindex="-1"]:focus-visible {
 }
 
 .call-211,
-.today-link,
 .search-form button {
   background: var(--accent);
   color: var(--on-accent);
 }
 
+.secondary-link,
 .listing-page .action,
 .next-actions .action {
   border-color: var(--line-2);
@@ -343,12 +343,12 @@ main h1[tabindex="-1"]:focus-visible {
 }
 
 .call-211:hover,
-.today-link:hover,
 .search-form button:hover {
   color: var(--on-accent);
   box-shadow: var(--shadow-lift);
 }
 
+.secondary-link:hover,
 .listing-page .action:hover {
   border-color: var(--field);
   background: var(--paper-2);
@@ -453,6 +453,20 @@ main h1[tabindex="-1"]:focus-visible {
   font: 600 1rem / 1 var(--sans);
   white-space: nowrap;
   cursor: pointer;
+}
+
+/* Smaller than the search's button, and side by side under it where there's room. */
+.hero-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 0;
+}
+
+.hero-links .secondary-link {
+  gap: 0.5rem;
+  padding: 0 1.1rem;
+  font-size: 0.95rem;
 }
 
 .next-link {

@@ -54,7 +54,10 @@
   --radius-l: 28px;
   --shadow-soft: 0 18px 40px -28px #3a2a1466;
   --shadow-lift: 0 26px 50px -30px #3a2a1480, 0 6px 14px -10px #3a2a1440;
-  --gutter: max(16px, calc((100% - 60rem) / 2));
+  --page: 80rem;
+  --gutter: max(16px, calc((100% - var(--page)) / 2));
+  /* From the edge of the page's content to the edge of the window. */
+  --bleed: max(16px, calc((100vw - var(--page)) / 2));
   font-family: var(--sans);
   font-size: 1.0625rem;
   line-height: 1.6;
@@ -108,13 +111,15 @@
 
 body {
   margin: 0;
+  /* The homepage art runs to the window's edge, which may be a hair past it. */
+  overflow-x: clip;
   color: var(--ink);
   background: var(--paper);
   text-rendering: optimizeLegibility;
 }
 
 body > main {
-  max-width: 60rem;
+  max-width: var(--page);
   margin: 0 auto;
   padding: 0 16px;
 }
@@ -358,6 +363,12 @@ main h1[tabindex="-1"]:focus-visible {
   padding-top: 1.5rem;
 }
 
+.hero-copy {
+  position: relative;
+  z-index: 1;
+  max-width: 38rem;
+}
+
 .eyebrow {
   display: flex;
   align-items: center;
@@ -376,8 +387,8 @@ main h1[tabindex="-1"]:focus-visible {
 
 .hero h1 {
   margin: 0.75rem 0 0;
-  font-size: clamp(3rem, 9vw, 5.5rem);
-  line-height: 0.95;
+  font-size: clamp(3rem, 7vw, 6.75rem);
+  line-height: 0.92;
   letter-spacing: -0.04em;
 }
 
@@ -471,23 +482,84 @@ main h1[tabindex="-1"]:focus-visible {
   line-height: 1.55;
 }
 
+/* Below the copy on narrow screens, the valley runs edge to edge and fades out at the top and bottom. */
+.hero-art {
+  display: block;
+  /* Holds the art's arrival, which grows it slightly, inside the window. */
+  overflow: hidden;
+  margin-inline: calc(-1 * var(--bleed));
+}
+
 .hero-art img {
   display: block;
   width: 100%;
   height: auto;
-  border-radius: var(--radius-l);
-  mask-image: radial-gradient(ellipse 75% 70% at 55% 50%, #000 60%, transparent 100%);
+  aspect-ratio: 1.55;
+  object-fit: cover;
+  object-position: 100% 50%;
+  mask-image: linear-gradient(180deg, transparent 0, #000 12%, #000 80%, transparent 100%);
 }
 
-@media (prefers-color-scheme: dark) {
+/* On wide screens it fills the right of the window behind the copy, fading out to the left and at the bottom, as on
+   the legacy site. */
+@media (min-width: 64rem) {
+  .hero {
+    grid-template-columns: minmax(0, 1fr);
+    padding-top: 0;
+  }
+
+  .hero-copy,
+  .hero-art {
+    grid-area: 1 / 1;
+  }
+
+  .hero-copy {
+    padding-block: 3rem;
+  }
+
+  .hero-copy::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: -2.5rem auto -2.5rem calc(-1 * var(--bleed));
+    width: min(48rem, 62vw);
+    background: radial-gradient(closest-side, color-mix(in srgb, var(--paper) 92%, transparent), transparent);
+  }
+
+  .hero-art {
+    justify-self: end;
+    align-self: start;
+    width: min(84vw, 1500px);
+    margin: 0 calc(-1 * var(--bleed)) 0 0;
+  }
+
   .hero-art img {
-    mask-image: radial-gradient(ellipse 58% 55% at 62% 56%, #000 40%, transparent 82%);
+    aspect-ratio: 1440 / 806;
+    mask-image: linear-gradient(90deg, transparent 0, #000 26%), linear-gradient(180deg, #000 76%, transparent 100%);
+    mask-composite: intersect;
   }
 }
 
-@media (min-width: 48rem) {
-  .hero {
-    grid-template-columns: 1fr 1.15fr;
+/* The art is painted on light paper, so on a dark page only its middle shows. */
+@media (prefers-color-scheme: dark) {
+  .hero-art img {
+    mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 55%, transparent 100%);
+  }
+}
+
+@media (prefers-color-scheme: dark) and (min-width: 64rem) {
+  .hero-art img {
+    mask-image: radial-gradient(ellipse 46% 52% at 66% 50%, #000 50%, transparent 100%);
+  }
+}
+
+@media (min-width: 64rem) and (max-width: 74rem) {
+  .hero-copy {
+    max-width: 32rem;
+  }
+
+  .hero h1 {
+    font-size: clamp(3.25rem, 6.2vw, 4.5rem);
   }
 }
 
@@ -662,6 +734,18 @@ main h1[tabindex="-1"]:focus-visible {
 .results {
   display: grid;
   gap: 1rem;
+}
+
+/* Two cards to a row on wide screens, under the heading, count and sort, which span both. */
+@media (min-width: 64rem) {
+  .results {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+
+  .results > :not(.listing-card) {
+    grid-column: 1 / -1;
+  }
 }
 
 .listing-card {

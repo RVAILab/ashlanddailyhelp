@@ -28,6 +28,11 @@ const art = (name: string) => ({
   webp: `/art/${name}.webp`,
 })
 
+// The valley fills the right of the page on wide screens and runs edge to edge below the copy on narrow ones.
+const VALLEY_SIZES = '(min-width: 64rem) min(84vw, 1500px), 100vw'
+const valley = (name: string, widths: number[], type: string) =>
+  widths.map(width => `/art/${name}-${width}.${type} ${width}w`).join(', ')
+
 export function meta({ location }: Route.MetaArgs) {
   return [{ title: messagesFor(langFromPath(location.pathname)).siteName }]
 }
@@ -73,20 +78,31 @@ export default function Home({ loaderData }: Route.ComponentProps) {
             <source
               type="image/avif"
               media="(max-width: 40rem)"
-              srcSet={art('valley-m-640').avif}
+              srcSet={valley('valley-m', [640, 960], 'avif')}
+              sizes="100vw"
               width="640"
               height="498"
             />
             <source
               type="image/webp"
               media="(max-width: 40rem)"
-              srcSet={art('valley-m-640').webp}
+              srcSet={valley('valley-m', [640, 960], 'webp')}
+              sizes="100vw"
               width="640"
               height="498"
             />
-            <source type="image/avif" srcSet={art('valley-960').avif} />
-            <source type="image/webp" srcSet={art('valley-960').webp} />
-            <img src="/art/valley-960.jpg" alt="" width="960" height="538" decoding="async" fetchPriority="low" />
+            <source type="image/avif" srcSet={valley('valley', [960, 1440, 2048], 'avif')} sizes={VALLEY_SIZES} />
+            <source type="image/webp" srcSet={valley('valley', [960, 1440, 2048], 'webp')} sizes={VALLEY_SIZES} />
+            <img
+              src="/art/valley-960.jpg"
+              srcSet={valley('valley', [960, 1440], 'jpg')}
+              sizes={VALLEY_SIZES}
+              alt=""
+              width="1440"
+              height="806"
+              decoding="async"
+              fetchPriority="low"
+            />
           </picture>
         )}
       </div>

@@ -35,6 +35,12 @@ describe('smsReply', () => {
     expect(text.endsWith('ashlanddailyhelp.com')).toBe(true)
   })
 
+  it('cuts a long answer with no spaces to fit, rather than dropping it', () => {
+    const text = smsReply({ text: 'x'.repeat(600), crisis: false }, places, 'en')
+    expect(text.length).toBeLessThanOrEqual(459)
+    expect(text).toMatch(/^x+\.\.\.\n/)
+  })
+
   it('stays within three segments in Spanish too, using plain punctuation', () => {
     const text = smsReply(
       {

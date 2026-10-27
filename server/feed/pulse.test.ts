@@ -106,6 +106,39 @@ describe('Pulse ingest', () => {
     vi.restoreAllMocks()
   })
 
+  it('drops published weeks once pulse.json stops listing them', async () => {
+    await refreshFeedFile(pulseFile, deps(db, feedHost(json(live())).fetch))
+    await refreshPublishedWeeks(deps(db, feedHost(json(sample('weeks/2026-10-19-r1.json'))).fetch))
+    const { publishedWeeks: _, ...unlisted } = live()
+    await refreshFeedFile(
+      pulseFile,
+      deps(db, feedHost(json({ ...unlisted, generatedAt: '2026-10-26T19:00:00Z' })).fetch),
+    )
+    await refreshPublishedWeeks(deps(db, feedHost().fetch))
+    expect(await storedPulseWeek(db, '2026-10-19')).toBeNull()
+    expect((await pulseWeeksList(db)).map(week => week.live)).toEqual([true])
+  })
+
+  it('fetches only the latest revision of a week, whatever order they are listed in', async () => {
+    const second = {
+      ...published,
+      revision: 2,
+      note: 'A meal count was entered twice.',
+      path: 'weeks/2026-10-19-r2.json',
+    }
+    await refreshFeedFile(pulseFile, deps(db, feedHost(json({ ...live(), publishedWeeks: [second, published] })).fetch))
+    const host = feedHost(json({ ...sample('weeks/2026-10-19-r1.json'), revision: 2, note: second.note }))
+    await refreshPublishedWeeks(deps(db, host.fetch))
+    expect(host.requests.map(request => request.url)).toEqual(['https://feed.example.org/weeks/2026-10-19-r2.json'])
+  })
+
+  it('has no weeks to fetch or list before pulse.json has been stored', async () => {
+    const host = feedHost()
+    await refreshPublishedWeeks(deps(db, host.fetch))
+    expect(host.requests).toEqual([])
+    expect(await pulseWeeksList(db)).toEqual([])
+  })
+
   it('refuses a week file that isn’t the revision listed for it', async () => {
     vi.spyOn(console, 'error').mockImplementation(() => {})
     await refreshFeedFile(pulseFile, deps(db, feedHost(json(live())).fetch))

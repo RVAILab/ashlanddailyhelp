@@ -49,6 +49,12 @@ describe('/print loader', () => {
     expect(saved.rows.map(row => row.name)).toEqual(['A seat at the community table'])
   })
 
+  it('prints an empty sheet that still links back, without a date, when the listings can’t be read', async () => {
+    const data = await loader(loaderArgs('https://ashlanddailyhelp.com/es/print?ids=ohra-showers'))
+    expect(data).toMatchObject({ title: 'Mi lista', rows: [], asOf: null, demonstration: false })
+    expect(data.backUrl).toBe('https://ashlanddailyhelp.com/es/list')
+  })
+
   it('prints a kind of help, with a link back to that search', async () => {
     const data = await load('/print?category=hygiene')
     expect(data.title).toBe('Showers and hygiene')

@@ -33,6 +33,19 @@ describe('/next', () => {
     expect(handle).toEqual({ hydrate: false })
   })
 
+  it('offers 211 when a place has no phone, leaves out details it can’t link, and labels demonstration data', async () => {
+    renderNext({
+      workedOut: '11:00 AM',
+      meal: { ...meal, phone: null, details: null },
+      sleep: null,
+      demonstration: true,
+    })
+    const section = await screen.findByRole('region', { name: 'Next meal' })
+    expect(within(section).getByRole('link', { name: 'Call 211' }).getAttribute('href')).toBe('tel:211')
+    expect(within(section).queryByRole('link', { name: /Details/ })).toBeNull()
+    expect(screen.getByText('This is demonstration data. Some listings are fictional.')).toBeDefined()
+  })
+
   it('says plainly when nothing is known, and points to today and 211', async () => {
     renderNext({ workedOut: '11:00 AM', meal: null, sleep: null, demonstration: false })
     expect(await screen.findByText('No meal we know of in the coming week.')).toBeDefined()

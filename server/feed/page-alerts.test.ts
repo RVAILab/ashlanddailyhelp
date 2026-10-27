@@ -90,6 +90,24 @@ describe('pageAlerts, from the review', () => {
     await db.close()
   })
 
+  it('keeps a listing shut until the last of the closures naming it ends', async () => {
+    const db = await store(feed => {
+      Object.assign(feed.alerts[0] ?? {}, { kind: 'closure' })
+      const shelter = feed.alerts[1] ?? {}
+      Object.assign(shelter, { kind: 'closure', startsAt: '2026-10-25T08:00:00-07:00' })
+      feed.alerts.push({
+        ...shelter,
+        id: 'shorter-closure',
+        startsAt: '2026-10-25T09:00:00-07:00',
+        endsAt: '2026-10-25T20:00:00-07:00',
+      })
+    })
+    const page = await pageAlerts(db, 'en', new Date('2026-10-25T18:00:00Z'))
+    expect(page.closedListings).toContain('ohra-shelter')
+    expect(page.closedUntil).toEqual({ 'ohra-shelter': '2026-10-26T07:30:00-07:00' })
+    await db.close()
+  })
+
   it('waits until a day before an alert starts to show it', async () => {
     const db = await store(feed =>
       Object.assign(feed.alerts[0] ?? {}, {

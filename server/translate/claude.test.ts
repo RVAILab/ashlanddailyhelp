@@ -67,10 +67,26 @@ describe('claudeTranslator', () => {
     expect(result.usage).toEqual({ inputTokens: 1200, outputTokens: 80, cacheReadTokens: 900 })
   })
 
+  it('counts no cached tokens when Claude reports none', async () => {
+    const { client } = fakeClient(
+      answer(
+        {
+          translations: [
+            { id: 't1', text: 'Gratis' },
+            { id: 't2', text: 'Se requiere identificación con foto.' },
+          ],
+        },
+        { usage: { input_tokens: 1200, output_tokens: 80 } },
+      ),
+    )
+    expect((await claudeTranslator(client).translate(texts, 'es')).usage.cacheReadTokens).toBe(0)
+  })
+
   it('rejects a refusal, a truncated answer, a missing or unknown id, and text that isn’t JSON', async () => {
     const bad = [
       answer({ translations: [] }, { stop_reason: 'refusal' }),
       answer({ translations: [] }, { stop_reason: 'max_tokens' }),
+      answer({ translations: [] }, { content: [] }),
       answer({ translations: [{ id: 't1', text: 'Gratis' }] }),
       answer({
         translations: [

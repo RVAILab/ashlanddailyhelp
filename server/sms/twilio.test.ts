@@ -24,6 +24,8 @@ describe('validTwilioSignature', () => {
       await validTwilioSignature(url, { ...params, Body: 'changed' }, reference('secret-token'), 'secret-token'),
     ).toBe(false)
     expect(await validTwilioSignature(url, params, null, 'secret-token')).toBe(false)
+    expect(await validTwilioSignature(url, params, reference('secret-token').slice(0, 8), 'secret-token')).toBe(false)
+    expect(await validTwilioSignature(url, params, 'not base64!', 'secret-token')).toBe(false)
   })
 })
 

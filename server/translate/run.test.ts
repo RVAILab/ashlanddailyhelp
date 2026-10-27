@@ -43,6 +43,7 @@ describe('translatePending', () => {
     expect(new Set(sent).size).toBe(sent.length)
     const [english] = sent
     expect((await translationsFor(db, [english ?? ''], 'es')).get(english ?? '')).toBe(`ES: ${english}`)
+    expect(await translationsFor(db, ['', '   '], 'es')).toEqual(new Map())
 
     const again = await translatePending(db, translator, { lang: 'es', now: new Date() })
     expect(again.translated).toBe(0)
@@ -84,6 +85,16 @@ describe('translatePending, over time', () => {
   afterEach(async () => {
     vi.restoreAllMocks()
     await db.close()
+  })
+
+  it('sends nothing to translate before any listings have loaded', async () => {
+    const { translator, batches } = fakeTranslator()
+    expect(await translatePending(db, translator, { lang: 'es', now: new Date() })).toMatchObject({
+      translated: 0,
+      failed: 0,
+      remaining: 0,
+    })
+    expect(batches).toEqual([])
   })
 
   it('rebuilds Spanish search after a refresh even when nothing new needs translating', async () => {

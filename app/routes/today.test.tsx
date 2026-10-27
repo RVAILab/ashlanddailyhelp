@@ -1,6 +1,6 @@
 import { render, screen, within } from '@testing-library/react'
 import { createRoutesStub } from 'react-router'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import type { ListingCard } from '../components/listing-card.tsx'
 import Today from './today.tsx'
 
@@ -110,5 +110,64 @@ describe('/today', () => {
     render(<Stub initialEntries={['/today']} />)
     expect(await screen.findByText('No scheduled events today.')).toBeDefined()
     expect(screen.getByText('This is demonstration data. Some listings are fictional.')).toBeDefined()
+  })
+
+  it('folds away events that already finished, names the day of later ones, and regroups when hours change', async () => {
+    const event = (id: string, title: string) => ({
+      id,
+      title,
+      provider: 'Peace House',
+      when: '8:00 AM–10:00 AM',
+      where: 'Trinity Episcopal Church',
+      status: null,
+      labels: [],
+      listingId: null,
+    })
+    let loads = 0
+    const loaderData = {
+      workedOut: '11:00 AM',
+      now: '2026-10-25T18:00:00.000Z',
+      nextChange: '2026-10-25T18:05:00.000Z',
+      alerts: {
+        alerts: [],
+        listingNames: {},
+        byListing: {},
+        closedListings: [],
+        closedUntil: {},
+        demonstration: false,
+        nextEnd: null,
+      },
+      eventsDemonstration: false,
+      events: {
+        today: [],
+        finished: [event('breakfast', 'Pancake breakfast')],
+        tomorrow: [],
+        thisWeek: [{ ...event('soup', 'Soup night'), day: 'Wednesday, Oct 28' }],
+      },
+      groups: { openNow: [], later: [], closed: [], notConfirmed: [] },
+    }
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] })
+    try {
+      const Stub = createRoutesStub([
+        {
+          path: '/today',
+          Component: Today,
+          loader: () => {
+            loads += 1
+            return loaderData
+          },
+        },
+      ])
+      render(<Stub initialEntries={['/today']} />)
+      await vi.waitFor(() => expect(screen.getByText('1 event earlier today')).toBeDefined())
+      expect(screen.getByRole('article', { name: 'Pancake breakfast' })).toBeDefined()
+      expect(screen.getByRole('heading', { name: 'Later this week' })).toBeDefined()
+      expect(screen.getByText('Wednesday, Oct 28 · 8:00 AM–10:00 AM')).toBeDefined()
+      const before = loads
+      await vi.advanceTimersByTimeAsync(5 * 60 * 1000 + 1_000)
+      await vi.waitFor(() => expect(loads).toBe(before + 1))
+    } finally {
+      vi.useRealTimers()
+    }
   })
 })

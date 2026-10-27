@@ -138,6 +138,26 @@ describe('nextPlace', () => {
     expect(pick([far], [], 'meal')).toBeNull()
   })
 
+  it('takes a meal with only a start time once it is ahead, but not after it has started', () => {
+    const started = listing('started', 'food', [window('10:00')])
+    const ahead = listing('ahead', 'food', [window('17:00')])
+    expect(pick([started, ahead], [], 'meal')).toMatchObject({ id: 'ahead', openNow: false, endsAt: null })
+    expect(pick([started], [], 'meal')).toBeNull()
+  })
+
+  it('takes an event with only a start time, with no end to show', () => {
+    const soup = { ...event('soup', 'food', '12:30', '13:30'), endsAt: undefined } as FeedEvent
+    expect(pick([], [soup], 'meal')).toMatchObject({ id: 'soup', source: 'event', endsAt: null })
+  })
+
+  it('never takes a place to sleep without an end time, since it can’t tell the window runs overnight', () => {
+    expect(pick([listing('cots', 'housing', [window('20:00')])], [], 'sleep')).toBeNull()
+  })
+
+  it('skips a listing with no schedule at all', () => {
+    expect(pick([listing('unscheduled', 'food', [], { openings: undefined })], [], 'meal')).toBeNull()
+  })
+
   it('never takes an event run by a listing whose schedule is in doubt', () => {
     const doubtful = listing('kitchen', 'food', [], { conflict: true })
     expect(pick([doubtful], [event('soup', 'food', '12:30', '13:30', { listingId: 'kitchen' })], 'meal')).toBeNull()

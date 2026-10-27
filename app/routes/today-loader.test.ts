@@ -79,3 +79,119 @@ describe('/today loader, events', () => {
     await db.close()
   })
 })
+
+describe('/today loader, how each entry reads', () => {
+  let db: Awaited<ReturnType<typeof testDatabase>>
+  beforeAll(async () => {
+    vi.useFakeTimers({ toFake: ['Date'] })
+    vi.setSystemTime(new Date('2026-10-25T18:00:00Z'))
+    db = await testDatabase()
+    const sample = sampleListingsFeed()
+    const find = (id: string) => sample.listings.find((listing: { id: string }) => listing.id === id)
+    await storeListings(db, {
+      ...sample,
+      listings: [
+        // Two windows today, the later one with only a start time.
+        {
+          ...find('ohra-showers'),
+          openings: [
+            { startsAt: '2026-10-25T08:00:00-07:00', endsAt: '2026-10-25T10:00:00-07:00' },
+            { startsAt: '2026-10-25T17:00:00-07:00' },
+          ],
+        },
+        {
+          ...find('access-pantries'),
+          openings: [
+            {
+              startsAt: '2026-10-25T08:00:00-07:00',
+              endsAt: '2026-10-25T10:00:00-07:00',
+              status: 'canceled',
+              note: 'No volunteers.',
+            },
+          ],
+        },
+        {
+          ...find('ohra-navigation'),
+          openings: [
+            {
+              startsAt: '2026-10-25T09:00:00-07:00',
+              endsAt: '2026-10-25T15:00:00-07:00',
+              status: 'may_be_canceled',
+              note: 'May close early.',
+            },
+          ],
+        },
+        {
+          ...find('ohra-shelter'),
+          openings: [
+            { startsAt: '2026-10-25T09:00:00-07:00', endsAt: '2026-10-25T15:00:00-07:00', status: 'may_be_canceled' },
+          ],
+        },
+      ],
+    })
+  })
+  afterAll(async () => {
+    vi.useRealTimers()
+    await db.close()
+  })
+
+  it('gives a start with no end, all of today’s hours, cancellations and doubts in words', async () => {
+    const page = await loader(loaderArgs('/today', { database: () => db }))
+    expect(page.groups.later).toMatchObject([
+      { card: { id: 'ohra-showers' }, when: 'Opens at 5:00 PM', hours: 'Today: 8:00 AM–10:00 AM, 5:00 PM' },
+    ])
+    expect(page.groups.closed).toMatchObject([
+      { card: { id: 'access-pantries' }, when: 'Canceled today: No volunteers.', hours: null },
+    ])
+    expect(page.groups.notConfirmed.map(entry => [entry.card.id, entry.when])).toEqual([
+      ['ohra-navigation', 'May close early.'],
+      ['ohra-shelter', 'Hours not confirmed'],
+    ])
+  })
+
+  it('has no time to regroup at when nothing today opens or closes again', async () => {
+    vi.setSystemTime(new Date('2026-10-26T06:30:00Z'))
+    const page = await loader(loaderArgs('/today', { database: () => db }))
+    vi.setSystemTime(new Date('2026-10-25T18:00:00Z'))
+    expect(page.nextChange).toBeNull()
+  })
+
+  it('answers 503 when there is no database, rather than an empty day', async () => {
+    await expect(loader(loaderArgs('/today'))).rejects.toMatchObject({ init: { status: 503 } })
+  })
+})
+
+describe('/today loader, events without notes', () => {
+  it('words a canceled or doubtful event itself when no note says why, and names the day of later ones', async () => {
+    const { readFileSync } = await import('node:fs')
+    const { refreshFeedFile } = await import('../../server/feed/ingest.ts')
+    const { eventsFile } = await import('../../server/feed/events.ts')
+    const { feedHost, json } = await import('../../test/feed.ts')
+    vi.useFakeTimers({ toFake: ['Date'] })
+    vi.setSystemTime(new Date('2026-10-25T18:00:00Z'))
+    const db = await testDatabase()
+    await storeListings(db)
+    const events = JSON.parse(readFileSync('test/fixtures/proposed/events.json', 'utf8'))
+    for (const event of events.events) {
+      delete event.note
+      delete event.provenanceLabel
+      event.area = 'Ashland'
+    }
+    await refreshFeedFile(eventsFile, {
+      db,
+      baseUrl: 'https://feed.example.org/',
+      fetch: feedHost(json(events)).fetch,
+      now: () => new Date(),
+    })
+    const page = await loader(loaderArgs('/today', { database: () => db }))
+    expect(page.events.today[0]?.labels).toEqual([{ kind: 'caution', text: 'Not yet confirmed by provider' }])
+    expect(page.events.tomorrow[0]?.status).toEqual({ kind: 'canceled', text: 'Canceled' })
+    expect(page.events.thisWeek[0]).toMatchObject({
+      status: { kind: 'may_be_canceled', text: 'May be canceled' },
+      when: 'Time not listed',
+      day: 'Wednesday, Oct 28',
+    })
+    vi.useRealTimers()
+    await db.close()
+  })
+})

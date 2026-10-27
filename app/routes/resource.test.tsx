@@ -105,6 +105,48 @@ describe('/resources/:id', () => {
   })
 })
 
+describe('/resources/:id, details', () => {
+  it('offers to take a saved listing off the list', async () => {
+    const Stub = createRoutesStub([
+      {
+        path: '/resources/:id',
+        Component: Resource,
+        loader: () => ({ listing: listingDetail(base, 'en'), saved: true }),
+      },
+    ])
+    render(<Stub initialEntries={['/resources/ohra-showers']} />)
+    expect((await screen.findByRole('link', { name: 'Remove from my list' })).getAttribute('href')).toBe(
+      '/list/toggle?id=ohra-showers&return=%2Fresources%2Fohra-showers',
+    )
+  })
+
+  it('says the phone is not confirmed, with nothing to call, when the feed has none', async () => {
+    renderPage(listingDetail({ ...base, phone: null }, 'en'))
+    const details = await screen.findByRole('region', { name: 'Details' })
+    expect(within(details).getByText('Phone').nextElementSibling?.textContent).toBe('Not confirmed')
+    expect(screen.queryByRole('link', { name: /^Call / })).toBeNull()
+  })
+
+  it('names a source that is not a web page without linking it, and marks the steward’s own field names English', async () => {
+    const provenance = {
+      hours_note: [
+        {
+          sourceType: 'scanned_packet',
+          sourceRef: 'Jackson County packet, page 5',
+          span: null,
+          observedAt: '2026-10-22T17:00:00Z',
+        },
+      ],
+    }
+    renderPage(listingDetail({ ...base, provenance }, 'es'), 'es')
+    const field = await screen.findByText('hours_note')
+    expect(field.getAttribute('lang')).toBe('en')
+    const ref = screen.getByText('Jackson County packet, page 5')
+    expect(ref.closest('a')).toBeNull()
+    expect(ref.getAttribute('lang')).toBe('en')
+  })
+})
+
 describe('/resources/:id, reporting', () => {
   it('links to the report page for this listing', async () => {
     const Stub = createRoutesStub([

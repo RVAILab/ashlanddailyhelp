@@ -16,12 +16,18 @@ const alert: AlertView = {
 }
 
 function Harness() {
-  const alerts = useLoaderData<AlertView[]>()
-  return <AlertList alerts={alerts} listingNames={{ 'ohra-shelter': 'Talk through shelter options' }} />
+  const { alerts, demonstration } = useLoaderData<{ alerts: AlertView[]; demonstration: boolean }>()
+  return (
+    <AlertList
+      alerts={alerts}
+      listingNames={{ 'ohra-shelter': 'Talk through shelter options' }}
+      demonstration={demonstration}
+    />
+  )
 }
 
-function show(alerts: AlertView[]) {
-  const Stub = createRoutesStub([{ path: '/', Component: Harness, loader: () => alerts }])
+function show(alerts: AlertView[], demonstration = false) {
+  const Stub = createRoutesStub([{ path: '/', Component: Harness, loader: () => ({ alerts, demonstration }) }])
   render(<Stub initialEntries={['/']} />)
 }
 
@@ -42,5 +48,13 @@ describe('AlertList', () => {
   it('shows nothing when there are no alerts', async () => {
     show([])
     expect(screen.queryByRole('region', { name: 'Alerts' })).toBeNull()
+  })
+
+  it('says when an alert was canceled, and when the alerts are a demonstration', async () => {
+    show([{ ...alert, status: 'Canceled: the shelter will not open.' }], true)
+    const region = await screen.findByRole('region', { name: 'Alerts' })
+    expect(within(region).getByText('This is demonstration data. Some listings are fictional.')).toBeDefined()
+    const article = within(region).getByRole('article', { name: alert.title })
+    expect(within(article).getByText('Canceled: the shelter will not open.')).toBeDefined()
   })
 })

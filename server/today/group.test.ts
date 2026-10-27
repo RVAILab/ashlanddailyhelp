@@ -132,6 +132,23 @@ describe('groupToday, from the review', () => {
     expect(grouped.notConfirmed[0]?.mayBeCanceled).toBe('May be canceled if it rains.')
   })
 
+  it('without a note, still keeps a doubtful window from looking open and a canceled one from looking closed for no reason', () => {
+    const grouped = groupToday(
+      [
+        listing('maybe', {
+          openings: [window('2026-10-25T09:00:00-07:00', '2026-10-25T12:00:00-07:00', { status: 'may_be_canceled' })],
+        }),
+        listing('canceled', {
+          openings: [window('2026-10-25T09:00:00-07:00', '2026-10-25T12:00:00-07:00', { status: 'canceled' })],
+        }),
+      ],
+      now,
+    )
+    expect(ids(grouped.openNow)).toEqual([])
+    expect(grouped.notConfirmed).toMatchObject([{ listing: { id: 'maybe' }, mayBeCanceled: '' }])
+    expect(grouped.closed).toMatchObject([{ listing: { id: 'canceled' }, canceled: '' }])
+  })
+
   it('says hours are not confirmed, not closed, when the windows stop before today', () => {
     const grouped = groupToday(
       [listing('stale', { openings: [window('2026-10-20T09:00:00-07:00', '2026-10-20T12:00:00-07:00')] })],

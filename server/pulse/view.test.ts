@@ -130,6 +130,33 @@ describe('pulseWeek', () => {
     expect(alone.units[0]).toMatchObject({ total: null, atLeast: null, smallOnly: true })
   })
 
+  it('counts the amount from an event that ran only partly', () => {
+    const view = pulseWeek({
+      week,
+      events: [event('a', 'meals', '2026-10-20'), event('b', 'meals', '2026-10-21')],
+      reports: [report('a', { value: 30 }), report('b', { outcome: 'partial', value: 20 })],
+    })
+    expect(view.units[0]).toMatchObject({ total: 50, measured: 2 })
+  })
+
+  it('holds back a day made only of small figures, even when together they reach 10', () => {
+    const view = pulseWeek({
+      week,
+      events: [event('a', 'meals', '2026-10-20', 'A'), event('b', 'meals', '2026-10-20', 'B')],
+      reports: [report('a', { value: 6 }), report('b', { value: 7 })],
+    })
+    expect(view.units[0]?.days[1]).toMatchObject({ amount: null, held: { kind: 'small' } })
+  })
+
+  it('counts only providers with a scheduled event as having reported', () => {
+    const view = pulseWeek({
+      week,
+      events: [event('a', 'meals', '2026-10-20')],
+      reports: [report('a'), report('not-scheduled')],
+    })
+    expect(view.providers).toEqual({ reported: 1, scheduled: 1 })
+  })
+
   it('counts the events that saw unmet need, by reason', () => {
     const view = pulseWeek({
       week,

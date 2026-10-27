@@ -89,4 +89,74 @@ describe('/pulse', () => {
     expect(screen.getByText('Ran out of supplies: 1 event')).toBeDefined()
     expect(handle).toEqual({ hydrate: false })
   })
+
+  it('says when nothing has been published yet', async () => {
+    const Stub = createRoutesStub([{ path: '/pulse', Component: Pulse, loader: () => ({ weeks: [], week: null }) }])
+    render(<Stub initialEntries={['/pulse']} />)
+    expect(await screen.findByText('No Pulse numbers have been published yet.')).toBeDefined()
+    expect(screen.queryByRole('navigation', { name: 'Weeks' })).toBeNull()
+  })
+
+  it('says when a published week had nothing scheduled and no unmet need, without calling it live or fictional', async () => {
+    const week = { ...data.week, live: false, revision: 1, fictional: false, csv: '/pulse.csv?week=2026-10-19' }
+    const quiet = { weeks: [], week: { ...week, units: [], unmet: [] } }
+    const Stub = createRoutesStub([{ path: '/pulse', Component: Pulse, loader: () => quiet }])
+    render(<Stub initialEntries={['/pulse']} />)
+    expect(await screen.findByText('Nothing was scheduled this week.')).toBeDefined()
+    expect(screen.getByText('No unmet need was reported.')).toBeDefined()
+    expect(screen.queryByText(/These numbers are fictional/)).toBeNull()
+    expect(screen.queryByText(/This week so far/)).toBeNull()
+    const link = screen.getByRole('link', { name: 'Download this week as a spreadsheet (CSV)' })
+    expect(link.getAttribute('href')).toBe('/pulse.csv?week=2026-10-19')
+  })
+
+  it('holds back small figures in the totals and the days, showing only what can be read', async () => {
+    const meals = data.week.units[0]
+    if (!meals) throw new Error('the sample has meals')
+    const unit = (name: string, extra: object) => ({ ...meals, unit: name, split: false, days: [], ...extra })
+    const held = {
+      weeks: [],
+      week: {
+        ...data.week,
+        units: [
+          unit('meals', {
+            total: null,
+            atLeast: 130,
+            days: [
+              day('2026-10-26', 'Mon, Oct 26', { held: { kind: 'atLeast', atLeast: 130 }, status: 'reported' }),
+              day('2026-10-27', 'Tue, Oct 27', { held: { kind: 'small' }, status: 'reported' }),
+            ],
+          }),
+          unit('sessions', { total: null, atLeast: null, smallOnly: true }),
+          unit('encounters', { total: 42, atLeast: null }),
+        ],
+      },
+    }
+    const Stub = createRoutesStub([{ path: '/pulse', Component: Pulse, loader: () => held }])
+    render(<Stub initialEntries={['/pulse']} />)
+    const mealsChart = await screen.findByRole('region', { name: 'Meals' })
+    expect(within(mealsChart).getByText(/^At least 130 meals\. Some figures under 10 are held back/)).toBeDefined()
+    expect(within(mealsChart).getByText('At least 130')).toBeDefined()
+    expect(within(mealsChart).getByText('Small figures held back')).toBeDefined()
+    expect(
+      within(screen.getByRole('region', { name: 'Sessions' })).getByText(
+        /^Every figure this week is under 10, so none is shown\./,
+      ),
+    ).toBeDefined()
+    expect(within(screen.getByRole('region', { name: 'Encounters' })).getByText(/^42 encounters\. From/)).toBeDefined()
+  })
+
+  it('says a total is not known yet when nothing has been reported', async () => {
+    const meals = data.week.units[0]
+    if (!meals) throw new Error('the sample has meals')
+    const unknown = {
+      weeks: [],
+      week: { ...data.week, units: [{ ...meals, total: null, atLeast: null, smallOnly: false, measured: 0 }] },
+    }
+    const Stub = createRoutesStub([{ path: '/pulse', Component: Pulse, loader: () => unknown }])
+    render(<Stub initialEntries={['/pulse']} />)
+    expect(
+      await screen.findByText(/^Not known yet: no amounts reported\. From 0 of 3 scheduled events\./),
+    ).toBeDefined()
+  })
 })

@@ -62,4 +62,30 @@ describe('/navigator', () => {
       'https://accesshelps.org/',
     )
   })
+
+  it('offers nothing to share when the answer uses no listings', async () => {
+    renderNavigator({
+      state: 'answered',
+      question: 'Is there a pancake breakfast?',
+      answer: {
+        paragraphs: ['I couldn’t find that in the Daily Help directory, and I won’t guess.'],
+        crisis: false,
+        known: false,
+        asOf: null,
+        citations: [{ id: 'breakfast-1', name: 'Pancake breakfast', site: null, sourceUrl: null, listingId: null }],
+      },
+    })
+    await screen.findByRole('region', { name: /You asked/ })
+    expect(screen.queryByRole('region', { name: 'Use these listings' })).toBeNull()
+  })
+
+  for (const [state, says] of [
+    ['empty', 'Type a question first.'],
+    ['limited', /Please wait a minute.*211/],
+    ['unavailable', /isn’t available right now.*211/],
+  ] as const)
+    it(`says why there is no answer when it is ${state}`, async () => {
+      renderNavigator({ state })
+      expect((await screen.findByRole('status')).textContent).toMatch(says)
+    })
 })

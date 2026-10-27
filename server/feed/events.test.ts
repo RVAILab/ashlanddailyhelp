@@ -77,6 +77,25 @@ describe('events, from the review', () => {
     expect(ids).toContain('breakfast-1')
   })
 
+  it('lists a day’s events with no start time first, then by start time, then by id', async () => {
+    const feed = sample()
+    const [flu] = feed.events
+    feed.events = [
+      { ...flu, id: 'b-same-time' },
+      { ...flu, id: 'a-same-time' },
+      { ...flu, id: 'all-day', startsAt: undefined, endsAt: undefined },
+    ]
+    await refresh(json(feed))
+    const ids = (await upcomingEvents(db, new Date('2026-10-25T00:00:00Z'))).map(event => event.id)
+    expect(ids).toEqual(['all-day', 'a-same-time', 'b-same-time'])
+  })
+
+  it('clears stored events when the steward publishes none', async () => {
+    await refresh(json(sample()))
+    await refresh(json({ ...sample(), generatedAt: '2026-10-25T19:00:00Z', events: [] }))
+    expect(await upcomingEvents(db, new Date('2026-10-25T00:00:00Z'))).toEqual([])
+  })
+
   it('clears stored events when the steward stops publishing the file', async () => {
     await refresh(json(sample()))
     await refresh(new Response('', { status: 404 }))

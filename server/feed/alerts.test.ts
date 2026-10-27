@@ -48,4 +48,23 @@ describe('alerts.json', () => {
     delete feed.alerts[0].endsAt
     expect((await refresh(json(feed))).result).toBe('failed')
   })
+
+  it('lists alerts of the same severity by when they start, then by id', async () => {
+    const feed = sample()
+    const notice = feed.alerts[0]
+    feed.alerts = [
+      { ...notice, id: 'later', startsAt: '2026-10-25T09:00:00-07:00' },
+      { ...notice, id: 'b-same-start' },
+      { ...notice, id: 'a-same-start' },
+    ]
+    await refresh(json(feed))
+    const ids = (await currentAlerts(db, new Date('2026-10-25T18:00:00Z'))).map(alert => alert.id)
+    expect(ids).toEqual(['a-same-start', 'b-same-start', 'later'])
+  })
+
+  it('clears the alerts when the steward publishes none', async () => {
+    await refresh(json(sample()))
+    await refresh(json({ ...sample(), generatedAt: '2026-10-25T19:00:00Z', alerts: [] }))
+    expect(await currentAlerts(db, new Date('2026-10-25T18:00:00Z'))).toEqual([])
+  })
 })

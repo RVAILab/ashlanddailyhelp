@@ -63,3 +63,91 @@ describe('/next loader', () => {
     expect(page).toMatchObject({ meal: null, sleep: null })
   })
 })
+
+describe('/next loader, later in the week', () => {
+  let db: Awaited<ReturnType<typeof testDatabase>>
+  beforeAll(async () => {
+    vi.useFakeTimers({ toFake: ['Date'] })
+    vi.setSystemTime(new Date('2026-10-25T18:00:00Z'))
+    db = await testDatabase()
+    const sample = sampleListingsFeed()
+    const pantry = sample.listings.find((listing: { id: string }) => listing.id === 'access-pantries')
+    await storeListings(db, {
+      ...sample,
+      listings: [{ ...pantry, openings: [{ startsAt: '2026-10-28T09:00:00-07:00' }] }],
+    })
+  })
+  afterAll(async () => {
+    vi.useRealTimers()
+    await db.close()
+  })
+
+  it('names the weekday, gives no end time it doesn’t know, and says the data is a demonstration', async () => {
+    const page = await loader(loaderArgs('/next', { database: () => db }))
+    expect(page.meal?.when).toBe('Starts Wednesday at 9:00 AM')
+    expect(page.sleep).toBeNull()
+    expect(page.demonstration).toBe(true)
+  })
+
+  it('in Spanish, spells out the day it was worked out and the weekday', async () => {
+    const page = await loader(loaderArgs('/es/next', { database: () => db }))
+    expect(page.workedOut).toContain('domingo, 25 de octubre')
+    expect(page.meal?.when).toBe('Empieza el miércoles a las 9:00 a.m.')
+  })
+})
+
+describe('/next loader, open now and events', () => {
+  it('says a meal is open now and until when, and links an event only to a stored listing', async () => {
+    const { refreshFeedFile } = await import('../../server/feed/ingest.ts')
+    const { eventsFile } = await import('../../server/feed/events.ts')
+    const { feedHost, json } = await import('../../test/feed.ts')
+    vi.useFakeTimers({ toFake: ['Date'] })
+    vi.setSystemTime(new Date('2026-10-25T18:00:00Z'))
+    const db = await testDatabase()
+    const sample = sampleListingsFeed()
+    const pantry = sample.listings.find((listing: { id: string }) => listing.id === 'access-pantries')
+    await storeListings(db, {
+      ...sample,
+      listings: [
+        { ...pantry, openings: [{ startsAt: '2026-10-25T10:00:00-07:00', endsAt: '2026-10-25T14:00:00-07:00' }] },
+      ],
+    })
+    const supper = {
+      id: 'supper-1',
+      title: 'Community supper',
+      provider: 'A church',
+      categories: ['food'],
+      description: 'Flyer lists a supper.',
+      date: '2026-10-25',
+      startsAt: '2026-10-25T17:00:00-07:00',
+      endsAt: '2026-10-25T23:00:00-07:00',
+      address: '1 Main St, Ashland',
+      area: 'Ashland',
+      cost: 'Free',
+      requirements: 'Not confirmed',
+      phone: '541-555-0199',
+    }
+    const events = {
+      schemaVersion: '1.4',
+      generatedAt: '2026-10-25T18:00:00Z',
+      dataset: 'FICTIONAL_DEMONSTRATION',
+      timeZone: 'America/Los_Angeles',
+      from: '2026-10-25',
+      until: '2026-11-07',
+      events: [supper],
+    }
+    await refreshFeedFile(eventsFile, {
+      db,
+      baseUrl: 'https://feed.example.org/',
+      fetch: feedHost(json(events)).fetch,
+      now: () => new Date(),
+    })
+    const open = await loader(loaderArgs('/next', { database: () => db }))
+    expect(open.meal).toMatchObject({ name: pantry.name, when: 'Open now, until 2:00 PM' })
+    vi.setSystemTime(new Date('2026-10-25T22:00:00Z'))
+    const evening = await loader(loaderArgs('/next', { database: () => db }))
+    expect(evening.meal).toMatchObject({ name: 'Community supper', details: null })
+    vi.useRealTimers()
+    await db.close()
+  })
+})

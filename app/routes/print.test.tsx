@@ -34,4 +34,21 @@ describe('/print', () => {
     expect(screen.getByText(data.backUrl)).toBeDefined()
     expect(handle).toEqual({ hydrate: false })
   })
+
+  it('says there is nothing to print for an empty list, and leaves off the date when it isn’t known', async () => {
+    const data = {
+      title: 'My list',
+      backUrl: 'https://ashlanddailyhelp.com/list',
+      qr: '<svg viewBox="0 0 10 10"></svg>',
+      asOf: null,
+      demonstration: false,
+      rows: [],
+    }
+    const Stub = createRoutesStub([{ path: '/print', Component: Print, loader: () => data }])
+    render(<Stub initialEntries={['/print']} />)
+    expect(await screen.findByText('Nothing to print here yet.')).toBeDefined()
+    expect(screen.queryByRole('table')).toBeNull()
+    expect(screen.queryByText(/Listings as of/)).toBeNull()
+    expect(screen.queryByText(/fictional/i)).toBeNull()
+  })
 })

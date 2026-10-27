@@ -197,6 +197,22 @@ describe('refreshing listings.json', () => {
     expect(await storedIds()).toEqual([])
   })
 
+  it('fails, rather than calling it unpublished, when a file it needs answers 404', async () => {
+    expect(await refresh(feedHost(new Response('', { status: 404 })).fetch)).toEqual({
+      result: 'failed',
+      error: 'HTTP 404',
+    })
+  })
+
+  it('records why when the file can’t be read to the end', async () => {
+    const broken = new ReadableStream({ start: controller => controller.error(new Error('connection reset')) })
+    const outcome = await refresh(feedHost(new Response(broken)).fetch)
+    expect(outcome).toMatchObject({
+      result: 'failed',
+      error: expect.stringMatching(/^could not read the file: .*reset/),
+    })
+  })
+
   it('stores the next good copy after a failure, and clears the error', async () => {
     await refresh(feedHost(new Response('nope', { status: 503 })).fetch)
     await refresh(feedHost(json(sampleListingsFeed())).fetch)

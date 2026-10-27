@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, within } from '@testing-library/react'
+import { act, cleanup, fireEvent, render, screen, within } from '@testing-library/react'
 import { createRoutesStub } from 'react-router'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import type { ListingCard } from '../components/listing-card.tsx'
@@ -152,6 +152,15 @@ describe('/resources', () => {
     expect(english.getAttribute('hreflang')).toBe('en')
   })
 
+  it('offers a printable sheet for a kind of help, but not for a word search', async () => {
+    renderPage({ filters: { category: 'food' } }, '/resources?category=food')
+    expect((await screen.findByRole('link', { name: 'Print this' })).getAttribute('href')).toBe('/print?category=food')
+    cleanup()
+    renderPage({ filters: { query: 'meal', category: 'food' } }, '/resources?q=meal&category=food')
+    await screen.findByRole('status')
+    expect(screen.queryByRole('link', { name: 'Print this' })).toBeNull()
+  })
+
   describe('sorting by distance', () => {
     const plaza = { coords: { latitude: 42.199, longitude: -122.7158 } }
     const near: ListingCard = { ...showers, id: 'near', name: 'Near the Plaza', geo: { lat: 42.1995, lng: -122.716 } }
@@ -178,6 +187,36 @@ describe('/resources', () => {
       fireEvent.click(screen.getByRole('button', { name: 'Back to the usual order' }))
       expect(screen.getByText('Back in the usual order.')).toBeDefined()
       expect(screen.getAllByRole('article').map(card => card.getAttribute('id'))).toEqual(['unknown', 'far', 'near'])
+    })
+
+    it('says it is finding me while it waits, ignores a second press, and gives no walk time past two miles', async () => {
+      let answer: PositionCallback = () => {}
+      locate(ok => {
+        answer = ok
+      })
+      const medford: ListingCard = {
+        ...showers,
+        id: 'medford',
+        name: 'In Medford',
+        geo: { lat: 42.3265, lng: -122.8756 },
+      }
+      renderPage({ results: [medford, near] })
+      const sort = await screen.findByRole('button', { name: 'Sort by distance from me' })
+      fireEvent.click(sort)
+      expect(screen.getByText('Finding where you are…')).toBeDefined()
+      expect(sort.getAttribute('aria-disabled')).toBe('true')
+      fireEvent.click(sort)
+      expect(navigator.geolocation.getCurrentPosition).toHaveBeenCalledTimes(1)
+      act(() => answer(plaza as GeolocationPosition))
+      expect(await screen.findByText('Sorted by distance from you. Your location stays on this phone.')).toBeDefined()
+      expect(within(screen.getByRole('article', { name: 'In Medford' })).getByText('12.0 mi')).toBeDefined()
+    })
+
+    it('says it can’t sort on a phone that can’t give a location', async () => {
+      vi.stubGlobal('navigator', { ...navigator, geolocation: undefined })
+      renderPage({ results: [far, near] })
+      fireEvent.click(await screen.findByRole('button', { name: 'Sort by distance from me' }))
+      expect(await screen.findByText('Couldn’t get your location. Results stay in their usual order.')).toBeDefined()
     })
 
     it('keeps the usual order and says so when the location can’t be had', async () => {

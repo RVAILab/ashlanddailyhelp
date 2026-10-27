@@ -70,4 +70,14 @@ describe('/ask', () => {
     renderAsk({ state: 'unavailable' })
     expect((await screen.findByRole('status')).textContent).toContain('211')
   })
+
+  it('asks for a question when the box was empty', async () => {
+    renderAsk({ state: 'empty' })
+    expect((await screen.findByRole('status')).textContent).toBe('Type a question first.')
+  })
+
+  it('asks people to wait after too many questions, pointing to 211', async () => {
+    renderAsk({ state: 'limited' })
+    expect((await screen.findByRole('status')).textContent).toMatch(/Please wait a minute.*211/)
+  })
 })

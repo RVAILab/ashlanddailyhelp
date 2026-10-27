@@ -14,6 +14,13 @@ describe('groupEvents', () => {
     expect(ids(grouped.thisWeek)).toEqual(['showers-pop-up-1'])
   })
 
+  it('keeps an event today with only a start time among today’s, since nobody said it ended', () => {
+    const started = { ...events[0], id: 'no-end', startsAt: '2026-10-25T08:00:00-07:00', endsAt: undefined }
+    const grouped = groupEvents([started], new Date('2026-10-25T18:00:00Z'))
+    expect(grouped.today.map(event => event.id)).toEqual(['no-end'])
+    expect(grouped.finished).toEqual([])
+  })
+
   it('keeps only the next seven days in this week', () => {
     const later = { ...events[3], id: 'far', date: '2026-11-03' }
     const grouped = groupEvents([...events, later], new Date('2026-10-25T18:00:00Z'))

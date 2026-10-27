@@ -28,6 +28,12 @@ describe('the language layout', () => {
     expect((thrown as Response).headers.get('Vary')).toBe('Accept-Language, Cookie')
   })
 
+  it('lets the page load when the visitor is already on their language', async () => {
+    const [redirectFirst] = middleware
+    const args = loaderArgs('/es/resources', {}, { 'Accept-Language': 'es' })
+    expect(await redirectFirst?.(args, async () => new Response())).toBeUndefined()
+  })
+
   it('takes the language from the URL, and varies only English pages on the visitor’s preferences', async () => {
     const english = await loader(loaderArgs('/', {}, { Cookie: 'lang=en' }))
     expect(english.data.lang).toBe('en')

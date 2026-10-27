@@ -30,4 +30,9 @@ describe('/list loader', () => {
     expect(data).toMatchObject({ shared: true, missing: 1, presentIds: ['ohra-showers'] })
     expect(data.cards[0]?.saved).toBe(false)
   })
+
+  it('counts every saved listing as missing, with nothing to share, when the listings can’t be read', async () => {
+    const data = await loader(loaderArgs('https://ashlanddailyhelp.com/list', {}, { Cookie: 'saved=ohra-showers' }))
+    expect(data).toMatchObject({ cards: [], missing: 1, presentIds: [], shareUrl: null })
+  })
 })

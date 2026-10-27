@@ -101,8 +101,7 @@ export default function Resources({ loaderData }: Route.ComponentProps) {
           <Call211 t={t} />
         </div>
       ) : (
-        <section aria-labelledby="results-heading" className="results">
-          <h2 id="results-heading">{t.search.results}</h2>
+        <div className="results">
           {demonstration && <p className="notice">{t.feed.demonstration}</p>}
           {filters.category && !filters.query && (
             <p>
@@ -126,7 +125,7 @@ export default function Resources({ loaderData }: Route.ComponentProps) {
           ) : (
             <NearbyResults results={results} />
           )}
-        </section>
+        </div>
       )}
     </main>
   )

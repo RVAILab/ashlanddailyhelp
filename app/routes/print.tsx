@@ -81,6 +81,8 @@ export default function Print({ loaderData }: Route.ComponentProps) {
   const { t } = useI18n()
   return (
     <main className="print-sheet">
+      {/* biome-ignore lint/security/noDangerouslySetInnerHtml: SVG made on the server from our own URL */}
+      <div className="print-qr" role="img" aria-label={t.print.qr} dangerouslySetInnerHTML={{ __html: qr }} />
       <h1>
         {t.siteName}: {title}
       </h1>
@@ -127,8 +129,6 @@ export default function Print({ loaderData }: Route.ComponentProps) {
         </table>
       )}
       <div className="print-back">
-        {/* biome-ignore lint/security/noDangerouslySetInnerHtml: SVG made on the server from our own URL */}
-        <div className="print-qr" role="img" aria-label={t.print.qr} dangerouslySetInnerHTML={{ __html: qr }} />
         <p>
           {t.print.back} <strong>{backUrl}</strong>
           {asOf && (

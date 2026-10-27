@@ -83,7 +83,6 @@ export const es = {
     area: 'Zona',
     anyArea: 'Todas las zonas',
     submit: 'Buscar',
-    results: 'Resultados',
     places: count => (count === 0 ? 'No se encontraron lugares' : count === 1 ? '1 lugar' : `${count} lugares`),
     tryFewer: 'Pruebe con menos palabras, o con otro tipo de ayuda. También puede',
     clear: 'borrar la búsqueda',

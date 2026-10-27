@@ -35,6 +35,22 @@ describe('/print', () => {
     expect(handle).toEqual({ hydrate: false })
   })
 
+  it('puts the QR code at the top, so it is always on the first printed page', async () => {
+    const data = {
+      title: 'My list',
+      backUrl: 'https://ashlanddailyhelp.com/list',
+      qr: '<svg viewBox="0 0 10 10"></svg>',
+      asOf: null,
+      demonstration: false,
+      rows: [],
+    }
+    const Stub = createRoutesStub([{ path: '/print', Component: Print, loader: () => data }])
+    render(<Stub initialEntries={['/print']} />)
+    const heading = await screen.findByRole('heading', { level: 1 })
+    const qr = screen.getByRole('img', { name: 'QR code for this page on Ashland Daily Help' })
+    expect(qr.compareDocumentPosition(heading) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+  })
+
   it('says there is nothing to print for an empty list, and leaves off the date when it isn’t known', async () => {
     const data = {
       title: 'My list',

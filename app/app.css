@@ -1265,16 +1265,19 @@ main h1[tabindex="-1"]:focus-visible {
   vertical-align: top;
 }
 
+.print-sheet table {
+  clear: right;
+}
+
 .print-back {
-  display: flex;
-  gap: 1rem;
-  align-items: center;
   margin-top: 1rem;
 }
 
+/* At the top, so a long sheet never pushes the code back to this page onto a second printed page. */
 .print-qr {
+  float: right;
   width: 7rem;
-  flex: none;
+  margin: 0 0 1rem 1rem;
 }
 
 @page {

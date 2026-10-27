@@ -77,7 +77,6 @@ export const en = {
     area: 'Area',
     anyArea: 'All areas',
     submit: 'Search',
-    results: 'Results',
     places: (count: number) => (count === 0 ? 'No places match' : count === 1 ? '1 place' : `${count} places`),
     tryFewer: 'Try fewer words, or another kind of help. You can also',
     clear: 'clear the search',

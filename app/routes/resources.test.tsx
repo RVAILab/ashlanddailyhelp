@@ -95,10 +95,10 @@ describe('/resources', () => {
     expect(screen.queryByRole('status')).toBeNull()
   })
 
-  it('gives the results a heading, so the cards sit under it', async () => {
+  it('puts the cards straight under the count, with no heading over them', async () => {
     renderPage({})
-    expect(await screen.findByRole('heading', { level: 2, name: 'Results' })).toBeDefined()
-    expect(screen.getByRole('region', { name: 'Results' })).toBeDefined()
+    expect(await screen.findByRole('status')).toBeDefined()
+    expect(screen.queryByRole('heading', { level: 2 })).toBeNull()
   })
 
   it('labels demonstration data next to the results', async () => {

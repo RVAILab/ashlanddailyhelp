@@ -84,7 +84,8 @@ export default function Print({ loaderData }: Route.ComponentProps) {
       {/* biome-ignore lint/security/noDangerouslySetInnerHtml: SVG made on the server from our own URL */}
       <div className="print-qr" role="img" aria-label={t.print.qr} dangerouslySetInnerHTML={{ __html: qr }} />
       <h1>
-        {t.siteName}: {title}
+        {t.siteName}: <br />
+        {title}
       </h1>
       <p className="print-note">{t.print.confirm}</p>
       {demonstration && <p className="print-note">{t.feed.demonstration}</p>}
